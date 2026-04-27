@@ -20,31 +20,37 @@ The system implements:
 
 ### Backend
 
-The backend is an ASP.NET Core Web API with the following structure:
-- `Controllers/` - HTTP controllers for auth, students, courses, enrollments, and test helpers
-- `Services/` - business logic layer with interfaces and implementations
-- `Repositories/` - data access layer using SQL Server
-- `Models/` - domain models and request/response DTOs
-- `Middleware/` - global exception handling
+The backend is an ASP.NET Core Web API targeting `net10.0` and uses a layered architecture:
+- `Controllers/` - API endpoints that accept DTOs, perform request validation, and return a consistent response envelope
+- `Services/` - business logic and auth flow, including JWT generation and password hashing
+- `Repositories/` - SQL Server access with a repository pattern that isolates raw ADO.NET calls from the controller logic
+- `Models/` - domain models and DTOs used across the API
+- `Middleware/` - global exception handling ensures consistent error responses
 
-Key backend features:
-- JWT authentication with `Microsoft.AspNetCore.Authentication.JwtBearer`
-- Password hashing with `BCrypt.Net-Next`
-- Swagger / OpenAPI support for API testing
-- CORS policy configured for `http://localhost:4200`
+Backend implementation details:
+- `Program.cs` registers all services and repositories with dependency injection and configures `AddCors`, `AddAuthentication`, `AddAuthorization`, and Swagger
+- Authentication is implemented with JWTs delivered from `AuthService` and validated by ASP.NET Core middleware
+- `AuthService` hashes passwords using `BCrypt.Net-Next`, verifies login credentials, and creates tokens with claims for the username, email, and user ID
+- All protected routes require `[Authorize]`; only `POST /api/login` and `POST /api/register` are public
+- Controllers convert DTO payloads into domain models, then call services to execute CRUD operations
+- `ResponseHelper` wraps responses in a uniform JSON envelope: `success`, `message`, and `data`
 
 ### Frontend
 
-The frontend is an Angular 21 application built with:
-- `@angular/core`, `@angular/router`, `@angular/forms`
-- `rxjs`
-- `vitest` for unit testing
+The frontend is an Angular 21 application with a reactive client-side state and API integration:
+- `app.config.ts` configures Angular HTTP client middleware and router providers
+- `app.routes.ts` defines public and protected routes, with `authGuard` blocking unauthenticated access to dashboard and management pages
+- `AuthService` executes login/register API calls, stores the JWT in `localStorage`, validates expiry, and provides logout behavior
+- `authInterceptor` attaches `Authorization: Bearer {token}` to outgoing API requests and handles HTTP errors centrally
+- `loaderInterceptor` toggles UI loading state for network activity
 
-Frontend structure includes:
-- `src/app/core/` - shared models, services, interceptors, and utilities
-- `src/app/pages/` - page components for login, register, dashboard, courses, students, enrollments
-- `src/app/app.routes.ts` - client-side routing
-- `src/app/app.config.ts` - HTTP client configuration and application bootstrap
+Frontend implementation details:
+- The app uses `signal` and `computed` state management in components such as `Courses` for search, pagination, and filtering logic
+- Search input and pagination are handled locally in the `Courses` page; changing the query resets the page to `1`
+- CRUD operations call backend services in `core/services/` for students, courses, and enrollments
+- The `ConfirmService` asks users before destructive actions like deleting a course or enrollment
+- The `ToastService` displays success and error notifications for user feedback
+- `API_BASE_URL` is centralized in `core/api.config.ts`, making backend URL changes easy
 
 ---
 
@@ -141,6 +147,15 @@ Open the browser at `http://localhost:4200`.
 - User login is stored in browser local storage as JWT token
 - Auth interceptor attaches token to API requests
 - Search, pagination, and CRUD operations are implemented for courses, students, and enrollments
+- The UI uses a confirm dialog before deleting records and a toast system for success/error feedback
+- `authGuard` protects dashboard pages and redirects unauthenticated users to the login page
+
+### Auth and HTTP flow
+
+- `AuthService.login()` sends credentials to `POST /api/login`, saves the returned JWT, and returns the token to the caller
+- `authInterceptor` adds the JWT to every outbound request and logs out the user automatically on HTTP `401`
+- `loaderInterceptor` manages a loading spinner for all in-flight HTTP requests
+- The frontend expects the backend to return a response envelope with `success`, `message`, and `data`
 
 ---
 
