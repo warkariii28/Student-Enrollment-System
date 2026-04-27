@@ -1,0 +1,28 @@
+# Added by code-review-graph
+.code-review-graph/
+
+# Node / Angular frontend
+LearningApi/frontend/node_modules/
+LearningApi/frontend/dist/
+LearningApi/frontend/out-tsc/
+LearningApi/frontend/npm-debug.log
+LearningApi/frontend/yarn-error.log
+LearningApi/frontend/.angular/cache
+LearningApi/frontend/coverage/
+
+# .NET backend
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+**/*.suo
+**/*.userosscache
+**/*.sln.docstates
+**/TestResults/
+
+# Local environment and secret config
+LearningApi/backend/appsettings.json
+LearningApi/backend/appsettings.Development.json
+*.env
+.env
+.env.*
