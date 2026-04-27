@@ -1,0 +1,91 @@
+<main class="page-shell page-shell-auth auth-shell">
+  <section class="form-stage">
+    <article class="surface hero-panel">
+      <div class="hero-kicker">
+        <p class="eyebrow">{{ isEditMode ? 'Update course' : 'New course' }}</p>
+        <h1>{{ isEditMode ? 'Edit course' : 'Add course' }}</h1>
+        <p class="page-copy">
+          {{ isEditMode ? 'Revise an existing course without disturbing the rest of the catalog.' : 'Create a course entry so it becomes available inside the enrollment workflow.' }}
+        </p>
+      </div>
+
+      @if (isLoadingCourse) {
+        <p class="status-banner status-neutral">Loading course details...</p>
+      }
+
+      <div class="quick-stats">
+        <article class="mini-panel">
+          <strong>{{ isEditMode ? 'Catalog update' : 'Catalog entry' }}</strong>
+          <span>
+            {{ isEditMode ? 'Update the name, fee, or duration while keeping the course available for enrollment.' : 'Each course needs a clear name, fee, and duration before learners can be enrolled.' }}
+          </span>
+        </article>
+        <article class="mini-panel">
+          <strong>Enrollment ready</strong>
+          <span>Courses added here can be selected immediately in the enrollment form.</span>
+        </article>
+      </div>
+
+      <div class="project-diagram project-diagram-compact" aria-hidden="true">
+        <div class="diagram-screen">
+          <span></span><span></span><span></span>
+          <i></i><i></i><i></i>
+        </div>
+        <div class="diagram-link"></div>
+        <div class="diagram-api">
+          <span class="diagram-pill diagram-pill-top"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="diagram-link diagram-link-vertical"></div>
+        <div class="diagram-data"></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="surface form-panel">
+    <form class="form-grid" [formGroup]="courseForm" (ngSubmit)="submit()">
+      <div class="form-header">
+        <p class="badge">Course entry</p>
+        <h2>{{ isEditMode ? 'Revise course details' : 'Enter course details' }}</h2>
+        <p class="page-copy">
+          {{ isEditMode ? 'This form now supports the backend course update flow as well.' : 'This flow supports creating new courses without altering the existing student screens.' }}
+        </p>
+      </div>
+
+      <div class="field">
+        <label for="courseName">Course name</label>
+        <input id="courseName" type="text" formControlName="courseName" placeholder="Full stack foundations" />
+        @if (courseForm.controls.courseName.touched && courseForm.controls.courseName.invalid) {
+          <span class="field-error">Course name is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="fee">Fee</label>
+        <input id="fee" type="number" min="0" step="0.01" formControlName="fee" placeholder="25000" />
+        @if (courseForm.controls.fee.touched && courseForm.controls.fee.invalid) {
+          <span class="field-error">Enter a valid fee.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="durationWeeks">Duration in weeks</label>
+        <input id="durationWeeks" type="number" min="1" step="1" formControlName="durationWeeks" placeholder="12" />
+        @if (courseForm.controls.durationWeeks.touched && courseForm.controls.durationWeeks.invalid) {
+          <span class="field-error">Enter a valid duration in weeks.</span>
+        }
+      </div>
+
+      @if (error) {
+        <p class="status-banner status-error">{{ error }}</p>
+      }
+
+      <div class="actions-row">
+        <button class="button button-primary" type="submit" [disabled]="isSubmitting || isLoadingCourse">
+          {{ isSubmitting ? 'Saving...' : isEditMode ? 'Update course' : 'Save course' }}
+        </button>
+        <a class="button button-secondary" routerLink="/dashboard/courses">Cancel</a>
+      </div>
+    </form>
+  </section>
+</main>

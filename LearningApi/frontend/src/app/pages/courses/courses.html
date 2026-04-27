@@ -1,0 +1,157 @@
+<main class="page-shell dashboard-grid">
+  <section class="surface hero-panel hero-grid">
+    <div class="hero-row">
+      <div class="hero-kicker">
+        <p class="eyebrow">Protected workspace</p>
+        <h1>Courses dashboard</h1>
+        <p class="page-copy">
+          Manage course catalog entries, keep fee details aligned, and maintain the learning offer available for
+          enrollment.
+        </p>
+      </div>
+
+      <div class="hero-actions">
+        <a class="button button-secondary" routerLink="/dashboard">Students</a>
+        <a class="button button-secondary" routerLink="/dashboard/enrollments">Enrollments</a>
+        <!-- <button class="button button-secondary" type="button" (click)="loadCourses()" [disabled]="loading()">
+          Refresh data
+        </button> -->
+        <a class="button button-primary" routerLink="/dashboard/courses/add">Add course</a>
+        <!-- <button class="button button-secondary" type="button" (click)="logout()">Logout</button> -->
+      </div>
+    </div>
+
+    <aside class="hero-sidebar">
+      <div class="project-diagram project-diagram-wide" aria-hidden="true">
+        <div class="diagram-screen">
+          <span></span><span></span><span></span>
+          <i></i><i></i><i></i>
+        </div>
+        <div class="diagram-link"></div>
+        <div class="diagram-api">
+          <span class="diagram-pill diagram-pill-top"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="diagram-link diagram-link-vertical"></div>
+        <div class="diagram-data"></div>
+      </div>
+
+      <article class="spotlight-card">
+        <p class="badge">Course status</p>
+        <h2>{{ loading() ? 'Syncing catalog' : error() ? 'Needs attention' : 'Ready to publish' }}</h2>
+        <p class="page-copy">
+          Courses feed directly into the enrollment flow, so keeping names, fees, and durations current matters across
+          the app.
+        </p>
+      </article>
+    </aside>
+  </section>
+
+  <section class="surface section-card">
+    <div class="metric-grid">
+      <article class="metric">
+        <span>Total courses</span>
+        <strong>{{ courses().length }}</strong>
+      </article>
+      <article class="metric">
+        <span>Status</span>
+        <strong>{{ loading() ? 'Loading' : error() ? 'Attention' : 'Ready' }}</strong>
+      </article>
+      <article class="metric">
+        <span>Catalog mode</span>
+        <strong>Active</strong>
+      </article>
+    </div>
+  </section>
+
+  @if (error()) {
+  <section class="status-banner status-error">
+    {{ error() }}
+  </section>
+  }
+
+  <section class="surface table-section" [attr.aria-busy]="loading()">
+
+    <!-- HEADER + SEARCH -->
+    <div class="section-header">
+      <div>
+        <p class="badge">Course records</p>
+        <h2>Current catalog</h2>
+      </div>
+
+      <input type="text" placeholder="Search course..." (input)="setQuery($any($event.target).value)" class="input" />
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Course</th>
+            <th>Fee</th>
+            <th>Duration</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- LOADING -->
+          @if (loading()) {
+          <tr>
+            <td colspan="5">
+              <app-skeleton-table [rows]="5" [cols]="5"></app-skeleton-table>
+            </td>
+          </tr>
+          }
+
+          <!-- EMPTY -->
+          @else if (filteredCourses().length === 0) {
+          <tr>
+            <td colspan="5" class="table-state">
+              No courses found.
+            </td>
+          </tr>
+          }
+
+          <!-- DATA -->
+          @else {
+          @for (course of pagedCourses(); track course.courseID) {
+          <tr>
+            <td>{{ course.courseID }}</td>
+            <td>{{ course.courseName }}</td>
+            <td>{{ course.fee | currency:'INR':'symbol':'1.0-2' }}</td>
+            <td>{{ course.durationWeeks }} weeks</td>
+            <td class="table-actions">
+              <a class="button button-secondary button-small"
+                [routerLink]="['/dashboard/courses/edit', course.courseID]">
+                Edit
+              </a>
+
+              <button class="button button-danger button-small" type="button" (click)="deleteCourse(course)">
+                Delete
+              </button>
+            </td>
+          </tr>
+          }
+          }
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="page() === 1">
+        Prev
+      </button>
+
+      <span>Page {{ page() }} / {{ totalPages() }}</span>
+
+      <button (click)="nextPage()" [disabled]="page() === totalPages()">
+        Next
+      </button>
+    </div>
+
+  </section>
+</main>

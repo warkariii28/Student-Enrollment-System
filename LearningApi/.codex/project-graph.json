@@ -1,0 +1,405 @@
+{
+  "generatedAt": "2026-04-24",
+  "workspace": "D:\\CODING\\MY PROJECTS\\dotnet-projects\\LearningApi",
+  "purpose": "Reusable project graph cache. Read this before doing broad codebase work to avoid reparsing the project tree.",
+  "excludedDirectories": [
+    "backend/bin",
+    "backend/obj",
+    "frontend/node_modules",
+    "frontend/.angular/cache",
+    "frontend/dist"
+  ],
+  "roots": {
+    "backend": {
+      "path": "backend",
+      "framework": "ASP.NET Core Web API",
+      "targetFramework": "net10.0",
+      "entry": "backend/Program.cs",
+      "projectFile": "backend/LearningApi.csproj",
+      "packages": {
+        "BCrypt.Net-Next": "4.1.0",
+        "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.7",
+        "Microsoft.AspNetCore.OpenApi": "10.0.7",
+        "Microsoft.Data.SqlClient": "7.0.0"
+      }
+    },
+    "frontend": {
+      "path": "frontend",
+      "framework": "Angular",
+      "majorVersion": 21,
+      "entry": "frontend/src/main.ts",
+      "packageFile": "frontend/package.json",
+      "apiBaseUrl": "http://localhost:5140"
+    }
+  },
+  "backend": {
+    "composition": {
+      "corsPolicy": "AngularApp allows http://localhost:4200",
+      "authentication": "JWT bearer",
+      "controllerMapping": "app.MapControllers()",
+      "dependencyInjection": [
+        "IStudentService -> StudentService",
+        "IStudentRepository -> StudentRepository",
+        "IAuthRepository -> AuthRepository",
+        "IAuthService -> AuthService",
+        "ICourseRepository -> CourseRepository",
+        "ICourseService -> CourseService",
+        "IEnrollmentRepository -> EnrollmentRepository",
+        "IEnrollmentService -> EnrollmentService"
+      ]
+    },
+    "api": [
+      {
+        "controller": "AuthController",
+        "file": "backend/Controllers/AuthController.cs",
+        "baseRoute": "/api",
+        "service": "IAuthService",
+        "endpoints": [
+          "POST /register",
+          "POST /login",
+          "PUT /update-email"
+        ]
+      },
+      {
+        "controller": "StudentsController",
+        "file": "backend/Controllers/StudentsController.cs",
+        "baseRoute": "/api/students",
+        "service": "IStudentService",
+        "endpoints": [
+          "GET /",
+          "GET /{id}",
+          "POST /",
+          "DELETE /{id}",
+          "GET /me",
+          "PUT /{id}"
+        ]
+      },
+      {
+        "controller": "CoursesController",
+        "file": "backend/Controllers/CourseController.cs",
+        "baseRoute": "/api/courses",
+        "service": "ICourseService",
+        "endpoints": [
+          "GET /",
+          "POST /",
+          "DELETE /{id}",
+          "GET /{id}",
+          "PUT /{id}"
+        ]
+      },
+      {
+        "controller": "EnrollmentsController",
+        "file": "backend/Controllers/EnrollmentsController.cs",
+        "baseRoute": "/api/enrollments",
+        "service": "IEnrollmentService",
+        "endpoints": [
+          "GET /",
+          "POST /",
+          "DELETE /{id}"
+        ]
+      },
+      {
+        "controller": "DbTestController",
+        "file": "backend/Controllers/DbTestController.cs",
+        "baseRoute": "/api/dbtest",
+        "endpoints": [
+          "GET /"
+        ]
+      },
+      {
+        "controller": "TestController",
+        "file": "backend/Controllers/TestController.cs",
+        "baseRoute": "/api/test",
+        "endpoints": [
+          "POST /student",
+          "GET /student",
+          "GET /student/{id}",
+          "GET /students",
+          "GET /search",
+          "GET /students-filter"
+        ]
+      },
+      {
+        "controller": "WeatherForecastController",
+        "file": "backend/Controllers/WeatherForecastController.cs",
+        "baseRoute": "/WeatherForecast",
+        "endpoints": [
+          "GET /"
+        ]
+      }
+    ],
+    "layers": {
+      "auth": {
+        "controller": "backend/Controllers/AuthController.cs",
+        "service": "backend/Services/AuthService.cs",
+        "serviceInterface": "backend/Services/IAuthService.cs",
+        "repository": "backend/Repositories/AuthRepository.cs",
+        "repositoryInterface": "backend/Repositories/IAuthRepository.cs",
+        "model": "backend/Models/User.cs",
+        "storedProcedures": [
+          "RegisterUsers",
+          "GetUserByEmail",
+          "UpdateUserEmail"
+        ]
+      },
+      "students": {
+        "controller": "backend/Controllers/StudentsController.cs",
+        "service": "backend/Services/StudentService.cs",
+        "serviceInterface": "backend/Services/IStudentService.cs",
+        "repository": "backend/Repositories/StudentRepository.cs",
+        "repositoryInterface": "backend/Repositories/IStudentRepository.cs",
+        "model": "backend/Models/Student.cs",
+        "dtos": [
+          "backend/DTOs/StudentCreateDto.cs",
+          "backend/DTOs/StudentUpdateDto.cs"
+        ],
+        "storedProcedures": [
+          "GetAllStudents",
+          "GetStudentByID",
+          "AddStudent",
+          "RemoveStudent",
+          "UpdateStudent"
+        ]
+      },
+      "courses": {
+        "controller": "backend/Controllers/CourseController.cs",
+        "service": "backend/Services/CourseService.cs",
+        "serviceInterface": "backend/Services/ICourseService.cs",
+        "repository": "backend/Repositories/CourseRepository.cs",
+        "repositoryInterface": "backend/Repositories/ICourseRepository.cs",
+        "model": "backend/Models/Course.cs",
+        "dtos": [
+          "backend/DTOs/CourseCreateDto.cs",
+          "backend/DTOs/CourseUpdateDto.cs"
+        ],
+        "storedProcedures": [
+          "GetAllCourses",
+          "AddCourse",
+          "RemoveCourse",
+          "GetCourseByID",
+          "UpdateCourse"
+        ]
+      },
+      "enrollments": {
+        "controller": "backend/Controllers/EnrollmentsController.cs",
+        "service": "backend/Services/EnrollmentService.cs",
+        "serviceInterface": "backend/Services/IEnrollmentService.cs",
+        "repository": "backend/Repositories/EnrollmentRepository.cs",
+        "repositoryInterface": "backend/Repositories/IEnrollmentRepository.cs",
+        "model": "backend/Models/Enrollment.cs",
+        "dtos": [
+          "backend/DTOs/EnrollmentCreateDto.cs"
+        ],
+        "storedProcedures": [
+          "GetEnrollmentDetails",
+          "EnrollStudent",
+          "RemoveEnrollment"
+        ]
+      }
+    }
+  },
+  "frontend": {
+    "composition": {
+      "bootstrap": "frontend/src/main.ts",
+      "appConfig": "frontend/src/app/app.config.ts",
+      "routes": "frontend/src/app/app.routes.ts",
+      "httpInterceptor": "frontend/src/app/core/interceptors/auth.interceptor.ts",
+      "authGuard": "frontend/src/app/core/guards/auth.guard.ts"
+    },
+    "routes": [
+      {
+        "path": "",
+        "redirectTo": "login"
+      },
+      {
+        "path": "login",
+        "component": "Login",
+        "file": "frontend/src/app/pages/login/login.ts"
+      },
+      {
+        "path": "register",
+        "component": "Register",
+        "file": "frontend/src/app/pages/register/register.ts"
+      },
+      {
+        "path": "dashboard",
+        "component": "Dashboard",
+        "file": "frontend/src/app/pages/dashboard/dashboard.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "dashboard/add",
+        "component": "StudentForm",
+        "file": "frontend/src/app/pages/student-form/student-form.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "dashboard/edit/:id",
+        "component": "StudentForm",
+        "file": "frontend/src/app/pages/student-form/student-form.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "dashboard/courses",
+        "component": "Courses",
+        "file": "frontend/src/app/pages/courses/courses.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "dashboard/courses/add",
+        "component": "CourseForm",
+        "file": "frontend/src/app/pages/course-form/course-form.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "dashboard/courses/edit/:id",
+        "component": "CourseForm",
+        "file": "frontend/src/app/pages/course-form/course-form.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "dashboard/enrollments",
+        "component": "Enrollments",
+        "file": "frontend/src/app/pages/enrollments/enrollments.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "dashboard/enrollments/add",
+        "component": "EnrollmentForm",
+        "file": "frontend/src/app/pages/enrollment-form/enrollment-form.ts",
+        "guard": "authGuard"
+      },
+      {
+        "path": "**",
+        "redirectTo": "login"
+      }
+    ],
+    "services": {
+      "AuthService": {
+        "file": "frontend/src/app/core/services/auth.service.ts",
+        "models": [
+          "frontend/src/app/core/models/user.ts"
+        ],
+        "backendEndpoints": [
+          "POST /api/login",
+          "POST /api/register"
+        ],
+        "consumers": [
+          "auth.guard.ts",
+          "auth.interceptor.ts",
+          "login.ts",
+          "register.ts",
+          "navbar.ts",
+          "courses.ts",
+          "dashboard.ts",
+          "enrollments.ts"
+        ]
+      },
+      "StudentService": {
+        "file": "frontend/src/app/core/services/student.service.ts",
+        "models": [
+          "frontend/src/app/core/models/student.ts"
+        ],
+        "backendEndpoints": [
+          "GET /api/students",
+          "GET /api/students/{id}",
+          "POST /api/students",
+          "PUT /api/students/{id}",
+          "DELETE /api/students/{id}"
+        ],
+        "consumers": [
+          "dashboard.ts",
+          "student-form.ts",
+          "enrollment-form.ts"
+        ]
+      },
+      "CourseService": {
+        "file": "frontend/src/app/core/services/course.service.ts",
+        "models": [
+          "frontend/src/app/core/models/course.ts"
+        ],
+        "backendEndpoints": [
+          "GET /api/courses",
+          "GET /api/courses/{id}",
+          "POST /api/courses",
+          "PUT /api/courses/{id}",
+          "DELETE /api/courses/{id}"
+        ],
+        "consumers": [
+          "dashboard.ts",
+          "courses.ts",
+          "course-form.ts",
+          "enrollment-form.ts"
+        ]
+      },
+      "EnrollmentService": {
+        "file": "frontend/src/app/core/services/enrollment.service.ts",
+        "models": [
+          "frontend/src/app/core/models/enrollment.ts"
+        ],
+        "backendEndpoints": [
+          "GET /api/enrollments",
+          "POST /api/enrollments",
+          "DELETE /api/enrollments/{id}"
+        ],
+        "consumers": [
+          "dashboard.ts",
+          "enrollments.ts",
+          "enrollment-form.ts"
+        ]
+      }
+    },
+    "shell": {
+      "app": "frontend/src/app/app.ts",
+      "navbar": "frontend/src/app/shared/navbar/navbar.ts",
+      "footer": "frontend/src/app/shared/footer/footer.ts",
+      "globalStyles": [
+        "frontend/src/styles.css",
+        "frontend/src/styles/base.css",
+        "frontend/src/styles/components.css",
+        "frontend/src/styles/layout.css",
+        "frontend/src/styles/tokens.css"
+      ]
+    }
+  },
+  "changeNavigation": {
+    "auth": [
+      "backend/Controllers/AuthController.cs",
+      "backend/Services/AuthService.cs",
+      "backend/Repositories/AuthRepository.cs",
+      "frontend/src/app/core/services/auth.service.ts",
+      "frontend/src/app/core/guards/auth.guard.ts",
+      "frontend/src/app/core/interceptors/auth.interceptor.ts",
+      "frontend/src/app/pages/login/login.ts",
+      "frontend/src/app/pages/register/register.ts",
+      "frontend/src/app/shared/navbar/navbar.ts"
+    ],
+    "students": [
+      "backend/Controllers/StudentsController.cs",
+      "backend/Services/StudentService.cs",
+      "backend/Repositories/StudentRepository.cs",
+      "frontend/src/app/core/services/student.service.ts",
+      "frontend/src/app/core/models/student.ts",
+      "frontend/src/app/pages/dashboard/dashboard.ts",
+      "frontend/src/app/pages/student-form/student-form.ts"
+    ],
+    "courses": [
+      "backend/Controllers/CourseController.cs",
+      "backend/Services/CourseService.cs",
+      "backend/Repositories/CourseRepository.cs",
+      "frontend/src/app/core/services/course.service.ts",
+      "frontend/src/app/core/models/course.ts",
+      "frontend/src/app/pages/courses/courses.ts",
+      "frontend/src/app/pages/course-form/course-form.ts"
+    ],
+    "enrollments": [
+      "backend/Controllers/EnrollmentsController.cs",
+      "backend/Services/EnrollmentService.cs",
+      "backend/Repositories/EnrollmentRepository.cs",
+      "frontend/src/app/core/services/enrollment.service.ts",
+      "frontend/src/app/core/models/enrollment.ts",
+      "frontend/src/app/pages/enrollments/enrollments.ts",
+      "frontend/src/app/pages/enrollment-form/enrollment-form.ts"
+    ]
+  }
+}

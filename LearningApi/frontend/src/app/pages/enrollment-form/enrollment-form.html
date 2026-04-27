@@ -1,0 +1,90 @@
+<main class="page-shell page-shell-auth auth-shell">
+  <section class="form-stage">
+    <article class="surface hero-panel">
+      <div class="hero-kicker">
+        <p class="eyebrow">New enrollment</p>
+        <h1>Create enrollment</h1>
+        <p class="page-copy">Link a student to a course using the records already available from both modules.</p>
+      </div>
+
+      @if (isLoadingOptions) {
+      <p class="status-banner status-neutral">Loading students and courses...</p>
+      }
+
+      <div class="quick-stats">
+        <article class="mini-panel">
+          <strong>Student source</strong>
+          <span>Students are pulled from the existing protected roster API.</span>
+        </article>
+        <article class="mini-panel">
+          <strong>Course source</strong>
+          <span>Courses come from the new catalog UI linked to the backend course endpoints.</span>
+        </article>
+      </div>
+
+      <div class="project-diagram project-diagram-compact" aria-hidden="true">
+        <div class="diagram-screen">
+          <span></span><span></span><span></span>
+          <i></i><i></i><i></i>
+        </div>
+        <div class="diagram-link"></div>
+        <div class="diagram-api">
+          <span class="diagram-pill diagram-pill-top"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="diagram-link diagram-link-vertical"></div>
+        <div class="diagram-data"></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="surface form-panel">
+    <form class="form-grid" [formGroup]="enrollmentForm" (ngSubmit)="submit()">
+      <div class="form-header">
+        <p class="badge">Enrollment entry</p>
+        <h2>Select student and course</h2>
+        <p class="page-copy">The UI only allows valid selections from existing records so enrollment data stays
+          consistent.</p>
+      </div>
+
+      <div class="field">
+        <label for="studentID">Student</label>
+        <select id="studentID" formControlName="studentID">
+          <option [value]="0">Select a student</option>
+          @for (student of students; track student.studentID) {
+          <option [value]="student.studentID">{{ student.name }} ({{ student.email }})</option>
+          }
+        </select>
+        @if (enrollmentForm.controls.studentID.touched && enrollmentForm.controls.studentID.invalid) {
+        <span class="field-error">Choose a student.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="courseID">Course</label>
+        <select id="courseID" formControlName="courseID">
+          <option [value]="0">Select a course</option>
+          @for (course of courses; track course.courseID) {
+          <option [value]="course.courseID">
+            {{ course.courseName }} - {{ course.durationWeeks }} weeks
+          </option>
+          }
+        </select>
+        @if (enrollmentForm.controls.courseID.touched && enrollmentForm.controls.courseID.invalid) {
+        <span class="field-error">Choose a course.</span>
+        }
+      </div>
+
+      @if (error) {
+      <p class="status-banner status-error">{{ error }}</p>
+      }
+
+      <div class="actions-row">
+        <button class="button button-primary" type="submit" [disabled]="isSubmitting ||isLoadingOptions ||enrollmentForm.invalid">
+          {{ isSubmitting ? 'Saving...' : 'Save enrollment' }}
+        </button>
+        <a class="button button-secondary" routerLink="/dashboard/enrollments">Cancel</a>
+      </div>
+    </form>
+  </section>
+</main>

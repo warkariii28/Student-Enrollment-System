@@ -1,0 +1,77 @@
+<main class="page-shell page-shell-auth auth-shell">
+  <section class="form-stage">
+    <article class="surface hero-panel">
+      <div class="hero-kicker">
+        <p class="eyebrow">{{ isEditMode ? 'Update record' : 'New record' }}</p>
+        <h1>{{ isEditMode ? 'Edit student' : 'Add student' }}</h1>
+        <p class="page-copy">Keep the roster current with a clean name and email update flow.</p>
+      </div>
+
+      @if (isLoadingStudent) {
+        <p class="status-banner status-neutral">Loading student details...</p>
+      }
+
+      <div class="quick-stats">
+        <article class="mini-panel">
+          <strong>{{ isEditMode ? 'Editing mode' : 'Create mode' }}</strong>
+          <span>{{ isEditMode ? 'Update an existing record and save changes.' : 'Add a new student to the dashboard list.' }}</span>
+        </article>
+        <article class="mini-panel">
+          <strong>Return path</strong>
+          <span>Cancel safely at any point and jump back to the dashboard roster.</span>
+        </article>
+      </div>
+
+      <div class="project-diagram project-diagram-compact" aria-hidden="true">
+        <div class="diagram-screen">
+          <span></span><span></span><span></span>
+          <i></i><i></i><i></i>
+        </div>
+        <div class="diagram-link"></div>
+        <div class="diagram-api">
+          <span class="diagram-pill diagram-pill-top"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="diagram-link diagram-link-vertical"></div>
+        <div class="diagram-data"></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="surface form-panel">
+    <form class="form-grid" [formGroup]="studentForm" (ngSubmit)="submit()">
+      <div class="form-header">
+        <p class="badge">{{ isEditMode ? 'Student update' : 'Student entry' }}</p>
+        <h2>{{ isEditMode ? 'Revise student details' : 'Enter new student details' }}</h2>
+        <p class="page-copy">The form spacing and button layout now stay stable from desktop down to mobile.</p>
+      </div>
+
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" type="text" autocomplete="name" formControlName="name" placeholder="Student name" />
+        @if (studentForm.controls.name.touched && studentForm.controls.name.invalid) {
+          <span class="field-error">Name is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" formControlName="email" placeholder="student@example.com" />
+        @if (studentForm.controls.email.touched && studentForm.controls.email.invalid) {
+          <span class="field-error">Enter a valid email address.</span>
+        }
+      </div>
+
+      @if (error) {
+        <p class="status-banner status-error">{{ error }}</p>
+      }
+
+      <div class="actions-row">
+        <button class="button button-primary" type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Saving...' : 'Save student' }}
+        </button>
+        <a class="button button-secondary" routerLink="/dashboard">Cancel</a>
+      </div>
+    </form>
+  </section>
+</main>

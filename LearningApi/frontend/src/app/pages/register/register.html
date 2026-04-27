@@ -1,0 +1,88 @@
+<main class="page-shell page-shell-auth auth-shell">
+  <section class="auth-stage">
+    <article class="surface hero-panel">
+      <div class="hero-kicker">
+        <p class="eyebrow">Create account</p>
+        <h1>Set up access for the learning portal.</h1>
+        <p class="page-copy">
+          Register once, then sign in to manage the student list, protected routes, and day-to-day updates.
+        </p>
+      </div>
+
+      <div class="hero-points">
+        <article class="mini-panel">
+          <strong>Simple onboarding</strong>
+          <span>Only a username, email, and password are needed to get started.</span>
+        </article>
+        <article class="mini-panel">
+          <strong>Immediate access</strong>
+          <span>New accounts can sign in right after registration completes.</span>
+        </article>
+      </div>
+
+      <div class="quick-stats">
+        <article class="note">
+          <strong>Secure entry</strong>
+          <span>Authentication protects the workspace before any student data is shown.</span>
+        </article>
+        <article class="note">
+          <strong>Shared flow</strong>
+          <span>The same UI language carries into login, dashboard, and form screens.</span>
+        </article>
+      </div>
+    </article>
+  </section>
+
+  <section class="surface form-panel">
+    <form class="form-grid" [formGroup]="registerForm" (ngSubmit)="submit()">
+      <div class="form-header">
+        <p class="badge">Registration</p>
+        <h2>Create your account</h2>
+        <p class="page-copy">Use clear details now so signing in later stays friction-free.</p>
+      </div>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" autocomplete="username" formControlName="username" placeholder="Choose a username" />
+        @if (registerForm.controls.username.touched && registerForm.controls.username.invalid) {
+          <span class="field-error">Username is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" formControlName="email" placeholder="you@example.com" />
+        @if (registerForm.controls.email.touched && registerForm.controls.email.invalid) {
+          <span class="field-error">Enter a valid email address.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="passwordHash">Password</label>
+        <input
+          id="passwordHash"
+          type="password"
+          autocomplete="new-password"
+          formControlName="passwordHash"
+          placeholder="Create a strong password"
+        />
+        @if (registerForm.controls.passwordHash.touched && registerForm.controls.passwordHash.invalid) {
+          <span class="field-error">Password is required.</span>
+        }
+      </div>
+
+      @if (error) {
+        <p class="status-banner status-error">{{ error }}</p>
+      }
+
+      <button class="button button-primary" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Creating account...' : 'Create account' }}
+      </button>
+
+      <p class="helper-row">
+        Already registered?
+        <a routerLink="/login">Sign in</a>
+      </p>
+    </form>
+  </section>
+</main>

@@ -1,0 +1,69 @@
+:root {
+  color-scheme: light;
+
+  --color-bg: #f3f7f3;
+  --color-bg-soft: #e7efe8;
+  --color-surface: rgba(255, 255, 255, 0.94);
+  --color-surface-strong: #ffffff;
+  --color-text-light:#ffffff;
+  --color-surface-alt: #f8fbf8;
+  --color-text: #14211d;
+  --color-text-muted: #5b6a65;
+  --color-border: rgba(20, 33, 29, 0.12);
+  --color-border-strong: rgba(20, 33, 29, 0.18);
+  --color-accent: #1f7a5a;
+  --color-accent-strong: #185d45;
+  --color-accent-soft: rgba(31, 122, 90, 0.12);
+  --color-accent-glow: rgba(31, 122, 90, 0.2);
+  --color-warm: #d88d3d;
+  --color-danger: #b9382f;
+  --color-danger-soft: rgba(185, 56, 47, 0.12);
+  --color-info: #2d6cdf;
+  --color-info-soft: rgba(45, 108, 223, 0.12);
+
+  --font-body: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-mono: 'Cascadia Mono', Consolas, monospace;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 2rem;
+  --space-8: 2.5rem;
+  --space-9: 3rem;
+  --space-10: 4rem;
+
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 10px 30px rgba(20, 33, 29, 0.06);
+  --shadow-md: 0 18px 40px rgba(20, 33, 29, 0.09);
+  --shadow-lg: 0 28px 60px rgba(20, 33, 29, 0.12);
+
+  --border-default: 1px solid var(--color-border);
+  --focus-ring: 0 0 0 4px rgba(31, 122, 90, 0.16);
+
+  --button-height: 3.25rem;
+  --button-padding-x: 1.15rem;
+  --button-primary-bg: linear-gradient(135deg, #1f7a5a, #46a77b);
+  --button-primary-bg-hover: linear-gradient(135deg, #185d45, #2f8d66);
+  --button-secondary-bg: rgba(255, 255, 255, 0.86);
+  --button-danger-bg: rgba(185, 56, 47, 0.08);
+
+  --content-width: min(1400px, calc(100% - 32px));
+  --content-width-xl: min(1320px, calc(100% - 32px));
+  --content-width-lg: min(1140px, calc(100% - 32px));
+  --content-width-md: min(960px, calc(100% - 24px));
+  --content-width-sm: min(720px, calc(100% - 20px));
+  /* --content-width-tight: min(1240px, calc(100% - 32px)); */
+  --table-min-width: 720px;
+
+  --transition-fast: 0.16s ease;
+  --transition-slow: 0.28s ease;
+}

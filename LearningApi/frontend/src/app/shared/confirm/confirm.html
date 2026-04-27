@@ -1,0 +1,16 @@
+@if (confirm.state()) {
+  <div class="confirm-backdrop">
+    <div class="confirm-box">
+      <p>{{ confirm.state()?.message }}</p>
+
+      <div class="actions">
+        <button class="button button-danger" (click)="confirm.confirm()">
+          Yes
+        </button>
+        <button class="button button-secondary" (click)="confirm.cancel()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+}

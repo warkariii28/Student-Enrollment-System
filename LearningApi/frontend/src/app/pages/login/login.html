@@ -1,0 +1,101 @@
+<main class="page-shell page-shell-auth auth-shell">
+  <section class="auth-stage">
+    <article class="surface hero-panel">
+      <div class="hero-kicker">
+        <p class="eyebrow">Learning API</p>
+        <h1>Sign in to the student workspace.</h1>
+        <p class="page-copy">
+          Access your protected dashboard, keep records current, and move into the workflow without distractions.
+        </p>
+      </div>
+
+      <div class="hero-points">
+        <article class="mini-panel">
+          <strong>JWT access</strong>
+          <span>Protected routes stay locked until you authenticate successfully.</span>
+        </article>
+        <article class="mini-panel">
+          <strong>Quick handoff</strong>
+          <span>Pick up the roster immediately after sign-in with no extra setup.</span>
+        </article>
+      </div>
+
+      <div class="project-diagram project-diagram-compact" aria-hidden="true">
+        <div class="diagram-screen">
+          <span></span><span></span><span></span>
+          <i></i><i></i><i></i>
+        </div>
+        <div class="diagram-link"></div>
+        <div class="diagram-api">
+          <span class="diagram-pill diagram-pill-top"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="diagram-link diagram-link-vertical"></div>
+        <div class="diagram-data"></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="surface form-panel">
+    <form class="form-grid" [formGroup]="loginForm" (ngSubmit)="submit()">
+      <div class="form-header">
+        <p class="badge">Authentication</p>
+        <h2>Welcome back</h2>
+        <p class="page-copy">Use your registered account details to continue to the dashboard.</p>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" formControlName="email" placeholder="you@example.com" />
+        @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) {
+          <span class="field-error">Enter a valid email address.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="passwordHash"
+          type="password"
+          autocomplete="current-password"
+          formControlName="password"
+          placeholder="Enter your password"
+        />
+        @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+          <span class="field-error">Password is required.</span>
+        }
+      </div>
+
+      @if (error) {
+        <p class="status-banner status-error">{{ error }}</p>
+      }
+
+      <button class="button button-primary" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Signing in...' : 'Sign in' }}
+      </button>
+
+      <p class="helper-row">
+        No account?
+        <a routerLink="/register">Create one</a>
+      </p>
+    </form>
+
+    <aside class="auth-side-visual" aria-hidden="true">
+      <div class="auth-visual-copy">
+        <p class="badge">Workspace flow</p>
+        <strong>Secure entry, quick access, cleaner handoff.</strong>
+        <span>The lower panel now carries a quiet visual story instead of leaving the layout unfinished.</span>
+      </div>
+
+      <div class="auth-visual-scene">
+        <div class="auth-visual-window">
+          <span></span><span></span><span></span>
+          <i></i><i></i><i></i>
+        </div>
+        <div class="auth-visual-float auth-visual-float-top"></div>
+        <div class="auth-visual-float auth-visual-float-bottom"></div>
+        <div class="auth-visual-glow"></div>
+      </div>
+    </aside>
+  </section>
+</main>
