@@ -21,17 +21,7 @@ public class EnrollmentService : IEnrollmentService
 
     public void Add(Enrollment enrollment)
     {
-        if (enrollment.StudentID <= 0 || enrollment.CourseID <= 0)
-            throw new BadRequestException("Invalid enrollment data");
-
-        try
-        {
-            _repo.Add(enrollment);
-        }
-        catch (Exception ex)
-        {
-            throw new BadRequestException(ex.Message);
-        }
+        _repo.Add(enrollment);
     }
 
     public void Delete(int id)

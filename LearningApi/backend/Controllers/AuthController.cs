@@ -37,10 +37,10 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login(LoginDto dto)
     {
-        var result = _service.Login(dto);
+        if (!ModelState.IsValid)
+            return BadRequest(ResponseHelper.Fail<object>("Invalid data"));
 
-        if (result == null)
-            return Unauthorized(ResponseHelper.Fail<object>("Invalid credentials"));
+        var result = _service.Login(dto);
 
         var response = new AuthResponseDto
         {

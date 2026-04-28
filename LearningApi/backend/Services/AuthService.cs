@@ -1,6 +1,7 @@
 using LearningApi.DTOs;
 using LearningApi.Models;
 using LearningApi.Repositories;
+using LearningApi.Exceptions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -21,11 +22,7 @@ public class AuthService : IAuthService
 
     public void Register(User user, string password)
     {
-        if (string.IsNullOrWhiteSpace(password))
-            throw new Exception("Password is required");
-
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
-
         _repo.Register(user);
     }
 
@@ -34,12 +31,12 @@ public class AuthService : IAuthService
         var user = _repo.GetByEmail(dto.Email);
 
         if (user == null)
-            throw new Exception("Invalid credentials");
+            throw new BadRequestException("Invalid credentials");
 
         bool valid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
 
         if (!valid)
-            throw new Exception("Invalid credentials");
+            throw new BadRequestException("Invalid credentials");
 
         return new AuthResultDto
         {
@@ -52,16 +49,10 @@ public class AuthService : IAuthService
 
     public void UpdateEmail(int userId, string email)
     {
-        if (userId <= 0)
-            throw new Exception("Invalid user ID");
-
-        if (string.IsNullOrWhiteSpace(email))
-            throw new Exception("Email is required");
-
         bool updated = _repo.UpdateEmail(userId, email);
 
         if (!updated)
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
     }
 
     private string GenerateToken(User user)

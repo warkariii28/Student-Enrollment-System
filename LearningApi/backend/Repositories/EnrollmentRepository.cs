@@ -2,6 +2,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using LearningApi.Models;
 using LearningApi.DTOs;
+using LearningApi.Exceptions;
 
 namespace LearningApi.Repositories;
 
@@ -59,7 +60,7 @@ public class EnrollmentRepository : IEnrollmentRepository
         }
         catch (SqlException ex)
         {
-            throw new Exception(ex.Message); // will be caught by middleware
+            throw new BadRequestException(ex.Message);
         }
     }
 

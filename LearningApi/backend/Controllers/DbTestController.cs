@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using LearningApi.Helpers;
 
 namespace LearningApi.Controllers;
 
@@ -29,11 +30,11 @@ public class DbTestController : ControllerBase
         {
             conn.Open();
 
-            return Ok("Database connected successfully");
+            return Ok(ResponseHelper.Success<object>(null, "Database connected successfully"));
         }
         catch(Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ResponseHelper.Fail<object>(ex.Message));
         }
     }
 }

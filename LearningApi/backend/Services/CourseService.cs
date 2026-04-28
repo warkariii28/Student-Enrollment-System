@@ -21,9 +21,6 @@ public class CourseService : ICourseService
 
     public Course GetById(int id)
     {
-        if (id <= 0)
-            throw new BadRequestException("Invalid ID");
-
         var course = _repo.GetById(id);
 
         if (course == null)
@@ -34,12 +31,6 @@ public class CourseService : ICourseService
 
     public int Add(Course course)
     {
-        if (string.IsNullOrWhiteSpace(course.CourseName))
-            throw new BadRequestException("Course name required");
-
-        if (course.Fee <= 0)
-            throw new BadRequestException("Invalid fee");
-
         return _repo.Add(course);
     }
 
@@ -56,15 +47,6 @@ public class CourseService : ICourseService
 
     public void Update(Course course)
     {
-        if (course.CourseID <= 0)
-            throw new BadRequestException("Invalid ID");
-
-        if (string.IsNullOrWhiteSpace(course.CourseName))
-            throw new BadRequestException("Course name required");
-
-        if (course.Fee <= 0)
-            throw new BadRequestException("Invalid fee");
-
         bool updated = _repo.Update(course);
 
         if (!updated)
