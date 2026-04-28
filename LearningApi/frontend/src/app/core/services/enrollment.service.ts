@@ -2,20 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
-import { API_BASE_URL } from '../api.config';
+import { environment } from '../../../environments/environment';
 import { Enrollment, EnrollmentPayload } from '../models/enrollment';
-
-interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class EnrollmentService {
-  private readonly apiUrl = `${API_BASE_URL}/api/enrollments`;
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/enrollments`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   getEnrollments(): Observable<Enrollment[]> {
     return this.http
@@ -23,15 +18,11 @@ export class EnrollmentService {
       .pipe(map(res => res.data));
   }
 
-  addEnrollment(payload: EnrollmentPayload): Observable<string> {
-    return this.http
-      .post<ApiResponse<null>>(this.apiUrl, payload)
-      .pipe(map(res => res.message));
+  addEnrollment(payload: EnrollmentPayload): Observable<void> {
+    return this.http.post<void>(this.apiUrl, payload);
   }
 
-  deleteEnrollment(id: number): Observable<string> {
-    return this.http
-      .delete<ApiResponse<null>>(`${this.apiUrl}/${id}`)
-      .pipe(map(res => res.message));
+  deleteEnrollment(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

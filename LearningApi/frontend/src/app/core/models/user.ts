@@ -6,9 +6,14 @@ export interface LoginRequest {
 export interface RegisterRequest {
   username: string;
   email: string;
-  passwordHash: string;
+  password: string;
 }
 
 export interface LoginResponse {
   token: string;
+  user: {
+    userId: number;
+    name: string;
+    email: string;
+  };
 }

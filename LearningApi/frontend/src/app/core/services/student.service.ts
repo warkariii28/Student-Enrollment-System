@@ -2,20 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
-import { API_BASE_URL } from '../api.config';
+import { environment } from '../../../environments/environment';
 import { Student, StudentPayload } from '../models/student';
-
-interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class StudentService {
-  private readonly apiUrl = `${API_BASE_URL}/api/students`;
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/students`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   getStudents(): Observable<Student[]> {
     return this.http
@@ -41,9 +36,7 @@ export class StudentService {
       .pipe(map(res => res.message));
   }
 
-  deleteStudent(id: number): Observable<string> {
-    return this.http
-      .delete<ApiResponse<null>>(`${this.apiUrl}/${id}`)
-      .pipe(map(res => res.message));
+  deleteStudent(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
