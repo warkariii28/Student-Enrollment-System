@@ -116,7 +116,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<GlobalExceptionMiddleware>(); // after Swagger
+app.UseMiddleware<GlobalExceptionMiddleware>();// after Swagger
 
 app.UseCors("AngularApp");
 

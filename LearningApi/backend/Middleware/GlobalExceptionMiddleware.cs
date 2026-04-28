@@ -1,17 +1,20 @@
 using LearningApi.Exceptions;
 using LearningApi.Helpers;
 using System.Net;
-using System.Text.Json;
 
 namespace LearningApi.Middleware;
 
 public class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<GlobalExceptionMiddleware> _logger;
 
-    public GlobalExceptionMiddleware(RequestDelegate next)
+    public GlobalExceptionMiddleware(
+        RequestDelegate next,
+        ILogger<GlobalExceptionMiddleware> logger)
     {
-        _next = next;
+        _next = next ?? throw new ArgumentNullException(nameof(next));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task Invoke(HttpContext context)
@@ -22,6 +25,7 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, ex.Message);
             await HandleException(context, ex);
         }
     }
@@ -40,10 +44,12 @@ public class GlobalExceptionMiddleware
 
         context.Response.StatusCode = statusCode;
 
-        var response = ResponseHelper.Fail(ex.Message);
+        var message = statusCode == 500
+            ? "An unexpected error occurred"
+            : ex.Message;
 
-        var json = JsonSerializer.Serialize(response);
+        var response = ResponseHelper.Fail<object>(message);
 
-        return context.Response.WriteAsync(json);
+        return context.Response.WriteAsJsonAsync(response);
     }
 }
