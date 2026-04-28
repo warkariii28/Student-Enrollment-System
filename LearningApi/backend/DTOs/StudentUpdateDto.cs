@@ -5,6 +5,7 @@ namespace LearningApi.DTOs;
 public class StudentUpdateDto
 {
     [Required]
+    [StringLength(100)]
     public string Name { get; set; } = "";
 
     [Required]

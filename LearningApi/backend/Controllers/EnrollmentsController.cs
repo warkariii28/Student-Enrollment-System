@@ -28,6 +28,9 @@ public class EnrollmentsController : ControllerBase
     [HttpPost]
     public IActionResult Add(EnrollmentCreateDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ResponseHelper.Fail<object>("Invalid enrollment data"));
+
         var enrollment = new Enrollment
         {
             StudentID = dto.StudentID,
@@ -36,7 +39,7 @@ public class EnrollmentsController : ControllerBase
 
         _service.Add(enrollment);
 
-        return Ok(ResponseHelper.Success("Enrollment created successfully"));
+        return StatusCode(201, ResponseHelper.Success<object>(null, "Enrollment created successfully"));
     }
 
     [HttpDelete("{id}")]
@@ -44,6 +47,6 @@ public class EnrollmentsController : ControllerBase
     {
         _service.Delete(id);
 
-        return Ok(ResponseHelper.Success("Deleted successfully"));
+        return NoContent();
     }
 }

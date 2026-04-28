@@ -39,15 +39,18 @@ public class StudentsController : ControllerBase
     [HttpPost]
     public IActionResult Add(StudentCreateDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ResponseHelper.Fail<object>("Invalid data"));
+
         var student = new Student
         {
             Name = dto.Name,
             Email = dto.Email
         };
 
-        int id = _service.Add(student);
+        var id = _service.Add(student);
 
-        return Ok(ResponseHelper.Success(id, "Student created successfully"));
+        return StatusCode(201, ResponseHelper.Success(id, "Created"));
     }
 
     // Delete
@@ -56,7 +59,7 @@ public class StudentsController : ControllerBase
     {
         _service.Delete(id);
 
-        return Ok(ResponseHelper.Success("Deleted successfully"));
+        return NoContent();
     }
 
     // Current User Info
@@ -81,6 +84,9 @@ public class StudentsController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Update(int id, StudentUpdateDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ResponseHelper.Fail<object>("Invalid student data"));
+
         var student = new Student
         {
             StudentID = id,
@@ -90,6 +96,6 @@ public class StudentsController : ControllerBase
 
         _service.Update(student);
 
-        return Ok(ResponseHelper.Success("Updated successfully"));
+        return Ok(ResponseHelper.Success<object>(null, "Updated successfully"));
     }
 }

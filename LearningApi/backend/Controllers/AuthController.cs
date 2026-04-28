@@ -17,11 +17,21 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register(User user)
+    public IActionResult Register(RegisterDto dto)
     {
-        _service.Register(user, user.PasswordHash);
+        if (!ModelState.IsValid)
+            return BadRequest(ResponseHelper.Fail<object>("Invalid data"));
 
-        return Ok(ResponseHelper.Success("User registered successfully"));
+        var user = new User
+        {
+            Username = dto.Username,
+            Email = dto.Email
+        };
+
+        _service.Register(user, dto.Password);
+
+        return StatusCode(201,
+            ResponseHelper.Success<object>(null, "User registered successfully"));
     }
 
     [HttpPost("login")]
@@ -30,16 +40,16 @@ public class AuthController : ControllerBase
         var result = _service.Login(dto);
 
         if (result == null)
-            return BadRequest(ResponseHelper.Fail("Invalid credentials"));
+            return Unauthorized(ResponseHelper.Fail<object>("Invalid credentials"));
 
         var response = new AuthResponseDto
         {
             Token = result.Token,
-            User = new
+            User = new UserDto
             {
-                result.UserId,
-                result.Name,
-                result.Email
+                UserId = result.UserId,
+                Name = result.Name,
+                Email = result.Email
             }
         };
 
@@ -53,12 +63,12 @@ public class AuthController : ControllerBase
         var userIdClaim = User.FindFirst("UserID")?.Value;
 
         if (userIdClaim == null)
-            return Unauthorized(ResponseHelper.Fail("Invalid token"));
+            return Unauthorized(ResponseHelper.Fail<object>("Invalid token"));
 
         int userId = int.Parse(userIdClaim);
 
         _service.UpdateEmail(userId, email);
 
-        return Ok(ResponseHelper.Success("Email updated successfully"));
+        return Ok(ResponseHelper.Success<object>(null, "Email updated successfully"));
     }
 }

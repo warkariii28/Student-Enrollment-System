@@ -36,6 +36,9 @@ public class CoursesController : ControllerBase
     [HttpPost]
     public IActionResult Add(CourseCreateDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ResponseHelper.Fail<object>("Invalid course data"));
+
         var course = new Course
         {
             CourseName = dto.CourseName,
@@ -45,12 +48,15 @@ public class CoursesController : ControllerBase
 
         int id = _service.Add(course);
 
-        return Ok(ResponseHelper.Success(id, "Course created successfully"));
+        return StatusCode(201, ResponseHelper.Success(id, "Course created successfully"));
     }
 
     [HttpPut("{id}")]
     public IActionResult Update(int id, CourseUpdateDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ResponseHelper.Fail<object>("Invalid course data"));
+
         var course = new Course
         {
             CourseID = id,
@@ -61,7 +67,7 @@ public class CoursesController : ControllerBase
 
         _service.Update(course);
 
-        return Ok(ResponseHelper.Success("Updated successfully"));
+        return Ok(ResponseHelper.Success<object>(null, "Updated successfully"));
     }
 
     [HttpDelete("{id}")]
@@ -69,6 +75,6 @@ public class CoursesController : ControllerBase
     {
         _service.Delete(id);
 
-        return Ok(ResponseHelper.Success("Deleted successfully"));
+        return NoContent();
     }
 }

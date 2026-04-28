@@ -2,7 +2,6 @@ using LearningApi.DTOs;
 using LearningApi.Models;
 using LearningApi.Repositories;
 using LearningApi.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LearningApi.Services;
 
