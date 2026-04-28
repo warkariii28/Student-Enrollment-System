@@ -93,6 +93,13 @@ cd "LearningApi/frontend"
 npm install
 ```
 
+### 4. Configure environment URLs
+
+Update the frontend environment files for API endpoints:
+
+- `LearningApi/frontend/src/environments/environment.ts` (development): `apiBaseUrl: 'http://localhost:5140'`
+- `LearningApi/frontend/src/environments/environment.prod.ts` (production): Update `apiBaseUrl` to your deployed backend URL
+
 ---
 
 ## Running the application
@@ -186,6 +193,15 @@ cd "LearningApi/frontend"
 npm run build
 ```
 
+This creates a production build using `environment.prod.ts` configuration. The build artifacts are stored in the `dist/` directory.
+
+### Build for production
+
+```powershell
+cd "LearningApi/frontend"
+npm run build -- --configuration production
+```
+
 ### Test frontend
 
 ```powershell
@@ -221,6 +237,31 @@ LearningApi/
 .gitignore
 README.md
 ```
+
+---
+
+## Recent Improvements
+
+### Code Quality Enhancements
+- **HTTP Status Codes**: All endpoints now return correct REST status codes (201 for POST, 204 for DELETE, 400 for invalid data, 401 for unauthorized)
+- **ModelState Validation**: All POST and PUT endpoints include `if (!ModelState.IsValid)` checks with consistent error responses
+- **DTO Validation**: Enhanced Create/Update DTOs with proper validation attributes (`[Required]`, `[StringLength]`, `[Range]`, `[EmailAddress]`)
+- **Custom Exceptions**: Replaced all generic `throw new Exception()` with specific `BadRequestException` and `NotFoundException`
+- **Response Consistency**: All API responses now use `ResponseHelper.Success()` and `ResponseHelper.Fail()` for uniform JSON structure
+- **Strong Typing**: `AuthResponseDto.User` changed from `object` to strongly-typed `UserDto`
+
+### Architecture Refinements
+- **Service Layer**: Removed redundant validation logic from services (validation now handled by DTOs and controllers)
+- **Controller Layer**: Ensured all entity inputs use DTOs instead of raw Models, standardized response formats
+- **Exception Handling**: Global middleware catches custom exceptions and returns appropriate HTTP status codes
+- **Repository Layer**: Maintained data access isolation with proper SQL injection prevention via parameterized queries
+
+### Frontend Configuration
+- **Environment Variables**: Updated Angular environment files to properly configure API base URLs for development and production
+- **API Configuration**: Refactored `api.config.ts` to dynamically use environment-specific URLs instead of hardcoded values
+- **Password Security**: BCrypt hashing for all passwords, no sensitive data in responses
+- **Input Validation**: Comprehensive validation at DTO level prevents invalid data from reaching business logic
+- **Error Handling**: Consistent error responses prevent information leakage
 
 ---
 
