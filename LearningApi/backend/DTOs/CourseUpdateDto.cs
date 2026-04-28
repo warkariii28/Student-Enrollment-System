@@ -9,7 +9,7 @@ public class CourseUpdateDto
     public string CourseName { get; set; } = "";
 
     [Required]
-    [Range(0.01, decimal.MaxValue, ErrorMessage = "Fee must be greater than 0")]
+    [Range(typeof(decimal), "1", "1000000")]
     public decimal Fee { get; set; }
 
     [Required]
