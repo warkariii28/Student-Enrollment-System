@@ -1,14 +1,18 @@
 .page-shell {
   width: var(--content-width);
+  max-width: 100%;
   margin: 0 auto;
   padding: var(--space-8) 0 var(--space-9);
 }
 
 .page-shell-auth {
   width: var(--content-width);
+  max-width: 100%;
 }
 
 .surface {
+  min-width: 0;
+  max-width: 100%;
   background: var(--color-surface);
   border: var(--border-default);
   border-radius: var(--radius-lg);
@@ -18,7 +22,7 @@
 
 .auth-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1.18fr) minmax(360px, 420px);
+  grid-template-columns: minmax(0, 1.18fr) minmax(min(100%, 360px), 420px);
   align-items: stretch;
   gap: var(--space-6);
   min-height: 100vh;
@@ -28,11 +32,14 @@
 .dashboard-grid,
 .form-stage {
   display: grid;
+  min-width: 0;
   gap: var(--space-6);
 }
 
 .hero-panel {
   display: grid;
+  min-width: 0;
+  max-width: 100%;
   gap: var(--space-6);
   padding: var(--space-8);
   position: relative;
@@ -46,19 +53,20 @@
   width: 240px;
   height: 240px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(70, 167, 123, 0.16), transparent 70%);
+  background: var(--gradient-hero-accent);
   pointer-events: none;
 }
 
 .hero-row,
 .hero-summary {
   display: grid;
+  min-width: 0;
   gap: var(--space-5);
 }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.95fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(min(100%, 280px), 0.95fr);
   gap: var(--space-6);
   align-items: center;
 }
@@ -70,8 +78,13 @@
   align-items: center;
 }
 
+.hero-actions > * {
+  min-width: 0;
+}
+
 .hero-sidebar {
   display: grid;
+  min-width: 0;
   gap: var(--space-4);
   align-self: stretch;
 }
@@ -85,7 +98,11 @@
 }
 
 .table-scroll {
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-scroll table {
@@ -101,8 +118,13 @@
   padding: 0 var(--space-2) var(--space-4);
 }
 
+.section-header > * {
+  min-width: 0;
+}
+
 .form-panel {
   display: grid;
+  min-width: 0;
   align-content: start;
   gap: var(--space-5);
   padding: var(--space-7);
@@ -127,7 +149,8 @@
 }
 
 .actions-row > * {
-  flex: 1 1 180px;
+  flex: 1 1 min(100%, 180px);
+  min-width: 0;
 }
 
 @media (max-width: 1199.98px) {
@@ -189,7 +212,7 @@
 @media (max-width: 575.98px) {
   .page-shell,
   .page-shell-auth {
-    width: min(calc(100% - 16px), 1180px);
+    width: var(--content-width-xs);
     padding-top: var(--space-4);
     padding-bottom: var(--space-6);
   }
@@ -204,5 +227,10 @@
   .auth-shell {
     gap: var(--space-4);
     min-height: auto;
+  }
+
+  .hero-panel::after {
+    width: 180px;
+    height: 180px;
   }
 }

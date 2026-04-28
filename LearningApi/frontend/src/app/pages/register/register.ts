@@ -20,7 +20,7 @@ export class Register {
   registerForm = this.fb.nonNullable.group({
     username: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    passwordHash: ['', Validators.required]
+    password: ['', Validators.required]
   });
 
   constructor(

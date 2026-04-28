@@ -8,7 +8,7 @@ import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class CourseService {
-  private readonly apiUrl = `${environment.apiBaseUrl}/api/students`;
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/courses`;
 
   constructor(private readonly http: HttpClient) { }
 

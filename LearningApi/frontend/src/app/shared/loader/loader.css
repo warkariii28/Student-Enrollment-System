@@ -4,7 +4,7 @@
   left: 0;
   height: 3px;
   width: 40%;
-  background: linear-gradient(90deg, #4f46e5, #22c55e);
+  background: var(--gradient-loader);
   animation: loading-bar 1s infinite;
   z-index: 9999;
 }

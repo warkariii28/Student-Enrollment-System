@@ -66,7 +66,7 @@
           formControlName="passwordHash"
           placeholder="Create a strong password"
         />
-        @if (registerForm.controls.passwordHash.touched && registerForm.controls.passwordHash.invalid) {
+        @if (registerForm.controls.password.touched && registerForm.controls.password.invalid) {
           <span class="field-error">Password is required.</span>
         }
       </div>

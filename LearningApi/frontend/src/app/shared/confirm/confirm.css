@@ -1,18 +1,20 @@
 .confirm-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: var(--color-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: var(--space-4);
   z-index: 10000;
 }
 
 .confirm-box {
-  background: #111827;
+  background: var(--color-confirm-bg);
   padding: 20px 24px;
   border-radius: 12px;
-  color: white;
+  color: var(--color-text-light);
+  width: min(100%, 360px);
   min-width: 300px;
 }
 
@@ -21,4 +23,19 @@
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+}
+
+@media (max-width: 575.98px) {
+  .confirm-box {
+    min-width: 0;
+    padding: var(--space-4);
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .actions > * {
+    width: 100%;
+  }
 }

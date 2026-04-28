@@ -2,20 +2,31 @@
   position: fixed;
   top: 20px;
   right: 20px;
+  max-width: min(28rem, calc(100vw - 40px));
   padding: 0.9rem 1.2rem;
   border-radius: 0.6rem;
-  color: #fff;
+  color: var(--color-text-light);
   font-weight: 600;
+  overflow-wrap: anywhere;
   z-index: 999;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-toast);
   animation: fadeIn 0.3s ease;
 }
 
-.toast.success { background: #28a745; }
-.toast.error   { background: #dc3545; }
-.toast.info    { background: #007bff; }
+.toast.success { background: var(--color-success); }
+.toast.error   { background: var(--color-danger); }
+.toast.info    { background: var(--color-info); }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 575.98px) {
+  .toast {
+    top: var(--space-3);
+    right: var(--space-3);
+    left: var(--space-3);
+    max-width: none;
+  }
 }

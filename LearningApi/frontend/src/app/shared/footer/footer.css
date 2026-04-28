@@ -4,14 +4,16 @@
 
 .app-footer {
   width: 100%;
+  max-width: 100%;
   margin: 0;
   padding: 0;
-  background: rgba(231, 239, 232, 0.76);
-  border-top: 1px solid rgba(20, 33, 29, 0.12);
+  background: var(--color-surface-footer);
+  border-top: var(--border-default);
 }
 
 .app-footer__inner {
   width: 100%;
+  min-width: 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -33,6 +35,11 @@
   font-size: 0.92rem;
 }
 
+.app-footer__inner p,
+.app-footer__meta span {
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 991.98px) {
   .app-footer__inner {
     flex-direction: column;
@@ -46,6 +53,11 @@
 
 @media (max-width: 575.98px) {
   .app-footer__inner {
-    padding-inline: 0.75rem;
+    gap: var(--space-2);
+    padding-inline: var(--space-3);
+  }
+
+  .app-footer__meta {
+    gap: var(--space-2);
   }
 }

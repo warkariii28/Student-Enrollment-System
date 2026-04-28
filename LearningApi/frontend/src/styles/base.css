@@ -1,6 +1,7 @@
 html,
 body {
   min-height: 100%;
+  max-width: 100%;
 }
 
 *,
@@ -11,14 +12,10 @@ body {
 
 body {
   margin: 0;
+  overflow-x: clip;
   color: var(--color-text);
   font-family: var(--font-body);
-  background:
-    radial-gradient(circle at top left, rgba(70, 167, 123, 0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(216, 141, 61, 0.18), transparent 24%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.86)),
-    linear-gradient(135deg, rgba(20, 33, 29, 0.04), transparent 48%),
-    var(--color-bg);
+  background: var(--gradient-page-bg);
   background-attachment: fixed;
 }
 
@@ -34,10 +31,12 @@ a:hover {
 button,
 .button {
   appearance: none;
+  max-width: 100%;
   min-height: var(--button-height);
-  border: 1px solid transparent;
+  border: var(--border-transparent);
   border-radius: var(--radius-md);
   padding: 0.8rem var(--button-padding-x);
+  margin-top:var(--space-1);
   font: inherit;
   font-weight: 700;
   line-height: 1;
@@ -47,6 +46,8 @@ button,
   gap: var(--space-2);
   cursor: pointer;
   text-decoration: none;
+  text-align: center;
+  white-space: normal;
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -76,11 +77,12 @@ input,
 textarea,
 select {
   width: 100%;
+  max-width: 100%;
   min-height: 3.35rem;
-  border: 1px solid var(--color-border-strong);
+  border: var(--border-strong);
   border-radius: var(--radius-md);
   padding: 0.95rem 1rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-surface-input);
   color: var(--color-text);
   font: inherit;
   transition:
@@ -91,7 +93,7 @@ select {
 
 input::placeholder,
 textarea::placeholder {
-  color: #93a39d;
+  color: var(--color-text-placeholder);
 }
 
 input:focus,
@@ -99,12 +101,13 @@ textarea:focus,
 select:focus {
   outline: none;
   background: var(--color-surface-strong);
-  border-color: rgba(31, 122, 90, 0.5);
+  border-color: var(--color-accent-focus);
   box-shadow: var(--focus-ring);
 }
 
 table {
   width: 100%;
+  max-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: var(--radius-md);
@@ -130,10 +133,10 @@ tbody tr:last-child td:last-child {
 th,
 td {
   padding: 1rem 1.1rem;
-  border-bottom: 1px solid var(--color-border);
   text-align: center;
   vertical-align: middle;
-  border:1px solid var(--color-border);
+  overflow-wrap: anywhere;
+  border: var(--border-default);
 }
 
 th {
@@ -151,7 +154,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: rgba(20, 33, 29, 0.03);
+  background: var(--color-row-hover);
 }
 
 h1,
@@ -186,4 +189,24 @@ label {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+}
+
+.pagination{
+  display: flex;
+  flex-direction: row;
+  gap:var(--space-4);
+}
+
+.pagination span{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width:var(--space-10);
+  height: auto;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
 }
