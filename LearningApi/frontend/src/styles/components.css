@@ -374,7 +374,7 @@
   min-height: 2.65rem;
   padding: 0.65rem 0.9rem;
   border-radius: 0.85rem;
-  font-size: 0.95rem;
+  font-size: var(--font-size-md);
 }
 
 .table-state {

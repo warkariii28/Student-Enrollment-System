@@ -4,29 +4,43 @@
   <section class="surface hero-panel hero-grid">
     <div class="hero-row">
       <div class="hero-kicker">
-        <p class="eyebrow">Protected workspace</p>
-        <h1>Enrollment system dashboard</h1>
+        <p class="eyebrow">Student management</p>
+        <h1>Students Dashboard</h1>
         <p class="page-copy">
-          Manage students, courses, and enrollments from one protected workspace.
+          Manage student records, track entries, and maintain your student database.
         </p>
       </div>
 
       <div class="hero-actions">
-        <a class="button button-primary" routerLink="/dashboard/add">Add student</a>
-        <a class="button button-secondary" routerLink="/dashboard/courses/add">Add course</a>
-        <a class="button button-secondary" routerLink="/dashboard/enrollments/add">Add enrollment</a>
-        <button class="button button-secondary" type="button" (click)="logout()">Logout</button>
+        <!-- <a class="button button-secondary" routerLink="/dashboard">Students</a> -->
+        <a class="button button-secondary" routerLink="/dashboard/courses">Courses</a>
+        <a class="button button-secondary" routerLink="/dashboard/enrollments">Enrollments</a>
+        <a class="button button-primary" routerLink="/dashboard/students/add">Add students</a>
+        <!-- <button class="button button-secondary" type="button" (click)="logout()">Logout</button> -->
       </div>
     </div>
 
     <aside class="hero-sidebar">
+      <div class="project-diagram project-diagram-wide" aria-hidden="true">
+        <div class="diagram-screen">
+          <span></span><span></span><span></span>
+          <i></i><i></i><i></i>
+        </div>
+        <div class="diagram-link"></div>
+        <div class="diagram-api">
+          <span class="diagram-pill diagram-pill-top"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="diagram-link diagram-link-vertical"></div>
+        <div class="diagram-data"></div>
+      </div>
       <article class="spotlight-card">
         <p class="badge">System status</p>
         <h2>
-          {{ loading() ? 'Syncing records' : error() ? 'Needs attention' : 'Ready to manage' }}
+          {{ loading() ? 'Loading students' : error() ? 'Needs attention' : 'Ready' }}
         </h2>
         <p class="page-copy">
-          Students, courses, and enrollments are connected across the system.
+          Student records are synced and ready for management.
         </p>
       </article>
     </aside>
@@ -40,21 +54,21 @@
         <strong>{{ students().length }}</strong>
       </article>
       <article class="metric">
-        <span>Total courses</span>
-        <strong>{{ courses().length }}</strong>
+        <span>Status</span>
+        <strong>{{ loading() ? 'Loading' : error() ? 'Attention' : 'Ready' }}</strong>
       </article>
       <article class="metric">
-        <span>Total enrollments</span>
-        <strong>{{ enrollments().length }}</strong>
+        <span>Catalog mode</span>
+        <strong>Active</strong>
       </article>
     </div>
   </section>
 
   <!-- ERROR -->
   @if (error()) {
-    <section class="status-banner status-error">
-      {{ error() }}
-    </section>
+  <section class="status-banner status-error">
+    {{ error() }}
+  </section>
   }
 
   <!-- STUDENT TABLE -->
@@ -67,12 +81,7 @@
         <h2>Current roster</h2>
       </div>
 
-      <input
-        type="text"
-        placeholder="Search student..."
-        (input)="setQuery($any($event.target).value)"
-        class="input"
-      />
+      <input type="text" placeholder="Search student..." (input)="setQuery($any($event.target).value)" class="input" />
     </div>
 
     <!-- TABLE -->
@@ -89,49 +98,39 @@
 
         <tbody>
 
-          <!-- LOADING -->
           @if (loading()) {
-            <tr>
-              <td colspan="4">
-                <app-skeleton-table [rows]="5" [cols]="4"></app-skeleton-table>
-              </td>
-            </tr>
+          <tr>
+            <td colspan="4">
+              <app-skeleton-table [rows]="5" [cols]="4"></app-skeleton-table>
+            </td>
+          </tr>
           }
 
-          <!-- EMPTY -->
           @else if (filteredStudents().length === 0) {
-            <tr>
-              <td colspan="4" class="table-state">
-                No students found.
-              </td>
-            </tr>
+          <tr>
+            <td colspan="4" class="table-state">
+              No students found.
+            </td>
+          </tr>
           }
 
-          <!-- DATA -->
           @else {
-            @for (student of pagedStudents(); track student.studentID) {
-              <tr>
-                <td>{{ student.studentID }}</td>
-                <td>{{ student.name }}</td>
-                <td>{{ student.email }}</td>
-                <td class="table-actions">
-                  <a
-                    class="button button-secondary button-small"
-                    [routerLink]="['/dashboard/edit', student.studentID]"
-                  >
-                    Edit
-                  </a>
+          @for (student of pagedStudents(); track student.studentID) {
+          <tr>
+            <td>{{ student.studentID }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.email }}</td>
+            <td class="table-actions">
+              <a class="button button-secondary button-small" [routerLink]="['/dashboard/edit', student.studentID]">
+                Edit
+              </a>
 
-                  <button
-                    class="button button-danger button-small"
-                    type="button"
-                    (click)="deleteStudent(student)"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            }
+              <button class="button button-danger button-small" (click)="deleteStudent(student)">
+                Delete
+              </button>
+            </td>
+          </tr>
+          }
           }
 
         </tbody>
@@ -140,15 +139,9 @@
 
     <!-- PAGINATION -->
     <div class="pagination">
-      <button (click)="prevPage()" [disabled]="page() === 1">
-        Prev
-      </button>
-
+      <button (click)="prevPage()" [disabled]="page() === 1">Prev</button>
       <span>Page {{ page() }} / {{ totalPages() }}</span>
-
-      <button (click)="nextPage()" [disabled]="page() === totalPages()">
-        Next
-      </button>
+      <button (click)="nextPage()" [disabled]="page() === totalPages()">Next</button>
     </div>
 
   </section>

@@ -210,3 +210,9 @@ label {
   font-weight: 700;
   line-height: 1;
 }
+
+@media (max-width: 575.98px) {
+  td{
+    padding: var(--space-2);
+  }  
+}

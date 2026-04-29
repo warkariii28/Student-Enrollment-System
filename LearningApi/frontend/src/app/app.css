@@ -7,15 +7,22 @@
   min-height: calc(100vh - 5rem);
   display: flex;
   flex-direction: column;
-  padding-top: 5rem;
+  padding-top: 0;
 }
 
+.app-shell--with-navbar {
+  padding-top: 5rem;
+}
 .app-container {
   display: flex;
   position: relative;
   min-width: 0;
-  margin-left: 280px;
+  /* margin-left: 280px; */
   flex: 1;
+}
+
+.app-container--with-sidebar {
+  margin-left: 280px;
 }
 
 .app-main {

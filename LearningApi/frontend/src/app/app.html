@@ -1,7 +1,10 @@
 <app-navbar *ngIf="showNavbar()"></app-navbar>
 
-<div class="app-shell">
-  <div class="app-container">
+<div class="app-shell" [class.app-shell--with-navbar]="showNavbar">
+  <div 
+    class="app-container"
+    [class.app-container--with-sidebar]="showSidebar()"
+  >
     <app-sidebar *ngIf="showSidebar()"></app-sidebar>
 
     <main class="app-main">
