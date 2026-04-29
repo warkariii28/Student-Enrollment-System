@@ -1,72 +1,19 @@
 <header class="app-navbar">
   <div class="app-navbar__inner">
-    <a class="app-brand" routerLink="/dashboard" (click)="closeMenu()">
+    <a class="app-brand" routerLink="/dashboard">
       <span class="app-brand__mark">LA</span>
       <span class="app-brand__copy">
         <strong>Learning API</strong>
-        <small>Student enrollment workspace</small>
       </span>
     </a>
 
-    <button
-      class="app-navbar__toggle"
-      type="button"
-      aria-label="Toggle navigation"
-      [attr.aria-expanded]="isMenuOpen()"
-      aria-controls="primary-navigation"
-      (click)="toggleMenu()"
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <div
-      id="primary-navigation"
-      class="app-navbar__collapse"
-      [class.app-navbar__collapse-open]="isMenuOpen()"
-    >
-      <nav class="app-nav" aria-label="Primary navigation">
-        @if (isLoggedIn()) {
-          <a
-            class="app-nav__link"
-            routerLink="/dashboard"
-            routerLinkActive="app-nav__link-active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="closeMenu()"
-          >
-            Students
-          </a>
-          <a
-            class="app-nav__link"
-            routerLink="/dashboard/courses"
-            routerLinkActive="app-nav__link-active"
-            (click)="closeMenu()"
-          >
-            Courses
-          </a>
-          <a
-            class="app-nav__link"
-            routerLink="/dashboard/enrollments"
-            routerLinkActive="app-nav__link-active"
-            (click)="closeMenu()"
-          >
-            Enrollments
-          </a>
-        } @else {
-          <a class="app-nav__link" routerLink="/login" routerLinkActive="app-nav__link-active" (click)="closeMenu()">Login</a>
-          <a class="app-nav__link" routerLink="/register" routerLinkActive="app-nav__link-active" (click)="closeMenu()">Register</a>
-        }
-      </nav>
-
-      <div class="app-navbar__actions">
-        @if (isLoggedIn()) {
-          <button class="button button-primary button-small" type="button" (click)="logout()">Logout</button>
-        } @else {
-          <a class="button button-secondary button-small" routerLink="/register" (click)="closeMenu()">Create account</a>
-          <a class="button button-primary button-small" routerLink="/login" (click)="closeMenu()">Sign in</a>
-        }
-      </div>
+    <div class="app-navbar__actions">
+      @if (isLoggedIn()) {
+        <button class="button button-primary button-small" type="button" (click)="logout()">Logout</button>
+      } @else {
+        <a class="button button-secondary button-small" routerLink="/register">Create account</a>
+        <a class="button button-primary button-small" routerLink="/login">Sign in</a>
+      }
     </div>
   </div>
 </header>

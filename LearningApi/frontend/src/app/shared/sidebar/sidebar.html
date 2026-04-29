@@ -1,0 +1,59 @@
+<aside class="app-sidebar" [class.app-sidebar-open]="isSidebarOpen()" *ngIf="isLoggedIn()">
+  <div class="app-sidebar__header">
+    <h2 class="app-sidebar__title">Navigation</h2>
+    <button
+      class="app-sidebar__close"
+      type="button"
+      aria-label="Close sidebar"
+      (click)="closeSidebar()"
+    >
+      ✕
+    </button>
+  </div>
+
+  <nav class="app-sidebar__nav" aria-label="Sidebar navigation">
+    <a
+      class="app-sidebar__link"
+      routerLink="/dashboard"
+      routerLinkActive="app-sidebar__link-active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closeSidebar()"
+    >
+      <span class="app-sidebar__icon">👥</span>
+      <span class="app-sidebar__text">Students</span>
+    </a>
+
+    <a
+      class="app-sidebar__link"
+      routerLink="/dashboard/courses"
+      routerLinkActive="app-sidebar__link-active"
+      (click)="closeSidebar()"
+    >
+      <span class="app-sidebar__icon">📚</span>
+      <span class="app-sidebar__text">Courses</span>
+    </a>
+
+    <a
+      class="app-sidebar__link"
+      routerLink="/dashboard/enrollments"
+      routerLinkActive="app-sidebar__link-active"
+      (click)="closeSidebar()"
+    >
+      <span class="app-sidebar__icon">📋</span>
+      <span class="app-sidebar__text">Enrollments</span>
+    </a>
+  </nav>
+</aside>
+
+<button
+  class="app-sidebar__toggle"
+  type="button"
+  aria-label="Toggle sidebar"
+  [attr.aria-expanded]="isSidebarOpen()"
+  (click)="toggleSidebar()"
+  *ngIf="isLoggedIn()"
+>
+  <span></span>
+  <span></span>
+  <span></span>
+</button>

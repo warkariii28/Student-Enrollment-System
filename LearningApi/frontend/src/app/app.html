@@ -1,12 +1,14 @@
+<app-navbar *ngIf="showNavbar()"></app-navbar>
+
 <div class="app-shell">
-  <app-navbar *ngIf="showNavbar()"></app-navbar>
+  <div class="app-container">
+    <app-sidebar *ngIf="showSidebar()"></app-sidebar>
 
-  <main class="app-main">
-    <app-toast></app-toast>
-    <app-loader></app-loader>
-    <app-confirm></app-confirm>
-    <router-outlet></router-outlet>
-  </main>
-
-  <app-footer></app-footer>
+    <main class="app-main">
+      <app-toast></app-toast>
+      <app-loader></app-loader>
+      <app-confirm></app-confirm>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>

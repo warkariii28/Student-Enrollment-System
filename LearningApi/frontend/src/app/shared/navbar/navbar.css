@@ -3,15 +3,17 @@
 }
 
 .app-navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 20;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   width: 100%;
   max-width: 100%;
   margin: 0;
-  background: var(--color-surface-navbar);
-  border-bottom: var(--border-default);
-  box-shadow: var(--shadow-navbar);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(20, 33, 29, 0.12);
+  box-shadow: 0 16px 34px rgba(20, 33, 29, 0.08);
   backdrop-filter: blur(14px);
 }
 
@@ -66,21 +68,6 @@
   overflow-wrap: anywhere;
 }
 
-.app-brand__copy small {
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-}
-
-.app-navbar__collapse {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  /* justify-content: space-between; */
-  gap: 1rem;
-}
-
-.app-nav,
 .app-navbar__actions {
   display: flex;
   align-items: center;
@@ -97,13 +84,9 @@
 
 .app-nav__link {
   padding: 0.7rem 1rem;
-  border-radius: var(--radius-pill);
+  border-radius: 999px;
   color: var(--color-text-muted);
   font-weight: 700;
-  min-height: 2.75rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast);
@@ -112,7 +95,7 @@
 .app-nav__link:hover,
 .app-nav__link-active {
   color: var(--color-accent-strong);
-  background: var(--color-accent-soft);
+  background: rgba(31, 122, 90, 0.12);
   text-decoration: none;
 }
 
@@ -121,10 +104,10 @@
   width: 2.75rem;
   min-height: 2.75rem;
   padding: 0;
-  border: var(--border-navbar-toggle);
+  border: 1px solid var(--color-border);
   border-radius: 0.85rem;
   background: var(--color-surface-strong);
-  box-shadow: var(--shadow-none);
+  box-shadow: none;
 }
 
 .app-navbar__toggle span {
@@ -150,7 +133,7 @@
     display: inline-grid;
     place-items: center;
     gap: 0.23rem;
-    padding: var(--space-3);
+    padding: 12px;;
   }
 
   .app-navbar__collapse {
@@ -158,7 +141,7 @@
     display: none;
     order: 3;
     padding-top: 0.75rem;
-    border-top: var(--border-default);
+    border-top: 1px solid var(--color-border);
   }
 
   .app-navbar__collapse-open {
@@ -191,24 +174,15 @@
 
 @media (max-width: 575.98px) {
   .app-navbar__inner {
-    gap: var(--space-2);
-    padding-inline: var(--space-3);
+    padding-inline: 0.75rem;
   }
 
   .app-brand {
     align-items: center;
   }
 
-  .app-brand__copy small {
-    display: none;
+  .app-navbar__actions {
+    gap: 0.5rem;
   }
 
-  .app-brand__mark {
-    width: 2.45rem;
-    height: 2.45rem;
-  }
-
-  .app-brand__copy strong {
-    font-size: 1.05rem;
-  }
 }
