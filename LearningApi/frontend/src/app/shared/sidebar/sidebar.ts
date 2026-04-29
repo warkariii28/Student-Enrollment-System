@@ -7,6 +7,7 @@ import { StudentService } from '../../core/services/student.service';
 import { CourseService } from '../../core/services/course.service';
 import { EnrollmentService } from '../../core/services/enrollment.service';
 import { LucideAngularModule, Users, BookOpen, ClipboardList, UserPlus, Plus } from 'lucide-angular';
+import { Student } from '../../core/models/student';
 
 @Component({
   selector: 'app-sidebar',
@@ -41,12 +42,17 @@ export class Sidebar implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.studentService.getStudents().subscribe(data => this.students.set(data));
+    this.studentService.fetchStudents().subscribe();
     this.courseService.getCourses().subscribe(data => this.courses.set(data));
     this.enrollmentService.getEnrollments().subscribe(data => this.enrollments.set(data));
 
+    this.studentService.students$
+      .subscribe((data: Student[]) => this.students.set(data));
+
     this.routerSubscriptions.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => this.closeSidebar())
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => this.closeSidebar())
     );
   }
 

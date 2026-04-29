@@ -40,18 +40,22 @@ export class EnrollmentForm implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.studentService.fetchStudents().subscribe();
+
     forkJoin({
-      students: this.studentService.getStudents(),
       courses: this.courseService.getCourses()
     }).subscribe({
-      next: ({ students, courses }) => {
-        this.students = students;
+      next: ({ courses }) => {
         this.courses = courses;
-        this.isLoadingOptions = false;
-        this.cdr.markForCheck();
+
+        this.studentService.students$.subscribe((students: Student[]) => {
+          this.students = students;
+          this.isLoadingOptions = false;
+          this.cdr.markForCheck();
+        });
       },
       error: () => {
-        this.error = 'Could not load students and courses for enrollment.';
+        this.error = 'Could not load students and courses.';
         this.isLoadingOptions = false;
         this.cdr.markForCheck();
       }
@@ -72,7 +76,7 @@ export class EnrollmentForm implements OnInit {
       .pipe(
         finalize(() => {
           this.isSubmitting = false;
-          this.cdr.markForCheck();  
+          this.cdr.markForCheck();
         })
       )
       .subscribe({

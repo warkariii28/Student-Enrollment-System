@@ -66,20 +66,27 @@ export class Dashboard implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
+    // 🔹 Trigger API calls
+    if (!this.studentService.hasStudents()) {
+      this.studentService.fetchStudents().subscribe();
+    }
     forkJoin({
-      students: this.studentService.getStudents(),
       courses: this.courseService.getCourses(),
       enrollments: this.enrollmentService.getEnrollments()
     }).subscribe({
-      next: ({ students, courses, enrollments }) => {
-        this.students.set(students);
+      next: ({ courses, enrollments }) => {
         this.courses.set(courses);
         this.enrollments.set(enrollments);
-        this.loading.set(false);
+
+        // 🔹 Subscribe to state
+        this.studentService.students$.subscribe(students => {
+          this.students.set(students);
+          this.loading.set(false);
+        });
       },
       error: () => {
         this.loading.set(false);
-        this.error.set('Could not load dashboard data. Check login token and backend API.');
+        this.error.set('Could not load dashboard data.');
       }
     });
   }
