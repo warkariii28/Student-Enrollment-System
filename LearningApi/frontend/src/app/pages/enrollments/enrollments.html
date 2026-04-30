@@ -14,7 +14,8 @@
       <div class="hero-actions">
         <a class="button button-secondary" routerLink="/dashboard">Students</a>
         <a class="button button-secondary" routerLink="/dashboard/courses">Courses</a>
-        <a class="button button-primary" routerLink="/dashboard/enrollments/add">Add enrollment</a>
+        @if (authService.hasRole('Admin')) {
+        <a class="button button-primary" routerLink="/dashboard/enrollments/add">Add enrollment</a>}
       </div>
     </div>
 
@@ -125,7 +126,7 @@
             <td>{{ enrollment.courseName }}</td>
             <td>{{ enrollment.enrollmentDate | date:'mediumDate' }}</td>
             <td class="table-actions">
-              <button class="button button-danger button-small" type="button" (click)="deleteEnrollment(enrollment)">
+              <button class="button button-danger button-small" type="button" [disabled]="!authService.hasRole('Admin')" (click)="deleteEnrollment(enrollment)">
                 Delete
               </button>
             </td>

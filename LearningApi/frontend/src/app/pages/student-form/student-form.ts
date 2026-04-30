@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
-
+import { AuthService } from '../../core/services/auth.service';
 import { StudentService } from '../../core/services/student.service';
 import { ToastService } from '../../core/services/toast.service';
 
@@ -29,6 +29,7 @@ export class StudentForm implements OnInit {
   }
 
   constructor(
+    public readonly authService:AuthService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly studentService: StudentService,

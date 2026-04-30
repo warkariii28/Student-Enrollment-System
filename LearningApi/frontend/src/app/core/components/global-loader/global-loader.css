@@ -1,0 +1,15 @@
+.global-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #4f46e5, #06b6d4);
+  z-index: 9999;
+  animation: loadingMove 1s linear infinite;
+}
+
+@keyframes loadingMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}

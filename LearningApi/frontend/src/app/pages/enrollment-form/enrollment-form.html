@@ -51,7 +51,7 @@
         <label for="studentID">Student</label>
         <select id="studentID" formControlName="studentID">
           <option [value]="0">Select a student</option>
-          @for (student of students; track student.studentID) {
+          @for (student of students(); track student.studentID) {
           <option [value]="student.studentID">{{ student.name }} ({{ student.email }})</option>
           }
         </select>
@@ -64,7 +64,7 @@
         <label for="courseID">Course</label>
         <select id="courseID" formControlName="courseID">
           <option [value]="0">Select a course</option>
-          @for (course of courses; track course.courseID) {
+          @for (course of courses(); track course.courseID) {
           <option [value]="course.courseID">
             {{ course.courseName }} - {{ course.durationWeeks }} weeks
           </option>
@@ -80,7 +80,7 @@
       }
 
       <div class="actions-row">
-        <button class="button button-primary" type="submit" [disabled]="isSubmitting ||isLoadingOptions ||enrollmentForm.invalid">
+        <button class="button button-primary" type="submit" [disabled]="isSubmitting ||isLoadingOptions ||enrollmentForm.invalid || !authService.hasRole('Admin') ">
           {{ isSubmitting ? 'Saving...' : 'Save enrollment' }}
         </button>
         <a class="button button-secondary" routerLink="/dashboard/enrollments">Cancel</a>

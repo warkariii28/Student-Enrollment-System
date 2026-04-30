@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Course } from '../../core/models/course';
 import { AuthService } from '../../core/services/auth.service';
 import { CourseService } from '../../core/services/course.service';
@@ -15,12 +15,15 @@ import { SkeletonTableComponent } from '../../core/components/skeleton-table/ske
   templateUrl: './courses.html'
 })
 export class Courses implements OnInit {
-  readonly courses = signal<Course[]>([]);
+  private readonly courseService = inject(CourseService);
+  readonly courses = toSignal(this.courseService.courses$, { initialValue: [] });
   readonly error = signal('');
   readonly loading = signal(true);
   readonly query = signal('');
   readonly page = signal(1);
   readonly pageSize = signal(5);
+
+
 
   readonly filteredCourses = computed(() => {
     const q = this.query().toLowerCase().trim();
@@ -41,32 +44,23 @@ export class Courses implements OnInit {
   });
 
   constructor(
-    private readonly courseService: CourseService,
-    private readonly authService: AuthService,
+    public readonly authService: AuthService,
     private readonly toast: ToastService,
     private readonly confirm: ConfirmService,
     private readonly router: Router
   ) { }
 
   ngOnInit(): void {
-    this.loadCourses();
+    if (!this.courseService.hasCourses()) {
+      this.courseService.fetchCourses().subscribe();
+    }
   }
 
   loadCourses(): void {
     this.loading.set(true);
     this.error.set('');
 
-    this.courseService.getCourses().subscribe({
-      next: (courses) => {
-        this.courses.set(courses);
-        this.loading.set(false);
-        /* this.page.set(1); */
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set('Could not load courses. Check backend API and authentication.');
-      }
-    });
+
   }
 
   async deleteCourse(course: Course): Promise<void> {

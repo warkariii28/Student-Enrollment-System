@@ -1,28 +1,79 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, tap, of, shareReplay } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Enrollment, EnrollmentPayload } from '../models/enrollment';
-import { ApiResponse } from '../models/api-response';
+import { BaseApiService } from './base-api.service';
 
 @Injectable({ providedIn: 'root' })
-export class EnrollmentService {
+export class EnrollmentService extends BaseApiService {
+
   private readonly apiUrl = `${environment.apiBaseUrl}/api/enrollments`;
 
-  constructor(private readonly http: HttpClient) { }
+  private enrollmentsSubject = new BehaviorSubject<Enrollment[]>([]);
+  public enrollments$ = this.enrollmentsSubject.asObservable();
 
-  getEnrollments(): Observable<Enrollment[]> {
-    return this.http
-      .get<ApiResponse<Enrollment[]>>(this.apiUrl)
-      .pipe(map(res => res.data));
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  public loading$ = this.loadingSubject.asObservable();
+
+  private inflight$?: Observable<Enrollment[]>;
+
+  constructor(http: HttpClient) {
+    super(http);
   }
 
-  addEnrollment(payload: EnrollmentPayload): Observable<void> {
-    return this.http.post<void>(this.apiUrl, payload);
+  fetchEnrollments(forceRefresh: boolean = false): Observable<Enrollment[]> {
+    const current = this.enrollmentsSubject.value;
+
+    if (!forceRefresh && current.length > 0) {
+      return of(current);
+    }
+
+    if (this.inflight$ && !forceRefresh) {
+      return this.inflight$;
+    }
+
+    this.loadingSubject.next(true);
+
+    this.inflight$ = this.get<Enrollment[]>(this.apiUrl).pipe(
+      shareReplay(1),
+      tap((enrollments) => {
+        this.enrollmentsSubject.next(enrollments || []);
+        this.loadingSubject.next(false);
+        this.inflight$ = undefined;
+      })
+    );
+
+    return this.inflight$;
+  }
+
+  hasEnrollments(): boolean {
+    return this.enrollmentsSubject.value.length > 0;
+  }
+
+  addEnrollment(payload: EnrollmentPayload): Observable<number> {
+    return this.post<number>(this.apiUrl, payload).pipe(
+      tap(() => {
+        // must refetch (backend returns incomplete object)
+        this.fetchEnrollments(true).subscribe();
+      })
+    );
+  }
+
+  updateEnrollment(id: number, payload: EnrollmentPayload): Observable<string> {
+    return this.putWithMessage(`${this.apiUrl}/${id}`, payload).pipe(
+      tap(() => {
+        this.fetchEnrollments(true).subscribe();
+      })
+    );
   }
 
   deleteEnrollment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this.fetchEnrollments(true).subscribe();
+      })
+    );
   }
 }

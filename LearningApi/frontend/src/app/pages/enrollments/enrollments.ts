@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 import { EnrollmentService } from '../../core/services/enrollment.service';
 import { ConfirmService } from '../../core/services/confirm.service';
@@ -14,7 +14,8 @@ import { SkeletonTableComponent } from '../../core/components/skeleton-table/ske
   templateUrl: './enrollments.html'
 })
 export class Enrollments implements OnInit {
-  readonly enrollments = signal<Enrollment[]>([]);
+  private readonly enrollmentService = inject(EnrollmentService);
+  readonly enrollments = toSignal(this.enrollmentService.enrollments$, { initialValue: [] });
   readonly error = signal('');
   readonly loading = signal(true);
 
@@ -46,21 +47,23 @@ export class Enrollments implements OnInit {
   });
 
   constructor(
-    private readonly enrollmentService: EnrollmentService,
-    private readonly authService: AuthService,
+    /*  private readonly enrollmentService: EnrollmentService, */
+    public readonly authService: AuthService,
     private readonly router: Router,
     private readonly confirm: ConfirmService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.loadEnrollments();
+    if (!this.enrollmentService.hasEnrollments()) {
+      this.enrollmentService.fetchEnrollments().subscribe();
+    }
   }
 
   loadEnrollments(): void {
     this.loading.set(true);
     this.error.set('');
 
-    this.enrollmentService.getEnrollments().subscribe({
+    /* this.enrollmentService.getEnrollments().subscribe({
       next: (enrollments) => {
         this.enrollments.set(enrollments);
         this.loading.set(false);
@@ -70,7 +73,7 @@ export class Enrollments implements OnInit {
         this.loading.set(false);
         this.error.set('Could not load enrollments. Check backend API and authentication.');
       }
-    });
+    }); */
   }
 
   // 🔍 Search handler

@@ -81,7 +81,7 @@
       }
 
       <div class="actions-row">
-        <button class="button button-primary" type="submit" [disabled]="isSubmitting || isLoadingCourse">
+        <button class="button button-primary" type="submit" [disabled]="!authService.hasRole('Admin')|| isSubmitting || isLoadingCourse">
           {{ isSubmitting ? 'Saving...' : isEditMode ? 'Update course' : 'Save course' }}
         </button>
         <a class="button button-secondary" routerLink="/dashboard/courses">Cancel</a>

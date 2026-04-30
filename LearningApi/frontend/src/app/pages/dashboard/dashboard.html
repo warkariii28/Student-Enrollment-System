@@ -15,7 +15,8 @@
         <!-- <a class="button button-secondary" routerLink="/dashboard">Students</a> -->
         <a class="button button-secondary" routerLink="/dashboard/courses">Courses</a>
         <a class="button button-secondary" routerLink="/dashboard/enrollments">Enrollments</a>
-        <a class="button button-primary" routerLink="/dashboard/students/add">Add students</a>
+        @if (authService.hasRole('Admin')) {
+        <a class="button button-primary" routerLink="/dashboard/students/add">Add students</a>}
         <!-- <button class="button button-secondary" type="button" (click)="logout()">Logout</button> -->
       </div>
     </div>
@@ -121,11 +122,14 @@
             <td>{{ student.name }}</td>
             <td>{{ student.email }}</td>
             <td class="table-actions">
+              @if (authService.hasRole('Admin')) {
               <a class="button button-secondary button-small" [routerLink]="['/dashboard/edit', student.studentID]">
                 Edit
               </a>
+              }
 
-              <button class="button button-danger button-small" (click)="deleteStudent(student)">
+              <button class="button button-danger button-small" [disabled]="!authService.hasRole('Admin')"
+                (click)="deleteStudent(student)">
                 Delete
               </button>
             </td>

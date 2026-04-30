@@ -10,15 +10,52 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly tokenKey = 'jwt_token';
-  private readonly apiUrl = `${environment.apiBaseUrl}/api`;
+  private readonly apiUrl = `${environment.apiBaseUrl}/api/auth`;
+  private readonly userKey = 'auth_user';
+
+  setUser(user: any): void {
+    localStorage.setItem(this.userKey, JSON.stringify(user));
+  }
+
+  getUser(): any | null {
+    const data = localStorage.getItem('auth_user');
+    return data ? JSON.parse(data) : null;
+  }
+
+  getRole(): string | null {
+    return this.getUser()?.role || null;
+  }
+
+  hasRole(role: string): boolean {
+    return this.getRole() === role;
+  }
+
+  isAdmin(): boolean {
+    return this.getRole() === 'Admin';
+  }
+
+  private readonly refreshKey = 'refresh_token';
+
+  setRefreshToken(token: string) {
+    localStorage.setItem(this.refreshKey, token);
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem(this.refreshKey);
+  }
 
   constructor(private readonly http: HttpClient) { }
 
   login(credentials: LoginRequest): Observable<string> {
+    console.log('LOGIN URL:', `${this.apiUrl}/login`); //
     return this.http
       .post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login`, credentials)
       .pipe(
-        tap(res => this.setToken(res.data.token)),
+        tap(res => {
+          this.setToken(res.data.token);
+          this.setUser(res.data.user);
+          this.setRefreshToken(res.data.refreshToken);
+        }),
         map(res => res.data.token)
       );
   }
@@ -53,5 +90,6 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
   }
 }

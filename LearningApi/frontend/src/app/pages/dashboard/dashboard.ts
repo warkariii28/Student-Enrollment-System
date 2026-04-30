@@ -1,16 +1,19 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { Course } from '../../core/models/course';
 import { Enrollment } from '../../core/models/enrollment';
 import { Student } from '../../core/models/student';
+
 import { AuthService } from '../../core/services/auth.service';
 import { CourseService } from '../../core/services/course.service';
 import { EnrollmentService } from '../../core/services/enrollment.service';
 import { StudentService } from '../../core/services/student.service';
 import { ConfirmService } from '../../core/services/confirm.service';
 import { ToastService } from '../../core/services/toast.service';
+
 import { SkeletonTableComponent } from '../../core/components/skeleton-table/skeleton-table';
 
 @Component({
@@ -19,9 +22,25 @@ import { SkeletonTableComponent } from '../../core/components/skeleton-table/ske
   templateUrl: './dashboard.html'
 })
 export class Dashboard implements OnInit {
-  readonly students = signal<Student[]>([]);
-  readonly courses = signal<Course[]>([]);
-  readonly enrollments = signal<Enrollment[]>([]);
+
+  // ✅ inject() used correctly
+  private readonly studentService = inject(StudentService);
+  private readonly courseService = inject(CourseService);
+  private readonly enrollmentService = inject(EnrollmentService);
+
+  // other services via constructor (clean separation)
+  constructor(
+    public readonly authService: AuthService,
+    private readonly toast: ToastService,
+    private readonly router: Router,
+    private readonly confirm: ConfirmService
+  ) { }
+
+  // ✅ state from service
+  readonly students = toSignal(this.studentService.students$, { initialValue: [] });
+
+  readonly courses = toSignal(this.courseService.courses$, { initialValue: [] });
+  readonly enrollments = toSignal(this.enrollmentService.enrollments$, { initialValue: [] });
   readonly error = signal('');
   readonly loading = signal(true);
 
@@ -48,47 +67,32 @@ export class Dashboard implements OnInit {
     return this.filteredStudents().slice(start, start + this.pageSize());
   });
 
-  constructor(
-    private readonly studentService: StudentService,
-    private readonly courseService: CourseService,
-    private readonly enrollmentService: EnrollmentService,
-    private readonly authService: AuthService,
-    private readonly toast: ToastService,
-    private readonly router: Router,
-    private readonly confirm: ConfirmService
-  ) { }
-
   ngOnInit(): void {
     this.loadDashboard();
+    this.loading.set(false);
   }
 
   loadDashboard(): void {
     this.loading.set(true);
     this.error.set('');
 
-    // 🔹 Trigger API calls
+    // students
     if (!this.studentService.hasStudents()) {
       this.studentService.fetchStudents().subscribe();
     }
-    forkJoin({
-      courses: this.courseService.getCourses(),
-      enrollments: this.enrollmentService.getEnrollments()
-    }).subscribe({
-      next: ({ courses, enrollments }) => {
-        this.courses.set(courses);
-        this.enrollments.set(enrollments);
 
-        // 🔹 Subscribe to state
-        this.studentService.students$.subscribe(students => {
-          this.students.set(students);
-          this.loading.set(false);
-        });
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set('Could not load dashboard data.');
-      }
-    });
+    // courses
+    if (!this.courseService.hasCourses()) {
+      this.courseService.fetchCourses().subscribe();
+    }
+
+    // enrollments
+    if (!this.enrollmentService.hasEnrollments()) {
+      this.enrollmentService.fetchEnrollments().subscribe();
+    }
+
+    // ✅ no forkJoin needed anymore
+    this.loading.set(false);
   }
 
   async deleteStudent(student: Student): Promise<void> {
@@ -98,7 +102,11 @@ export class Dashboard implements OnInit {
     this.studentService.deleteStudent(student.studentID).subscribe({
       next: () => {
         this.toast.success('Student deleted');
-        this.loadDashboard();
+
+        // ❌ avoid full reload
+        // this.loadDashboard();
+
+        // ✅ state already updates → no reload needed
       },
       error: () => this.error.set('Could not delete student')
     });

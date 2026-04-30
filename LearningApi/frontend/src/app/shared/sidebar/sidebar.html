@@ -1,10 +1,5 @@
-<button
-  class="app-sidebar__toggle"
-  type="button"
-  aria-label="Toggle sidebar"
-  *ngIf="isLoggedIn()"
-  (click)="toggleSidebar()"
->
+<button class="app-sidebar__toggle" type="button" aria-label="Toggle sidebar" *ngIf="isLoggedIn()"
+  (click)="toggleSidebar()">
   <span></span>
   <span></span>
   <span></span>
@@ -20,17 +15,20 @@
 
   <!-- NAV -->
   <nav class="app-sidebar__nav">
-    <a class="app-sidebar__link" routerLink="/dashboard" routerLinkActive="app-sidebar__link-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">
+    <a class="app-sidebar__link" routerLink="/dashboard" routerLinkActive="app-sidebar__link-active"
+      [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">
       <lucide-icon [img]="Users" class="app-sidebar__icon"></lucide-icon>
       <span>Students</span>
     </a>
 
-    <a class="app-sidebar__link" routerLink="/dashboard/courses" routerLinkActive="app-sidebar__link-active" (click)="closeSidebar()">
+    <a class="app-sidebar__link" routerLink="/dashboard/courses" routerLinkActive="app-sidebar__link-active"
+      (click)="closeSidebar()">
       <lucide-icon [img]="BookOpen" class="app-sidebar__icon"></lucide-icon>
       <span>Courses</span>
     </a>
 
-    <a class="app-sidebar__link" routerLink="/dashboard/enrollments" routerLinkActive="app-sidebar__link-active" (click)="closeSidebar()">
+    <a class="app-sidebar__link" routerLink="/dashboard/enrollments" routerLinkActive="app-sidebar__link-active"
+      (click)="closeSidebar()">
       <lucide-icon [img]="ClipboardList" class="app-sidebar__icon"></lucide-icon>
       <span>Enrollments</span>
     </a>
@@ -53,18 +51,24 @@
     <div class="sidebar-card">
       <p class="sidebar-card__title">Quick Actions</p>
       <div class="sidebar-actions">
+        @if (authService.hasRole('Admin')) {
         <a routerLink="/dashboard/add" (click)="closeSidebar()">
           <lucide-icon [img]="Plus" class="app-sidebar__icon"></lucide-icon>
           Student
         </a>
+        }
+        @if (authService.hasRole('Admin')) {
         <a routerLink="/dashboard/courses/add" (click)="closeSidebar()">
           <lucide-icon [img]="Plus" class="app-sidebar__icon"></lucide-icon>
           Course
         </a>
+        }
+        @if (authService.hasRole('Admin')) {
         <a routerLink="/dashboard/enrollments/add" (click)="closeSidebar()">
           <lucide-icon [img]="Plus" class="app-sidebar__icon"></lucide-icon>
           Enroll
         </a>
+        }
       </div>
     </div>
 
@@ -80,8 +84,5 @@
   </div>
 </aside>
 
-<div 
-  class="sidebar-overlay" 
-  *ngIf="isSidebarOpen()" 
-  (click)="closeSidebar()">
+<div class="sidebar-overlay" *ngIf="isSidebarOpen()" (click)="closeSidebar()">
 </div>

@@ -1,74 +1,113 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpInterceptorFn,
+  HttpBackend,
+  HttpClient,
+  HttpRequest
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 
-// Prevent multiple redirects on parallel 401s
-let isRedirecting = false;
+// 🔒 shared state (singleton across interceptor calls)
+let isRefreshing = false;
+const refreshSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+  const auth = inject(AuthService);
   const router = inject(Router);
   const toast = inject(ToastService);
 
-  // Skip auth endpoints
-  if (req.url.includes('/login') || req.url.includes('/register')) {
+  // 🔴 bypass interceptor for refresh/login/register
+  const http = new HttpClient(inject(HttpBackend));
+
+  const isAuthEndpoint =
+    req.url.includes('/api/auth/login') ||
+    req.url.includes('/api/auth/register') ||
+    req.url.includes('/api/auth/refresh');
+
+  if (isAuthEndpoint) {
     return next(req);
   }
 
-  const token = authService.getToken();
-
+  // attach access token
+  const token = auth.getToken();
   const authReq = token
-    ? req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
     : req;
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-
-      // 401 → logout + single redirect
-      if (error.status === 401) {
-        if (!isRedirecting) {
-          isRedirecting = true;
-          authService.logout();
-          router.navigate(['/login']).finally(() => {
-            isRedirecting = false;
-          });
-        }
+      if (error.status !== 401) {
         return throwError(() => error);
       }
 
-      // 400 → backend message
-      if (error.status === 400) {
-        const msg =
-          error.error?.message ||
-          error.error?.title ||
-          'Bad request';
-        toast.error(msg);
+      // ❌ do not retry if already retried
+      if (authReq.headers.has('x-retry')) {
+        auth.logout();
+        router.navigate(['/login']);
         return throwError(() => error);
       }
 
-      // 500 → server error
-      if (error.status === 500) {
-        toast.error('Server error. Try again later.');
+      const refreshToken = auth.getRefreshToken();
+      if (!refreshToken) {
+        auth.logout();
+        router.navigate(['/login']);
         return throwError(() => error);
       }
 
-      // Network error
-      if (!error.status) {
-        toast.error('Network error. Check connection.');
-        return throwError(() => error);
+      // 🔁 if refresh already in progress → queue requests
+      if (isRefreshing) {
+        return refreshSubject.pipe(
+          filter(token => token !== null),
+          take(1),
+          switchMap(newToken => {
+            const retryReq = addAuthHeader(authReq, newToken!, true);
+            return next(retryReq);
+          })
+        );
       }
 
-      // Fallback
-      toast.error('Something went wrong');
-      return throwError(() => error);
+      // 🔓 start refresh
+      isRefreshing = true;
+      refreshSubject.next(null);
+
+      return http
+        .post<any>(`${auth['apiUrl']}/refresh`, { refreshToken })
+        .pipe(
+          switchMap(res => {
+            const newToken = res.data.token;
+            const newRefresh = res.data.refreshToken;
+
+            auth.setToken(newToken);
+            auth.setRefreshToken(newRefresh);
+
+            isRefreshing = false;
+            refreshSubject.next(newToken);
+
+            const retryReq = addAuthHeader(authReq, newToken, true);
+            return next(retryReq);
+          }),
+          catchError(err => {
+            isRefreshing = false;
+            auth.logout();
+            router.navigate(['/login']);
+            return throwError(() => err);
+          })
+        );
     })
   );
 };
+
+// 🔧 helper
+function addAuthHeader(req: HttpRequest<any>, token: string, retried = false) {
+  return req.clone({
+    setHeaders: {
+      Authorization: `Bearer ${token}`,
+      ...(retried ? { 'x-retry': 'true' } : {})
+    }
+  });
+}

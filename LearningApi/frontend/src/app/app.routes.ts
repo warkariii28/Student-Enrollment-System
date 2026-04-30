@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-
+import { roleGuard } from './core/guards/role.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { CourseForm } from './pages/course-form/course-form';
 import { Courses } from './pages/courses/courses';
@@ -34,15 +34,50 @@ export const routes: Routes = [
     children: [
       { path: '', component: Dashboard },
 
-      { path: 'add', component: StudentForm },
-      { path: 'edit/:id', component: StudentForm },
+      // ADMIN ONLY
+      {
+        path: 'add',
+        component: StudentForm,
+        canActivate: [roleGuard],
+        data: { roles: ['Admin'] }
+      },
+      {
+        path: 'edit/:id',
+        component: StudentForm,
+        canActivate: [roleGuard],
+        data: { roles: ['Admin'] }
+      },
 
-      { path: 'courses', component: Courses },
-      { path: 'courses/add', component: CourseForm },
-      { path: 'courses/edit/:id', component: CourseForm },
+      // STUDENT + ADMIN 
+      {
+        path: 'courses',
+        component: Courses
+      },
+      {
+        path: 'courses/add',
+        component: CourseForm,
+        canActivate: [roleGuard],
+        data: { roles: ['Admin'] }
+      },
+      {
+        path: 'courses/edit/:id',
+        component: CourseForm,
+        canActivate: [roleGuard],
+        data: { roles: ['Admin'] }
+      },
 
-      { path: 'enrollments', component: Enrollments },
-      { path: 'enrollments/add', component: EnrollmentForm }
+      // VIEW ALLOWED
+      {
+        path: 'enrollments',
+        component: Enrollments
+      },
+      // ADD = ONLY ADMIN
+      {
+        path: 'enrollments/add',
+        component: EnrollmentForm,
+        canActivate: [roleGuard],
+        data: { roles: ['Admin'] }
+      }
     ]
   },
 
