@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LearningApi.Helpers;
 
-[Authorize]
+[Authorize] // base: must be logged in
 [ApiController]
 [Route("api/courses")]
 public class CoursesController : ControllerBase
@@ -17,22 +17,24 @@ public class CoursesController : ControllerBase
         _service = service;
     }
 
+    // ✅ All users
     [HttpGet]
     public IActionResult GetAll()
     {
         var data = _service.GetAll();
-
         return Ok(ResponseHelper.Success(data, "Courses fetched successfully"));
     }
 
+    // ✅ All users
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var course = _service.GetById(id);
-
         return Ok(ResponseHelper.Success(course, "Course fetched successfully"));
     }
 
+    // 🔒 Admin only
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult Add(CourseCreateDto dto)
     {
@@ -51,6 +53,8 @@ public class CoursesController : ControllerBase
         return StatusCode(201, ResponseHelper.Success(id, "Course created successfully"));
     }
 
+    // 🔒 Admin only
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public IActionResult Update(int id, CourseUpdateDto dto)
     {
@@ -70,11 +74,12 @@ public class CoursesController : ControllerBase
         return Ok(ResponseHelper.Success<object>(null, "Updated successfully"));
     }
 
+    // 🔒 Admin only
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         _service.Delete(id);
-
         return NoContent();
     }
 }

@@ -6,7 +6,7 @@ using LearningApi.DTOs;
 using LearningApi.Helpers;
 
 [ApiController]
-[Route("api")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _service;
@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register(RegisterDto dto)
+    public IActionResult Register([FromBody] RegisterDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ResponseHelper.Fail<object>("Invalid data"));
@@ -25,7 +25,8 @@ public class AuthController : ControllerBase
         var user = new User
         {
             Username = dto.Username,
-            Email = dto.Email
+            Email = dto.Email,
+            Role = "User"
         };
 
         _service.Register(user, dto.Password);
@@ -35,7 +36,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginDto dto)
+    public IActionResult Login([FromBody] LoginDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ResponseHelper.Fail<object>("Invalid data"));
@@ -45,11 +46,13 @@ public class AuthController : ControllerBase
         var response = new AuthResponseDto
         {
             Token = result.Token,
+            RefreshToken = result.RefreshToken,
             User = new UserDto
             {
                 UserId = result.UserId,
                 Name = result.Name,
-                Email = result.Email
+                Email = result.Email,
+                Role = result.Role
             }
         };
 
@@ -71,4 +74,38 @@ public class AuthController : ControllerBase
 
         return Ok(ResponseHelper.Success<object>(null, "Email updated successfully"));
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("assign-role")]
+    public IActionResult AssignRole([FromQuery] int userId, [FromQuery] string role)
+    {
+        _service.UpdateRole(userId, role);
+        return Ok(ResponseHelper.Success<object>(null, "Role updated"));
+    }
+
+    [HttpPost("refresh")]
+    public IActionResult Refresh([FromBody] RefreshRequest request)
+    {
+        var stored = _service.ValidateRefreshToken(request.RefreshToken);
+
+        if (stored == null)
+            return Unauthorized(ResponseHelper.Fail<object>("Invalid refresh token"));
+
+        var user = _service.GetUserById(stored.UserId);
+
+        var newAccess = _service.GenerateToken(user);
+        var newRefresh = _service.RotateRefreshToken(request.RefreshToken);
+
+        return Ok(ResponseHelper.Success(new
+        {
+            token = newAccess,
+            refreshToken = newRefresh
+        }, "Token refreshed"));
+    }
+}
+
+// ✅ MUST be here (after controller)
+public class RefreshRequest
+{
+    public string RefreshToken { get; set; } = "";
 }

@@ -10,4 +10,11 @@ public interface IAuthService
     AuthResultDto Login(LoginDto dto);
 
     void UpdateEmail(int userId, string email);
+
+    void UpdateRole(int userId, string role);
+
+    RefreshToken? ValidateRefreshToken(string token);
+    User GetUserById(int userId);
+    string GenerateToken(User user);
+    string RotateRefreshToken(string oldToken);
 }

@@ -17,14 +17,16 @@ public class EnrollmentsController : ControllerBase
         _service = service;
     }
 
+    // ✅ All users
     [HttpGet]
     public IActionResult GetAll()
     {
         var data = _service.GetAll();
-
         return Ok(ResponseHelper.Success(data, "Enrollments fetched successfully"));
     }
 
+    // 🔒 Admin only
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult Add(EnrollmentCreateDto dto)
     {
@@ -42,11 +44,12 @@ public class EnrollmentsController : ControllerBase
         return StatusCode(201, ResponseHelper.Success<object>(null, "Enrollment created successfully"));
     }
 
+    // 🔒 Admin only
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
         _service.Delete(id);
-
         return NoContent();
     }
 }

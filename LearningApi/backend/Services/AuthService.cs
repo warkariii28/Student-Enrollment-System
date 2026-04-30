@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace LearningApi.Services;
 
@@ -13,6 +14,8 @@ public class AuthService : IAuthService
 {
     private readonly IAuthRepository _repo;
     private readonly IConfiguration _config;
+
+
 
     public AuthService(IAuthRepository repo, IConfiguration config)
     {
@@ -30,21 +33,25 @@ public class AuthService : IAuthService
     {
         var user = _repo.GetByEmail(dto.Email);
 
-        if (user == null)
+        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             throw new BadRequestException("Invalid credentials");
 
-        bool valid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+        var accessToken = GenerateToken(user);
+        var refreshToken = GenerateRefreshToken();
 
-        if (!valid)
-            throw new BadRequestException("Invalid credentials");
+        _repo.SaveRefreshToken(user.UserID, refreshToken);
 
         return new AuthResultDto
         {
-            Token = GenerateToken(user),
+            Token = accessToken,
+            RefreshToken = refreshToken,
             UserId = user.UserID,
             Name = user.Username,
-            Email = user.Email
+            Email = user.Email,
+            Role = user.Role
         };
+
+        
     }
 
     public void UpdateEmail(int userId, string email)
@@ -55,7 +62,7 @@ public class AuthService : IAuthService
             throw new NotFoundException("User not found");
     }
 
-    private string GenerateToken(User user)
+    public string GenerateToken(User user)
     {
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
@@ -67,7 +74,8 @@ public class AuthService : IAuthService
         {
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim("UserID", user.UserID.ToString())
+            new Claim("UserID", user.UserID.ToString()),
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
         var token = new JwtSecurityToken(
@@ -80,4 +88,54 @@ public class AuthService : IAuthService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    public void UpdateRole(int userId, string role)
+    {
+        bool updated = _repo.UpdateRole(userId, role);
+
+        if (!updated)
+            throw new NotFoundException("User not found");
+    }
+
+    private string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+    }
+
+    public RefreshToken? ValidateRefreshToken(string token)
+    {
+        var stored = _repo.GetRefreshToken(token);
+
+        if (stored == null || stored.ExpiresAt < DateTime.Now)
+            return null;
+
+        return stored;
+    }
+
+    public User GetUserById(int userId)
+    {
+        var user = _repo.GetById(userId);
+
+        if (user == null)
+            throw new NotFoundException("User not found");
+
+        return user;
+    }
+
+    public string RotateRefreshToken(string oldToken)
+    {
+        var stored = _repo.GetRefreshToken(oldToken);
+
+        if (stored == null)
+            throw new BadRequestException("Invalid refresh token");
+
+        _repo.RevokeRefreshToken(oldToken);
+
+        var newToken = GenerateRefreshToken();
+        _repo.SaveRefreshToken(stored.UserId, newToken);
+
+        return newToken;
+    }
+
+
 }
