@@ -1,49 +1,18 @@
 <main class="page-shell dashboard-grid">
-
-  <!-- HERO -->
-  <section class="surface hero-panel hero-grid">
-    <div class="hero-row">
-      <div class="hero-kicker">
-        <p class="eyebrow">Protected workspace</p>
-        <h1>Enrollments Dashboard</h1>
-        <p class="page-copy">
-          Connect students to courses, review active registrations, and keep the delivery flow visible in one place.
-        </p>
-      </div>
-
-      <div class="hero-actions">
-        <a class="button button-secondary" routerLink="/dashboard">Students</a>
-        <a class="button button-secondary" routerLink="/dashboard/courses">Courses</a>
-        @if (authService.hasRole('Admin')) {
-        <a class="button button-primary" routerLink="/dashboard/enrollments/add">Add enrollment</a>}
-      </div>
-    </div>
-
-    <aside class="hero-sidebar">
-      <div class="project-diagram project-diagram-wide" aria-hidden="true">
-        <div class="diagram-screen">
-          <span></span><span></span><span></span>
-          <i></i><i></i><i></i>
-        </div>
-        <div class="diagram-link"></div>
-        <div class="diagram-api">
-          <span class="diagram-pill diagram-pill-top"></span>
-          <span></span><span></span><span></span>
-        </div>
-        <div class="diagram-link diagram-link-vertical"></div>
-        <div class="diagram-data"></div>
-      </div>
-      <article class="spotlight-card">
-        <p class="badge">Enrollment status</p>
-        <h2>
-          {{ loading() ? 'Syncing registrations' : error() ? 'Needs attention' : 'Ready to assign' }}
-        </h2>
-        <p class="page-copy">
-          This section uses student and course records together, so it completes the main enrollment system workflow.
-        </p>
-      </article>
-    </aside>
-  </section>
+  <app-page-header
+    activeSection="enrollments"
+    eyebrow="Enrollment activity"
+    title="Enrollments dashboard"
+    description="Connect students to courses, review active registrations, and keep delivery flow visible."
+    statusLabel="Enrollment status"
+    [statusTitle]="
+      loading() ? 'Syncing registrations' : error() ? 'Needs attention' : 'Ready to assign'
+    "
+    statusDescription="This section uses student and course records together, completing the main enrollment workflow."
+    [showAdminAction]="authService.hasRole('Admin')"
+    primaryActionLabel="Add enrollment"
+    primaryActionLink="/dashboard/enrollments/add"
+  />
 
   <!-- METRICS -->
   <section class="surface section-card">
@@ -65,14 +34,13 @@
 
   <!-- ERROR -->
   @if (error()) {
-  <section class="status-banner status-error">
-    {{ error() }}
-  </section>
+    <section class="status-banner status-error">
+      {{ error() }}
+    </section>
   }
 
   <!-- TABLE -->
   <section class="surface table-section" [attr.aria-busy]="loading()">
-
     <!-- HEADER + SEARCH -->
     <div class="section-header">
       <div>
@@ -80,8 +48,24 @@
         <h2>Current registrations</h2>
       </div>
 
-      <input type="text" placeholder="Search student or course..." (input)="setQuery($any($event.target).value)"
-        class="input" />
+      <div class="toolbar">
+        <input
+          type="search"
+          placeholder="Search student or course..."
+          [value]="query()"
+          (input)="setQuery($any($event.target).value)"
+          class="input"
+        />
+
+        <button
+          class="button button-secondary"
+          type="button"
+          (click)="loadEnrollments()"
+          [disabled]="loading()"
+        >
+          Refresh
+        </button>
+      </div>
     </div>
 
     <!-- TABLE -->
@@ -98,59 +82,75 @@
         </thead>
 
         <tbody>
-
           <!-- LOADING -->
           @if (loading()) {
-          <tr>
-            <td colspan="5">
-              <app-skeleton-table [rows]="5" [cols]="5"></app-skeleton-table>
-            </td>
-          </tr>
+            <tr>
+              <td colspan="5">
+                <app-skeleton-table [rows]="5" [cols]="5"></app-skeleton-table>
+              </td>
+            </tr>
           }
 
           <!-- EMPTY -->
           @else if (filtered().length === 0) {
-          <tr>
-            <td colspan="5" class="table-state">
-              No enrollments found.
-            </td>
-          </tr>
+            <tr>
+              <td colspan="5" class="table-state">
+                @if (query()) {
+                  No enrollments match "{{ query() }}".
+                } @else {
+                  No enrollments have been added yet.
+                }
+              </td>
+            </tr>
           }
 
           <!-- DATA -->
           @else {
-          @for (enrollment of paged(); track enrollment.enrollmentID) {
-          <tr>
-            <td>{{ enrollment.enrollmentID }}</td>
-            <td>{{ enrollment.studentName }}</td>
-            <td>{{ enrollment.courseName }}</td>
-            <td>{{ enrollment.enrollmentDate | date:'mediumDate' }}</td>
-            <td class="table-actions">
-              <button class="button button-danger button-small" type="button" [disabled]="!authService.hasRole('Admin')" (click)="deleteEnrollment(enrollment)">
-                Delete
-              </button>
-            </td>
-          </tr>
+            @for (enrollment of paged(); track enrollment.enrollmentID) {
+              <tr>
+                <td>{{ enrollment.enrollmentID }}</td>
+                <td>{{ enrollment.studentName }}</td>
+                <td>{{ enrollment.courseName }}</td>
+                <td>{{ enrollment.enrollmentDate | date: 'mediumDate' }}</td>
+                <td class="table-actions">
+                  @if (authService.hasRole('Admin')) {
+                    <button
+                      class="button button-danger button-small"
+                      type="button"
+                      (click)="deleteEnrollment(enrollment)"
+                    >
+                      Delete
+                    </button>
+                  } @else {
+                    <span class="muted-text">View only</span>
+                  }
+                </td>
+              </tr>
+            }
           }
-          }
-
         </tbody>
       </table>
     </div>
 
     <!-- PAGINATION -->
     <div class="pagination">
-      <button class="button button-secondary button-small" (click)="prevPage()" [disabled]="page() === 1">
+      <button
+        class="button button-secondary button-small"
+        (click)="prevPage()"
+        [disabled]="page() === 1"
+      >
         Prev
       </button>
 
       <span>Page {{ page() }} / {{ totalPages() }}</span>
 
-      <button class="button button-secondary button-small" (click)="nextPage()" [disabled]="page() === totalPages()">
+      <button
+        class="button button-secondary button-small"
+        (click)="nextPage()"
+        [disabled]="page() === totalPages()"
+      >
         Next
       </button>
     </div>
-
   </section>
-
 </main>

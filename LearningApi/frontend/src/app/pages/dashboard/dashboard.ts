@@ -15,10 +15,11 @@ import { ConfirmService } from '../../core/services/confirm.service';
 import { ToastService } from '../../core/services/toast.service';
 
 import { SkeletonTableComponent } from '../../core/components/skeleton-table/skeleton-table';
+import { PageHeaderComponent } from '../../shared/page-header/page-header';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, SkeletonTableComponent],
+  imports: [RouterLink, SkeletonTableComponent, PageHeaderComponent],
   templateUrl: './dashboard.html'
 })
 export class Dashboard implements OnInit {
@@ -69,30 +70,26 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
-    this.loading.set(false);
   }
 
   loadDashboard(): void {
     this.loading.set(true);
     this.error.set('');
 
-    // students
-    if (!this.studentService.hasStudents()) {
-      this.studentService.fetchStudents().subscribe();
-    }
-
-    // courses
-    if (!this.courseService.hasCourses()) {
-      this.courseService.fetchCourses().subscribe();
-    }
-
-    // enrollments
-    if (!this.enrollmentService.hasEnrollments()) {
-      this.enrollmentService.fetchEnrollments().subscribe();
-    }
-
-    // ✅ no forkJoin needed anymore
-    this.loading.set(false);
+    forkJoin([
+      this.studentService.fetchStudents(),
+      this.courseService.fetchCourses(),
+      this.enrollmentService.fetchEnrollments()
+    ]).subscribe({
+      next: () => {
+        this.page.set(1);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set('Could not load dashboard data. Check backend API and authentication.');
+      }
+    });
   }
 
   async deleteStudent(student: Student): Promise<void> {

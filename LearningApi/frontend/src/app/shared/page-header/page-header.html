@@ -1,0 +1,66 @@
+<section class="surface hero-panel hero-grid">
+  <div class="hero-row">
+    <div class="hero-kicker">
+      <p class="eyebrow">{{ eyebrow() }}</p>
+      <h1>{{ title() }}</h1>
+      <p class="page-copy">
+        {{ description() }}
+      </p>
+    </div>
+
+    <div class="hero-actions">
+      @if (activeSection() !== 'students') {
+      <a
+        class="button button-secondary"
+        routerLink="/dashboard"
+        routerLinkActive="button-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Students
+      </a>
+      }
+
+      @if (activeSection() !== 'courses') {
+      <a class="button button-secondary" routerLink="/dashboard/courses" routerLinkActive="button-active">
+        Courses
+      </a>
+      }
+
+      @if (activeSection() !== 'enrollments') {
+      <a class="button button-secondary" routerLink="/dashboard/enrollments" routerLinkActive="button-active">
+        Enrollments
+      </a>
+      }
+
+      @if (showAdminAction() && primaryActionLabel() && primaryActionLink()) {
+      <a class="button button-primary" [routerLink]="primaryActionLink()">
+        {{ primaryActionLabel() }}
+      </a>
+      }
+    </div>
+  </div>
+
+  <aside class="hero-sidebar">
+    <div class="project-diagram project-diagram-wide" aria-hidden="true">
+      <div class="diagram-screen">
+        <span></span><span></span><span></span>
+        <i></i><i></i><i></i>
+      </div>
+      <div class="diagram-link"></div>
+      <div class="diagram-api">
+        <span class="diagram-pill diagram-pill-top"></span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="diagram-link diagram-link-vertical"></div>
+      <div class="diagram-data"></div>
+    </div>
+
+    <article class="spotlight-card">
+      <p class="badge">{{ statusLabel() }}</p>
+      <h2>{{ statusTitle() }}</h2>
+      <p class="page-copy">
+        {{ statusDescription() }}
+      </p>
+    </article>
+  </aside>
+</section>

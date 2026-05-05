@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 3px;
+  height: var(--loader-height);
   width: 40%;
   background: var(--gradient-loader);
   animation: loading-bar 1s infinite;

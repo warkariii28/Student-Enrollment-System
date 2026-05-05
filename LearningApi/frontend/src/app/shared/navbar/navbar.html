@@ -9,7 +9,13 @@
 
     <div class="app-navbar__actions">
       @if (isLoggedIn()) {
-        <button class="button button-primary button-small" type="button" (click)="logout()">Logout</button>
+        <div class="app-navbar__user" aria-label="Signed in user">
+          <span class="app-navbar__user-label">Signed in as</span>
+          <strong>{{ username() }}</strong>
+        </div>
+        <button class="button button-primary button-small" type="button" (click)="logout()">
+          Logout
+        </button>
       } @else {
         <a class="button button-secondary button-small" routerLink="/register">Create account</a>
         <a class="button button-primary button-small" routerLink="/login">Sign in</a>

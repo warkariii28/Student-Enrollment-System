@@ -3,8 +3,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #4f46e5, #06b6d4);
+  height: var(--loader-height);
+  background: var(--gradient-loader);
   z-index: 9999;
   animation: loadingMove 1s linear infinite;
 }

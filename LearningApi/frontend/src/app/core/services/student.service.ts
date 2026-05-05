@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap, of, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable, tap, of, shareReplay, finalize } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Student, StudentPayload } from '../models/student';
@@ -37,12 +37,14 @@ export class StudentService extends BaseApiService {
     this.loadingSubject.next(true);
 
     this.inflight$ = this.get<Student[]>(this.apiUrl).pipe(
-      shareReplay(1),
       tap((students) => {
         this.studentsSubject.next(students || []);
+      }),
+      finalize(() => {
         this.loadingSubject.next(false);
         this.inflight$ = undefined;
-      })
+      }),
+      shareReplay(1)
     );
 
     return this.inflight$;

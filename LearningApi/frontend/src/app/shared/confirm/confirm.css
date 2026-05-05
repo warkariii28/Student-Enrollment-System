@@ -11,17 +11,17 @@
 
 .confirm-box {
   background: var(--color-confirm-bg);
-  padding: 20px 24px;
-  border-radius: 12px;
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-sm);
   color: var(--color-text-light);
   width: min(100%, 360px);
-  min-width: 300px;
+  min-width: var(--sidebar-width);
 }
 
 .actions {
-  margin-top: 16px;
+  margin-top: var(--space-4);
   display: flex;
-  gap: 10px;
+  gap: var(--space-3);
   justify-content: flex-end;
 }
 

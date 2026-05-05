@@ -8,10 +8,11 @@ import { CourseService } from '../../core/services/course.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmService } from '../../core/services/confirm.service';
 import { SkeletonTableComponent } from '../../core/components/skeleton-table/skeleton-table';
+import { PageHeaderComponent } from '../../shared/page-header/page-header';
 
 @Component({
   selector: 'app-courses',
-  imports: [RouterLink, CurrencyPipe, SkeletonTableComponent],
+  imports: [RouterLink, CurrencyPipe, SkeletonTableComponent, PageHeaderComponent],
   templateUrl: './courses.html'
 })
 export class Courses implements OnInit {

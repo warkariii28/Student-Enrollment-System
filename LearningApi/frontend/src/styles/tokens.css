@@ -122,6 +122,13 @@
   --content-width-xs: min(1180px, calc(100% - 16px));
   /* --content-width-tight: min(1240px, calc(100% - 32px)); */
   --table-min-width: 720px;
+  --navbar-height: 5rem;
+  --navbar-height-compact: 4rem;
+  --sidebar-width: 300px;
+  --sidebar-offset-width: 280px;
+  --loader-height: 0.1875rem;
+  --icon-size-md: 1.25rem;
+  --control-size-md: 2.75rem;
 
   --transition-fast: 0.16s ease;
   --transition-slow: 0.28s ease;

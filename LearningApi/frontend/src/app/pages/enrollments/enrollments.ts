@@ -1,16 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 import { EnrollmentService } from '../../core/services/enrollment.service';
 import { ConfirmService } from '../../core/services/confirm.service';
 import { Enrollment } from '../../core/models/enrollment';
 import { SkeletonTableComponent } from '../../core/components/skeleton-table/skeleton-table';
+import { PageHeaderComponent } from '../../shared/page-header/page-header';
 
 @Component({
   selector: 'app-enrollments',
-  imports: [RouterLink, DatePipe, SkeletonTableComponent],
+  imports: [DatePipe, SkeletonTableComponent, PageHeaderComponent],
   templateUrl: './enrollments.html'
 })
 export class Enrollments implements OnInit {

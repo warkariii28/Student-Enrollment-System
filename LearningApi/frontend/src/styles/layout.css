@@ -148,6 +148,10 @@
   align-items: center;
 }
 
+.toolbar .input {
+  min-width: min(100%, 260px);
+}
+
 .actions-row > * {
   flex: 1 1 min(100%, 180px);
   min-width: 0;

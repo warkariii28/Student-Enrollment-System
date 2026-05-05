@@ -4,14 +4,14 @@
 }
 
 .app-shell {
-  min-height: calc(100vh - 5rem);
+  min-height: calc(100vh - var(--navbar-height));
   display: flex;
   flex-direction: column;
   padding-top: 0;
 }
 
 .app-shell--with-navbar {
-  padding-top: 5rem;
+  padding-top: var(--navbar-height);
 }
 .app-container {
   display: flex;
@@ -22,7 +22,7 @@
 }
 
 .app-container--with-sidebar {
-  margin-left: 280px;
+  margin-left: var(--sidebar-offset-width);
 }
 
 .app-main {
@@ -33,7 +33,7 @@
 
 @media (max-width: 991.98px) {
   .app-shell {
-    min-height: calc(100vh - 4rem);
+    min-height: calc(100vh - var(--navbar-height-compact));
   }
 
   .app-container {

@@ -1,52 +1,16 @@
 <main class="page-shell dashboard-grid">
-  <section class="surface hero-panel hero-grid">
-    <div class="hero-row">
-      <div class="hero-kicker">
-        <p class="eyebrow">Protected workspace</p>
-        <h1>Courses Dashboard</h1>
-        <p class="page-copy">
-          Manage course catalog entries, keep fee details aligned, and maintain the learning offer available for
-          enrollment.
-        </p>
-      </div>
-
-      <div class="hero-actions">
-        <a class="button button-secondary" routerLink="/dashboard">Students</a>
-        <a class="button button-secondary" routerLink="/dashboard/enrollments">Enrollments</a>
-        <!-- <button class="button button-secondary" type="button" (click)="loadCourses()" [disabled]="loading()">
-          Refresh data
-        </button> -->
-        @if (authService.hasRole('Admin')) {
-        <a class="button button-primary" routerLink="/dashboard/courses/add">Add course</a>}
-        <!-- <button class="button button-secondary" type="button" (click)="logout()">Logout</button> -->
-      </div>
-    </div>
-
-    <aside class="hero-sidebar">
-      <div class="project-diagram project-diagram-wide" aria-hidden="true">
-        <div class="diagram-screen">
-          <span></span><span></span><span></span>
-          <i></i><i></i><i></i>
-        </div>
-        <div class="diagram-link"></div>
-        <div class="diagram-api">
-          <span class="diagram-pill diagram-pill-top"></span>
-          <span></span><span></span><span></span>
-        </div>
-        <div class="diagram-link diagram-link-vertical"></div>
-        <div class="diagram-data"></div>
-      </div>
-
-      <article class="spotlight-card">
-        <p class="badge">Course status</p>
-        <h2>{{ loading() ? 'Syncing catalog' : error() ? 'Needs attention' : 'Ready to publish' }}</h2>
-        <p class="page-copy">
-          Courses feed directly into the enrollment flow, so keeping names, fees, and durations current matters across
-          the app.
-        </p>
-      </article>
-    </aside>
-  </section>
+  <app-page-header
+    activeSection="courses"
+    eyebrow="Course catalog"
+    title="Courses dashboard"
+    description="Keep course names, fees, and durations ready for enrollment."
+    statusLabel="Course status"
+    [statusTitle]="loading() ? 'Syncing catalog' : error() ? 'Needs attention' : 'Ready to publish'"
+    statusDescription="Courses feed directly into the enrollment flow, so keeping catalog details current matters across the app."
+    [showAdminAction]="authService.hasRole('Admin')"
+    primaryActionLabel="Add course"
+    primaryActionLink="/dashboard/courses/add"
+  />
 
   <section class="surface section-card">
     <div class="metric-grid">
@@ -80,7 +44,24 @@
         <h2>Current catalog</h2>
       </div>
 
-      <input type="text" placeholder="Search course..." (input)="setQuery($any($event.target).value)" class="input" />
+      <div class="toolbar">
+        <input
+          type="search"
+          placeholder="Search courses..."
+          [value]="query()"
+          (input)="setQuery($any($event.target).value)"
+          class="input"
+        />
+
+        <button
+          class="button button-secondary"
+          type="button"
+          (click)="loadCourses()"
+          [disabled]="loading()"
+        >
+          Refresh
+        </button>
+      </div>
     </div>
 
     <div class="table-scroll">
@@ -110,7 +91,11 @@
           @else if (filteredCourses().length === 0) {
           <tr>
             <td colspan="5" class="table-state">
-              No courses found.
+              @if (query()) {
+                No courses match "{{ query() }}".
+              } @else {
+                No courses have been added yet.
+              }
             </td>
           </tr>
           }
@@ -129,12 +114,14 @@
                 [routerLink]="['/dashboard/courses/edit', course.courseID]">
                 Edit
               </a>
-              }
+              
 
               <button class="button button-danger button-small" type="button" [disabled]="!authService.hasRole('Admin')"
                 (click)="deleteCourse(course)">
                 Delete
               </button>
+              }
+              @else {<span class="muted-text">View Only</span>}
             </td>
           </tr>
           }

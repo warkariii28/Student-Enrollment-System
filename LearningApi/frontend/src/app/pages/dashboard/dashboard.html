@@ -1,53 +1,17 @@
 <main class="page-shell dashboard-grid">
+  <app-page-header
+    activeSection="students"
+    eyebrow="Student records"
+    title="Students dashboard"
+    description="Manage learner profiles, contact details, and enrollment readiness."
+    statusLabel="System status"
+    [statusTitle]="loading() ? 'Loading students' : error() ? 'Needs attention' : 'Ready'"
+    statusDescription="Student records are synced and ready for management."
+    [showAdminAction]="authService.hasRole('Admin')"
+    primaryActionLabel="Add student"
+    primaryActionLink="/dashboard/add"
+  />
 
-  <!-- HERO -->
-  <section class="surface hero-panel hero-grid">
-    <div class="hero-row">
-      <div class="hero-kicker">
-        <p class="eyebrow">Student management</p>
-        <h1>Students Dashboard</h1>
-        <p class="page-copy">
-          Manage student records, track entries, and maintain your student database.
-        </p>
-      </div>
-
-      <div class="hero-actions">
-        <!-- <a class="button button-secondary" routerLink="/dashboard">Students</a> -->
-        <a class="button button-secondary" routerLink="/dashboard/courses">Courses</a>
-        <a class="button button-secondary" routerLink="/dashboard/enrollments">Enrollments</a>
-        @if (authService.hasRole('Admin')) {
-        <a class="button button-primary" routerLink="/dashboard/students/add">Add students</a>}
-        <!-- <button class="button button-secondary" type="button" (click)="logout()">Logout</button> -->
-      </div>
-    </div>
-
-    <aside class="hero-sidebar">
-      <div class="project-diagram project-diagram-wide" aria-hidden="true">
-        <div class="diagram-screen">
-          <span></span><span></span><span></span>
-          <i></i><i></i><i></i>
-        </div>
-        <div class="diagram-link"></div>
-        <div class="diagram-api">
-          <span class="diagram-pill diagram-pill-top"></span>
-          <span></span><span></span><span></span>
-        </div>
-        <div class="diagram-link diagram-link-vertical"></div>
-        <div class="diagram-data"></div>
-      </div>
-      <article class="spotlight-card">
-        <p class="badge">System status</p>
-        <h2>
-          {{ loading() ? 'Loading students' : error() ? 'Needs attention' : 'Ready' }}
-        </h2>
-        <p class="page-copy">
-          Student records are synced and ready for management.
-        </p>
-      </article>
-    </aside>
-  </section>
-
-  <!-- METRICS -->
   <section class="surface section-card">
     <div class="metric-grid">
       <article class="metric">
@@ -65,27 +29,39 @@
     </div>
   </section>
 
-  <!-- ERROR -->
   @if (error()) {
-  <section class="status-banner status-error">
-    {{ error() }}
-  </section>
+    <section class="status-banner status-error">
+      {{ error() }}
+    </section>
   }
 
-  <!-- STUDENT TABLE -->
   <section class="surface table-section" [attr.aria-busy]="loading()">
-
-    <!-- HEADER + SEARCH -->
     <div class="section-header">
       <div>
         <p class="badge">Student records</p>
         <h2>Current roster</h2>
       </div>
 
-      <input type="text" placeholder="Search student..." (input)="setQuery($any($event.target).value)" class="input" />
+      <div class="toolbar">
+        <input
+          type="search"
+          placeholder="Search students..."
+          [value]="query()"
+          (input)="setQuery($any($event.target).value)"
+          class="input"
+        />
+
+        <button
+          class="button button-secondary"
+          type="button"
+          (click)="loadDashboard()"
+          [disabled]="loading()"
+        >
+          Refresh
+        </button>
+      </div>
     </div>
 
-    <!-- TABLE -->
     <div class="table-scroll">
       <table>
         <thead>
@@ -98,56 +74,61 @@
         </thead>
 
         <tbody>
-
           @if (loading()) {
-          <tr>
-            <td colspan="4">
-              <app-skeleton-table [rows]="5" [cols]="4"></app-skeleton-table>
-            </td>
-          </tr>
-          }
+            <tr>
+              <td colspan="4">
+                <app-skeleton-table [rows]="5" [cols]="4"></app-skeleton-table>
+              </td>
+            </tr>
 
-          @else if (filteredStudents().length === 0) {
-          <tr>
-            <td colspan="4" class="table-state">
-              No students found.
-            </td>
-          </tr>
-          }
+          } @else if (filteredStudents().length === 0) {
+            <tr>
+              <td colspan="4" class="table-state">
+                @if (query()) {
+                  No students match "{{ query() }}".
+                } @else {
+                  No students have been added yet.
+                }
+              </td>
+            </tr>
 
-          @else {
-          @for (student of pagedStudents(); track student.studentID) {
-          <tr>
-            <td>{{ student.studentID }}</td>
-            <td>{{ student.name }}</td>
-            <td>{{ student.email }}</td>
-            <td class="table-actions">
-              @if (authService.hasRole('Admin')) {
-              <a class="button button-secondary button-small" [routerLink]="['/dashboard/edit', student.studentID]">
-                Edit
-              </a>
-              }
+          } @else {
+            @for (student of pagedStudents(); track student.studentID) {
+              <tr>
+                <td>{{ student.studentID }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.email }}</td>
+                <td class="table-actions">
+                  @if (authService.hasRole('Admin')) {
+                    <a
+                      class="button button-secondary button-small"
+                      [routerLink]="['/dashboard/edit', student.studentID]"
+                    >
+                      Edit
+                    </a>
 
-              <button class="button button-danger button-small" [disabled]="!authService.hasRole('Admin')"
-                (click)="deleteStudent(student)">
-                Delete
-              </button>
-            </td>
-          </tr>
+                    <button
+                      class="button button-danger button-small"
+                      type="button"
+                      (click)="deleteStudent(student)"
+                    >
+                      Delete
+                    </button>
+                  } @else {
+                    <span class="muted-text">View only</span>
+                  }
+                </td>
+              </tr>
+            }
           }
-          }
-
         </tbody>
       </table>
     </div>
 
-    <!-- PAGINATION -->
     <div class="pagination">
       <button (click)="prevPage()" [disabled]="page() === 1">Prev</button>
       <span>Page {{ page() }} / {{ totalPages() }}</span>
       <button (click)="nextPage()" [disabled]="page() === totalPages()">Next</button>
     </div>
-
   </section>
-
 </main>
