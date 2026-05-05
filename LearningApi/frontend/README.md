@@ -1,59 +1,121 @@
-# Frontend
+# LearningApi Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
+This is the Angular frontend for the LearningApi project. It provides the login/register screens, protected dashboard layout, student management, course catalog, and enrollment views.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+- Angular 21
+- TypeScript
+- RxJS
+- Angular signals
+- Angular router guards and interceptors
+- lucide-angular icons
+- CSS custom properties for design tokens
 
-```bash
-ng serve
-```
+## Prerequisites
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Node.js
+- npm
+- Backend API running at `http://localhost:5140`
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Install
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+## Run Development Server
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Open:
 
-## Running unit tests
+```txt
+http://localhost:4200
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Build
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+Build output is created in:
 
-For end-to-end (e2e) testing, run:
+```txt
+frontend/dist/frontend
+```
+
+## Test
 
 ```bash
-ng e2e
+npm test
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## API Configuration
 
-## Additional Resources
+The API base URL is configured in:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```txt
+src/environments/environment.ts
+```
+
+Current development value:
+
+```ts
+export const environment = {
+  production: false,
+  apiBaseUrl: 'http://localhost:5140'
+};
+```
+
+## Main Routes
+
+- `/login` - sign in
+- `/register` - create account
+- `/dashboard` - students dashboard
+- `/dashboard/add` - add student, admin only
+- `/dashboard/edit/:id` - edit student, admin only
+- `/dashboard/courses` - courses dashboard
+- `/dashboard/courses/add` - add course, admin only
+- `/dashboard/courses/edit/:id` - edit course, admin only
+- `/dashboard/enrollments` - enrollments dashboard
+- `/dashboard/enrollments/add` - add enrollment, admin only
+
+## Important Folders
+
+```txt
+src/app/core/          Models, services, guards, interceptors, shared utilities
+src/app/layouts/       Auth layout and protected app layout
+src/app/pages/         Login, register, dashboard, forms, lists
+src/app/shared/        Navbar, sidebar, footer, toast, confirm, loader, page header
+src/styles/            Global CSS tokens, base styles, layout, components
+```
+
+## Frontend Features
+
+- Authenticated app shell with navbar and sidebar
+- JWT token attachment through an auth interceptor
+- Protected routes through `authGuard`
+- Admin-only routes through `roleGuard`
+- Reusable page header for dashboard-style pages
+- Consistent table toolbar with search and refresh
+- Pagination for list screens
+- Toast notifications and confirm dialogs
+- Shared design tokens in `src/styles/tokens.css`
+
+## Notes For Beginners
+
+Start by reading these files:
+
+```txt
+src/app/app.routes.ts
+src/app/core/services/auth.service.ts
+src/app/core/interceptors/auth.interceptor.ts
+src/app/pages/dashboard/dashboard.ts
+src/app/shared/page-header/page-header.ts
+```
+
+These show how routing, authentication, API calls, signals, and reusable UI pieces connect together.
