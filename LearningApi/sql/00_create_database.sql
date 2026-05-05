@@ -1,0 +1,8 @@
+IF DB_ID(N'LearningDB') IS NULL
+BEGIN
+    CREATE DATABASE LearningDB;
+END;
+GO
+
+USE LearningDB;
+GO
