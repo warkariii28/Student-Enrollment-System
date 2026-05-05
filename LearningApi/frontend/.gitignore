@@ -47,3 +47,6 @@ LearningApi.sln
 angular.json
 package-lock.json
 package.json
+
+# SQL
+03_seed_optional.SQL
