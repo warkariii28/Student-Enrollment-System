@@ -1,6 +1,7 @@
 using LearningApi.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using LearningApi.Exceptions;
 
 namespace LearningApi.Repositories;
 
@@ -25,8 +26,15 @@ public class AuthRepository : IAuthRepository
         cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
         cmd.Parameters.AddWithValue("@Role", user.Role);
 
-        conn.Open();
-        cmd.ExecuteNonQuery();
+        try
+        {
+            conn.Open();
+            cmd.ExecuteNonQuery();
+        }
+        catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
+        {
+            throw new BadRequestException("Email already exists");
+        }
     }
 
     public User? GetByEmail(string email)
