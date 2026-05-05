@@ -44,3 +44,6 @@ __screenshots__/
 Thumbs.db
 
 LearningApi.sln
+angular.json
+package-lock.json
+package.json
