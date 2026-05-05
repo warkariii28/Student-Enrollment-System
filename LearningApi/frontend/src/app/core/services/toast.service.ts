@@ -12,6 +12,7 @@ export class ToastService {
   private readonly _toast = signal<Toast | null>(null);
   readonly toast = this._toast.asReadonly();
 
+  // frontend/src/app/core/services/toast.service.ts
   show(message: string, type: ToastType = 'info', duration = 3000) {
     this._toast.set({ message, type });
 
@@ -20,7 +21,13 @@ export class ToastService {
     }, duration);
   }
 
-  success(msg: string) { this.show(msg, 'success'); }
-  error(msg: string) { this.show(msg, 'error'); }
-  info(msg: string) { this.show(msg, 'info'); }
+  success(msg: string) {
+    this.show(msg, 'success');
+  }
+  error(msg: string) {
+    this.show(msg, 'error');
+  }
+  info(msg: string) {
+    this.show(msg, 'info');
+  }
 }

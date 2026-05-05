@@ -185,12 +185,12 @@
 }
 
 .sidebar-stats strong {
-  font-size: 1.1rem;
+  font-size: var(--font-size-lg);
   display: block;
 }
 
 .sidebar-stats span {
-  font-size: 0.75rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
@@ -201,13 +201,14 @@
 }
 
 .sidebar-actions a {
-  display: block;
+  display: flex;
   padding: 0.55rem var(--space-3);
   border-radius: var(--radius-sm);
   background: rgba(31, 122, 90, 0.06);
-  font-size: 0.85rem;
+  font-size:var(--font-size-md);
   font-weight: 600;
   transition: all var(--transition-fast);
+  gap:var(--space-3);
 }
 
 .sidebar-actions a:hover {

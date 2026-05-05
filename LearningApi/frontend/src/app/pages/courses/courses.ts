@@ -51,16 +51,23 @@ export class Courses implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (!this.courseService.hasCourses()) {
-      this.courseService.fetchCourses().subscribe();
-    }
+    this.loadCourses();
   }
 
   loadCourses(): void {
     this.loading.set(true);
     this.error.set('');
 
-
+    this.courseService.fetchCourses(true).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.page.set(1);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set('Could not load courses. Check backend API and authentication.');
+      }
+    });
   }
 
   async deleteCourse(course: Course): Promise<void> {

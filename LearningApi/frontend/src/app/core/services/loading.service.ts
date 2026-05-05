@@ -1,18 +1,22 @@
+// frontend/src/app/core/services/loading.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject,asyncScheduler  } from 'rxjs';
+import { distinctUntilChanged, observeOn } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
-
   private activeRequests = 0;
-
   private loadingSubject = new BehaviorSubject<boolean>(false);
-  loading$ = this.loadingSubject.asObservable();
+
+  readonly loading$ = this.loadingSubject
+    .asObservable()
+    .pipe(distinctUntilChanged(), observeOn(asyncScheduler));
 
   start() {
     this.activeRequests++;
+
     if (this.activeRequests === 1) {
-      this.loadingSubject.next(true);
+      setTimeout(() => this.loadingSubject.next(true), 0);
     }
   }
 
@@ -22,7 +26,7 @@ export class LoadingService {
     }
 
     if (this.activeRequests === 0) {
-      this.loadingSubject.next(false);
+      setTimeout(() => this.loadingSubject.next(false), 0);
     }
   }
 }

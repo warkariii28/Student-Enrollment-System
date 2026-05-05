@@ -137,6 +137,7 @@ td {
   vertical-align: middle;
   overflow-wrap: anywhere;
   border: var(--border-default);
+  font-size: var(--font-size-md);
 }
 
 th {
@@ -194,21 +195,25 @@ label {
 .pagination{
   display: flex;
   flex-direction: row;
-  gap:var(--space-4);
+  gap:var(--space-7);
+
 }
 
 .pagination span{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width:var(--space-10);
+  /* width:var(--space-10); */
   height: auto;
   border-radius: 50%;
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: 0.82rem;
+  font-size: var(--font-size-md);
   font-weight: 700;
   line-height: 1;
+}
+.pagination button{
+  font-size: var(--font-size-sm);
 }
 
 @media (max-width: 575.98px) {

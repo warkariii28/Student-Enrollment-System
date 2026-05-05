@@ -54,14 +54,23 @@ export class Enrollments implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (!this.enrollmentService.hasEnrollments()) {
-      this.enrollmentService.fetchEnrollments().subscribe();
-    }
+    this.loadEnrollments();
   }
 
   loadEnrollments(): void {
     this.loading.set(true);
     this.error.set('');
+
+    this.enrollmentService.fetchEnrollments(true).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.page.set(1);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set('Could not load enrollments. Check backend API and authentication.');
+      }
+    });
 
     /* this.enrollmentService.getEnrollments().subscribe({
       next: (enrollments) => {

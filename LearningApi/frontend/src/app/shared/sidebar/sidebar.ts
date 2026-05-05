@@ -1,4 +1,4 @@
-import { Component, computed, signal, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, signal, OnDestroy, OnInit, HostBinding  } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -35,6 +35,8 @@ export class Sidebar implements OnInit, OnDestroy {
   readonly UserPlus = UserPlus;
   readonly Plus = Plus;
   readonly isCollapsed = signal(false);
+
+  
 
 toggleCollapse(): void {
   this.isCollapsed.update(v => !v);
