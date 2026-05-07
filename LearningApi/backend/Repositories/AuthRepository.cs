@@ -18,13 +18,13 @@ public class AuthRepository : IAuthRepository
     {
         using SqlConnection conn = new SqlConnection(_conn);
         using SqlCommand cmd = new SqlCommand("RegisterUsers", conn);
-
+        cmd.CommandTimeout = 30;
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@Username", user.Username);
-        cmd.Parameters.AddWithValue("@Email", user.Email);
-        cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-        cmd.Parameters.AddWithValue("@Role", user.Role);
+        cmd.Parameters.Add("@Username", SqlDbType.NVarChar, 100).Value = user.Username;
+        cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 256).Value = user.Email;
+        cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 500).Value = user.PasswordHash;
+        cmd.Parameters.Add("@Role", SqlDbType.NVarChar, 50).Value = user.Role;
 
         try
         {
@@ -43,7 +43,8 @@ public class AuthRepository : IAuthRepository
         using SqlCommand cmd = new SqlCommand("GetUserByEmail", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@Email", email);
+        cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 256).Value = email;
+
 
         conn.Open();
 
@@ -69,8 +70,9 @@ public class AuthRepository : IAuthRepository
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@UserID", userId);
-        cmd.Parameters.AddWithValue("@Email", email);
+        cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = userId;
+        cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 256).Value = email;
+
 
         conn.Open();
 
@@ -86,8 +88,9 @@ public class AuthRepository : IAuthRepository
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@UserID", userId);
-        cmd.Parameters.AddWithValue("@Role", role);
+        cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = userId;
+        cmd.Parameters.Add("@Role", SqlDbType.NVarChar, 50).Value = role;
+
 
         conn.Open();
 
@@ -100,11 +103,11 @@ public class AuthRepository : IAuthRepository
     {
         using var conn = new SqlConnection(_conn);
         using var cmd = new SqlCommand(
-            "INSERT INTO RefreshTokens (UserId, Token, ExpiresAt) VALUES (@u, @t, @e)", conn);
+            "INSERT INTO RefreshTokens (UserId, TokenHash, ExpiresAt) VALUES (@u, @t, @e)", conn);
 
-        cmd.Parameters.AddWithValue("@u", userId);
-        cmd.Parameters.AddWithValue("@t", token);
-        cmd.Parameters.AddWithValue("@e", DateTime.Now.AddDays(7));
+        cmd.Parameters.Add("@u", SqlDbType.Int).Value = userId;
+        cmd.Parameters.Add("@t", SqlDbType.NVarChar, 88).Value = token;
+        cmd.Parameters.Add("@e", SqlDbType.DateTime).Value = DateTime.UtcNow.AddDays(7);
 
         conn.Open();
         cmd.ExecuteNonQuery();
@@ -114,9 +117,10 @@ public class AuthRepository : IAuthRepository
     {
         using SqlConnection conn = new SqlConnection(_conn);
         using SqlCommand cmd = new SqlCommand(
-            "UPDATE RefreshTokens SET IsRevoked = 1 WHERE Token = @t", conn);
+            "UPDATE RefreshTokens SET IsRevoked = 1 WHERE TokenHash = @t", conn);
 
-        cmd.Parameters.AddWithValue("@t", token);
+        cmd.Parameters.Add("@t", SqlDbType.NVarChar, 88).Value = token;
+
 
         conn.Open();
         cmd.ExecuteNonQuery();
@@ -126,9 +130,9 @@ public class AuthRepository : IAuthRepository
     {
         using var conn = new SqlConnection(_conn);
         using var cmd = new SqlCommand(
-            "SELECT * FROM RefreshTokens WHERE Token=@t AND IsRevoked=0", conn);
+            "SELECT * FROM RefreshTokens WHERE TokenHash=@t AND IsRevoked=0", conn);
 
-        cmd.Parameters.AddWithValue("@t", token);
+        cmd.Parameters.Add("@t", SqlDbType.NVarChar, 88).Value = token;
         conn.Open();
 
         using var r = cmd.ExecuteReader();
@@ -137,7 +141,7 @@ public class AuthRepository : IAuthRepository
         return new RefreshToken
         {
             UserId = (int)r["UserId"],
-            Token = r["Token"].ToString()!,
+            Token = r["TokenHash"].ToString()!,
             ExpiresAt = (DateTime)r["ExpiresAt"]
         };
     }
@@ -148,7 +152,7 @@ public class AuthRepository : IAuthRepository
         using SqlCommand cmd = new SqlCommand(
             "SELECT UserID, Username, Email, PasswordHash, Role FROM Users WHERE UserID = @id", conn);
 
-        cmd.Parameters.AddWithValue("@id", userId);
+        cmd.Parameters.Add("@id", SqlDbType.Int).Value = userId;
 
         conn.Open();
 

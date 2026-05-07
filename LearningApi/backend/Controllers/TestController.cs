@@ -2,11 +2,13 @@ using LearningApi.Models;
 using LearningApi.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using LearningApi.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LearningApi.Controllers;
 
 [ApiController]
 [Route("api/test")]
+[Authorize(Roles = "Admin")]
 
 public class TestController : ControllerBase
 {

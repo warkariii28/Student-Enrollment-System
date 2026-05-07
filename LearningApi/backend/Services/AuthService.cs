@@ -38,8 +38,9 @@ public class AuthService : IAuthService
 
         var accessToken = GenerateToken(user);
         var refreshToken = GenerateRefreshToken();
+        var refreshTokenHash = HashRefreshToken(refreshToken);
 
-        _repo.SaveRefreshToken(user.UserID, refreshToken);
+        _repo.SaveRefreshToken(user.UserID, refreshTokenHash);
 
         return new AuthResultDto
         {
@@ -51,7 +52,7 @@ public class AuthService : IAuthService
             Role = user.Role
         };
 
-        
+
     }
 
     public void UpdateEmail(int userId, string email)
@@ -82,7 +83,7 @@ public class AuthService : IAuthService
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddHours(2),
+            expires: DateTime.UtcNow.AddHours(2),
             signingCredentials: creds
         );
 
@@ -104,9 +105,10 @@ public class AuthService : IAuthService
 
     public RefreshToken? ValidateRefreshToken(string token)
     {
-        var stored = _repo.GetRefreshToken(token);
+        var tokenHash = HashRefreshToken(token);
+        var stored = _repo.GetRefreshToken(tokenHash);
 
-        if (stored == null || stored.ExpiresAt < DateTime.Now)
+        if (stored == null || stored.ExpiresAt < DateTime.UtcNow)
             return null;
 
         return stored;
@@ -122,17 +124,27 @@ public class AuthService : IAuthService
         return user;
     }
 
+    private static string HashRefreshToken(string token)
+    {
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(token));
+        return Convert.ToBase64String(bytes);
+    }
+
+
     public string RotateRefreshToken(string oldToken)
     {
-        var stored = _repo.GetRefreshToken(oldToken);
+        var oldTokenHash = HashRefreshToken(oldToken);
+        var stored = _repo.GetRefreshToken(oldTokenHash);
 
         if (stored == null)
             throw new BadRequestException("Invalid refresh token");
 
-        _repo.RevokeRefreshToken(oldToken);
+        _repo.RevokeRefreshToken(oldTokenHash);
 
         var newToken = GenerateRefreshToken();
-        _repo.SaveRefreshToken(stored.UserId, newToken);
+        var newTokenHash=HashRefreshToken(newToken);
+
+        _repo.SaveRefreshToken(stored.UserId, newTokenHash);
 
         return newToken;
     }

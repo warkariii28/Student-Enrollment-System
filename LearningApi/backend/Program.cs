@@ -3,6 +3,8 @@ using LearningApi.Services;
 using LearningApi.Helpers;
 using LearningApi.Middleware;
 using LearningApi.Models;
+using System.Threading.RateLimiting;
+
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +42,23 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+builder.Services.AddScoped<IAdminAuditLogRepository, AdminAuditLogRepository>();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("AuthPolicy", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 
 // CORS
 builder.Services.AddCors(options =>
@@ -74,7 +93,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;   
+    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment(); 
     options.SaveToken = true;               
 
     options.TokenValidationParameters = new TokenValidationParameters
@@ -90,7 +109,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Swagger
+//Swagger with JWT
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -125,7 +144,10 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// ✅ Correct order
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -133,9 +155,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<GlobalExceptionMiddleware>();// after Swagger
+app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseCors("AngularApp");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -143,3 +169,27 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+// Client
+//   ↓
+// ASP.NET Core pipeline
+//   ↓
+// HTTPS Redirection / HSTS
+//   ↓
+// GlobalExceptionMiddleware
+//   ↓
+// CORS
+//   ↓
+// Rate Limiting
+//   ↓
+// Authentication
+//   ↓
+// Authorization
+//   ↓
+// Controller
+//   ↓
+// Service
+//   ↓
+// Repository / Database
+

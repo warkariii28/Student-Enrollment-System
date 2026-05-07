@@ -1,3 +1,6 @@
+// For every HTTP request, pass the request through this middleware.
+// If any unhandled exception occurs, catch it and return a standardized error response.
+
 using LearningApi.Exceptions;
 using LearningApi.Helpers;
 using System.Net;
@@ -25,7 +28,17 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(
+                ex,
+                "Unhandled exception for {Method} {Path}. TraceId: {TraceId}",
+                context.Request.Method,
+                context.Request.Path,
+                context.TraceIdentifier);
+
+            // If ASP.NET has already started sending the response, do not try to replace it.
+            if (context.Response.HasStarted)
+                throw;
+
             await HandleException(context, ex);
         }
     }
@@ -36,10 +49,10 @@ public class GlobalExceptionMiddleware
 
         int statusCode = ex switch
         {
-            BadRequestException => (int)HttpStatusCode.BadRequest,
-            NotFoundException => (int)HttpStatusCode.NotFound,
-            UnauthorizedException => (int)HttpStatusCode.Unauthorized,
-            _ => (int)HttpStatusCode.InternalServerError
+            BadRequestException => (int)HttpStatusCode.BadRequest,    //400
+            NotFoundException => (int)HttpStatusCode.NotFound,        //404
+            UnauthorizedException => (int)HttpStatusCode.Unauthorized,//401
+            _ => (int)HttpStatusCode.InternalServerError              //500
         };
 
         context.Response.StatusCode = statusCode;

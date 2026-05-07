@@ -13,6 +13,9 @@ public class RegisterDto
     public string Email { get; set; } = "";
 
     [Required]
-    [StringLength(100, MinimumLength = 6)]
+    [StringLength(100, MinimumLength = 8)]
+    [RegularExpression(
+    @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$",
+    ErrorMessage = "Password must contain uppercase, lowercase, and number")]
     public string Password { get; set; } = "";
 }

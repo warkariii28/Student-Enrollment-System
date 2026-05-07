@@ -1,39 +1,55 @@
 using LearningApi.DTOs;
 using LearningApi.Models;
 using LearningApi.Services;
+using LearningApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LearningApi.Helpers;
 
-[Authorize] // base: must be logged in
+[Authorize]
 [ApiController]
 [Route("api/courses")]
 public class CoursesController : ControllerBase
 {
     private readonly ICourseService _service;
+    private readonly IAdminAuditLogRepository _auditRepo;
 
-    public CoursesController(ICourseService service)
+    public CoursesController(
+        ICourseService service,
+        IAdminAuditLogRepository auditRepo)
     {
         _service = service;
+        _auditRepo = auditRepo;
     }
 
-    // ✅ All users
     [HttpGet]
-    public IActionResult GetAll()
+    public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        var data = _service.GetAll();
+        if (page <= 0 || pageSize <= 0 || pageSize > 100)
+        {
+            return BadRequest(ResponseHelper.Fail<object>("Invalid pagination values"));
+        }
+
+        var data = _service.GetAll()
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
         return Ok(ResponseHelper.Success(data, "Courses fetched successfully"));
     }
 
-    // ✅ All users
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(ResponseHelper.Fail<object>("Invalid course ID"));
+        }
+
         var course = _service.GetById(id);
         return Ok(ResponseHelper.Success(course, "Course fetched successfully"));
     }
 
-    // 🔒 Admin only
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult Add(CourseCreateDto dto)
@@ -50,14 +66,20 @@ public class CoursesController : ControllerBase
 
         int id = _service.Add(course);
 
+        WriteAdminAudit("CreateCourse", id, $"Created course {dto.CourseName}");
+
         return StatusCode(201, ResponseHelper.Success(id, "Course created successfully"));
     }
 
-    // 🔒 Admin only
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public IActionResult Update(int id, CourseUpdateDto dto)
     {
+        if (id <= 0)
+        {
+            return BadRequest(ResponseHelper.Fail<object>("Invalid course ID"));
+        }
+
         if (!ModelState.IsValid)
             return BadRequest(ResponseHelper.Fail<object>("Invalid course data"));
 
@@ -71,15 +93,42 @@ public class CoursesController : ControllerBase
 
         _service.Update(course);
 
+        WriteAdminAudit("UpdateCourse", id, $"Updated course {dto.CourseName}");
+
         return Ok(ResponseHelper.Success<object>(null, "Updated successfully"));
     }
 
-    // 🔒 Admin only
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(ResponseHelper.Fail<object>("Invalid course ID"));
+        }
+
         _service.Delete(id);
+
+        WriteAdminAudit("DeleteCourse", id);
+
         return NoContent();
+    }
+
+    private void WriteAdminAudit(string action, int? entityId, string? details = null)
+    {
+        var adminUserIdClaim = User.FindFirst("UserID")?.Value;
+
+        if (!int.TryParse(adminUserIdClaim, out int adminUserId))
+            return;
+
+        _auditRepo.Add(new AdminAuditLog
+        {
+            AdminUserID = adminUserId,
+            Action = action,
+            EntityName = "Course",
+            EntityID = entityId,
+            Details = details,
+            IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+        });
     }
 }

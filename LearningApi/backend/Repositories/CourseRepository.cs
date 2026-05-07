@@ -20,7 +20,7 @@ public class CourseRepository : ICourseRepository
 
         using SqlConnection conn = new SqlConnection(_conn);
         using SqlCommand cmd = new SqlCommand("GetAllCourses", conn);
-
+        cmd.CommandTimeout = 30;
         cmd.CommandType = CommandType.StoredProcedure;
 
         conn.Open();
@@ -48,9 +48,9 @@ public class CourseRepository : ICourseRepository
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@CourseName", course.CourseName);
-        cmd.Parameters.AddWithValue("@Fee", course.Fee);
-        cmd.Parameters.AddWithValue("@DurationWeeks", course.DurationWeeks);
+        cmd.Parameters.Add("@CourseName", SqlDbType.NVarChar, 200).Value = course.CourseName;
+        cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = course.Fee;
+        cmd.Parameters.Add("@DurationWeeks", SqlDbType.Int).Value = course.DurationWeeks;
 
         conn.Open();
 
@@ -66,7 +66,7 @@ public class CourseRepository : ICourseRepository
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@CourseID", id);
+        cmd.Parameters.Add("@CourseID", SqlDbType.Int).Value = id;
 
         conn.Open();
 
@@ -81,7 +81,7 @@ public class CourseRepository : ICourseRepository
         using SqlCommand cmd = new SqlCommand("GetCourseByID", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@CourseID", id);
+        cmd.Parameters.Add("@CourseID", SqlDbType.Int).Value = id;
 
         conn.Open();
 
@@ -108,10 +108,10 @@ public class CourseRepository : ICourseRepository
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@CourseID", course.CourseID);
-        cmd.Parameters.AddWithValue("@CourseName", course.CourseName);
-        cmd.Parameters.AddWithValue("@Fee", course.Fee);
-        cmd.Parameters.AddWithValue("@DurationWeeks", course.DurationWeeks);
+        cmd.Parameters.Add("@CourseID", SqlDbType.Int).Value = course.CourseID;
+        cmd.Parameters.Add("@CourseName", SqlDbType.NVarChar, 200).Value = course.CourseName;
+        cmd.Parameters.Add("@Fee", SqlDbType.Decimal).Value = course.Fee;
+        cmd.Parameters.Add("@DurationWeeks", SqlDbType.Int).Value = course.DurationWeeks;
 
         conn.Open();
 

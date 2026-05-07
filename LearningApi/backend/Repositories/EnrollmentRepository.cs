@@ -49,8 +49,8 @@ public class EnrollmentRepository : IEnrollmentRepository
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@StudentID", enrollment.StudentID);
-        cmd.Parameters.AddWithValue("@CourseID", enrollment.CourseID);
+        cmd.Parameters.Add("@StudentID", SqlDbType.Int).Value = enrollment.StudentID;
+        cmd.Parameters.Add("@CourseID", SqlDbType.Int).Value = enrollment.CourseID;
 
         conn.Open();
 
@@ -58,9 +58,9 @@ public class EnrollmentRepository : IEnrollmentRepository
         {
             cmd.ExecuteNonQuery();
         }
-        catch (SqlException ex)
+        catch (SqlException)
         {
-            throw new BadRequestException(ex.Message);
+            throw new BadRequestException("Invalid enrollment request");
         }
     }
 
@@ -68,10 +68,10 @@ public class EnrollmentRepository : IEnrollmentRepository
     {
         using SqlConnection conn = new SqlConnection(_conn);
         using SqlCommand cmd = new SqlCommand("RemoveEnrollment", conn);
-
+        cmd.CommandTimeout = 30;
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@EnrollmentID", id);
+        cmd.Parameters.Add("@EnrollmentID", SqlDbType.Int).Value = id;
 
         conn.Open();
 

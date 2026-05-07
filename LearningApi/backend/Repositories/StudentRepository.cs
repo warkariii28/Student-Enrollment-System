@@ -20,7 +20,7 @@ public class StudentRepository : IStudentRepository
 
         using SqlConnection conn = new SqlConnection(_conn);
         using SqlCommand cmd = new SqlCommand("GetAllStudents", conn);
-
+        cmd.CommandTimeout = 30;
         cmd.CommandType = CommandType.StoredProcedure;
 
         conn.Open();
@@ -46,7 +46,7 @@ public class StudentRepository : IStudentRepository
         using SqlCommand cmd = new SqlCommand("GetStudentByID", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@StudentID", id);
+        cmd.Parameters.Add("@StudentID", SqlDbType.Int).Value = id;
 
         conn.Open();
 
@@ -70,8 +70,9 @@ public class StudentRepository : IStudentRepository
 
         cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@Name", student.Name);
-        cmd.Parameters.AddWithValue("@Email", student.Email);
+        cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = student.Name;
+        cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 256).Value = student.Email;
+
 
         conn.Open();
 
@@ -86,7 +87,7 @@ public class StudentRepository : IStudentRepository
         using SqlCommand cmd = new SqlCommand("RemoveStudent", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@StudentID", id);
+        cmd.Parameters.Add("@StudentID", SqlDbType.Int).Value = id;
 
         conn.Open();
 
@@ -101,9 +102,9 @@ public class StudentRepository : IStudentRepository
         using SqlCommand cmd = new SqlCommand("UpdateStudent", conn);
 
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@StudentID", student.StudentID);
-        cmd.Parameters.AddWithValue("@Name", student.Name);
-        cmd.Parameters.AddWithValue("@Email", student.Email);
+        cmd.Parameters.Add("@StudentID", SqlDbType.Int).Value = student.StudentID;
+        cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = student.Name;
+        cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 256).Value = student.Email;
 
         conn.Open();
 
