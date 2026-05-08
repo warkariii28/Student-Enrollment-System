@@ -1,7 +1,9 @@
 <header class="app-navbar">
   <div class="app-navbar__inner">
     <a class="app-brand" routerLink="/dashboard">
-      <span class="app-brand__mark">B</span>
+      <span class="app-brand__mark">
+        <img src="/icons/student.svg" alt="BrightPath Logo" />
+      </span>
       <span class="app-brand__copy">
         <strong>BrightPath</strong>
       </span>
@@ -13,6 +15,14 @@
           <span class="app-navbar__user-label">Signed in as</span>
           <strong>{{ username() }}</strong>
         </div>
+        <button
+          class="theme-toggle button button-secondary button-small"
+          type="button"
+          (click)="toggleTheme()"
+          aria-label="Toggle theme"
+        >
+          🌙
+        </button>
         <button class="button button-primary button-small" type="button" (click)="logout()">
           Logout
         </button>

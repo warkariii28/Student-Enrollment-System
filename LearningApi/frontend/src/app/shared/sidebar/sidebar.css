@@ -51,7 +51,7 @@
   transform: translateY(-50%);
   background:var(--color-bg);
   font-size: var(--font-size-lg);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   color: var(--color-text-muted);
   padding:0 var(--space-4);
@@ -161,7 +161,7 @@
   width: 100%;
 
   font-size: var(--font-size-sm);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   text-transform: uppercase;
   color: var(--color-text-muted);
   margin-bottom: var(--space-2);

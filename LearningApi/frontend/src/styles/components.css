@@ -5,13 +5,13 @@
   flex-wrap: wrap;
   width: fit-content;
   max-width: 100%;
-  gap: 0.45rem;
-  padding: 0.45rem 0.85rem;
+  gap: var(--space-2);
+  padding: var(--space-3);
   border-radius: var(--radius-pill);
   background: var(--color-accent-badge);
   color: var(--color-accent-strong);
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-heavy);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -29,7 +29,7 @@
 .page-copy {
   max-width: 58ch;
   color: var(--color-text-muted);
-  font-size: 1.02rem;
+  font-size: var(--font-size-lg);
   line-height: 1.75;
 }
 
@@ -45,8 +45,22 @@
 .module-card {
   border: var(--border-default);
   border-radius: var(--radius-md);
-  background: var(--gradient-card-surface);
+  background: var(--surface-elevated);
   box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.spotlight-card:hover,
+.metric:hover,
+.note:hover,
+.mini-panel:hover,
+.module-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  background: var(--surface-hover);
 }
 
 .spotlight-card,
@@ -61,7 +75,7 @@
 }
 
 .mini-panel strong {
-  font-size: 0.92rem;
+  font-size: var(--font-size-md);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -87,6 +101,16 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
 }
 
+.hero-points > *,
+.quick-stats > * {
+  min-width: 0;
+}
+
+.mini-panel strong,
+.mini-panel span {
+  overflow-wrap: anywhere;
+}
+
 .note {
   display: grid;
   gap: var(--space-2);
@@ -94,7 +118,7 @@
 }
 
 .note strong {
-  font-size: 1rem;
+  font-size: var(--font-size-md);
 }
 
 .metric-grid {
@@ -106,7 +130,18 @@
 }
 
 .metric {
+  position: relative;
+  overflow: hidden;
   padding: var(--space-5);
+}
+
+.metric::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--color-accent);
+  opacity: 0.9;
 }
 
 .module-card {
@@ -129,7 +164,7 @@
   display: block;
   margin-bottom: var(--space-2);
   color: var(--color-text-muted);
-  font-size: 0.88rem;
+  font-size: var(--font-size-sm);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -142,7 +177,7 @@
 
 .field-error {
   color: var(--color-danger);
-  font-size: 0.92rem;
+  font-size: var(--font-size-md);
   line-height: 1.4;
 }
 
@@ -156,7 +191,7 @@
 }
 
 .helper-row a {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .auth-side-visual {
@@ -192,8 +227,9 @@
 
 .auth-visual-copy strong {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: var(--font-size-lg);
   line-height: 1.15;
+  color: var(--color-text-muted);
 }
 
 .auth-visual-copy span {
@@ -210,7 +246,7 @@
 .auth-visual-float,
 .auth-visual-glow {
   position: absolute;
-  border-radius: 1.35rem;
+  border-radius: var(--radius-xl);
 }
 
 .auth-visual-window {
@@ -218,7 +254,7 @@
   bottom: 0;
   max-width: 100%;
   width: min(100%, 220px);
-  padding: 0.9rem;
+  padding: var(--spave-4);
   background: var(--gradient-auth-window);
   box-shadow: var(--shadow-auth-window);
 }
@@ -321,7 +357,7 @@
   padding: 0.95rem 1rem;
   border-radius: var(--radius-md);
   border: var(--border-status);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .status-error {
@@ -371,7 +407,7 @@
 }
 
 .button-small {
-  min-height: 2.65rem;
+  min-height: 2.8rem;
   padding: 0.65rem 0.9rem;
   border-radius: 0.85rem;
   font-size: var(--font-size-md);
@@ -396,201 +432,92 @@
   min-width: 0;
 }
 
+/*DIAGRAM*/
 
+.project-visual-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.92fr) minmax(220px, 0.58fr);
+  align-items: stretch;
+  gap: var(--space-4);
+}
+
+.project-visual-card {
+  display: grid;
+  align-content: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-5);
+  border: var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.project-visual-card strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.7vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.project-visual-card span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  line-height: 1.65;
+}
 
 .project-diagram {
   position: relative;
-  max-width: 100%;
-  min-height: 250px;
+  width: 100%;
+  max-width: min(100%, 680px);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.35rem, 1.2vw, 0.85rem);
   border: var(--border-default);
   border-radius: var(--radius-lg);
-  background: var(--gradient-project-diagram);
-  box-shadow: var(--shadow-diagram-inset);
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
+  isolation: isolate;
 }
 
-.project-diagram::before {
-  content: '';
-  position: absolute;
-  inset: 16px;
-  border-radius: calc(var(--radius-lg) - 0.35rem);
-  border: var(--border-subtle-dashed);
-  pointer-events: none;
-}
-
-.project-diagram-wide {
-  width: 100%;
-}
-
+.project-diagram-wide,
 .project-diagram-compact {
   width: 100%;
 }
 
-.diagram-screen,
-.diagram-api,
-.diagram-data,
-.diagram-pill {
-  position: absolute;
-  border-radius: 1.2rem;
+.project-diagram-wide {
+  max-width: min(100%, 720px);
 }
 
-.diagram-screen {
-  left: 1.2rem;
-  top: 1.5rem;
-  width: 11.2rem;
-  height: 7.4rem;
-  padding: 0.9rem;
-  background: var(--gradient-diagram-screen);
-  box-shadow: var(--shadow-diagram-screen);
+.project-diagram-compact {
+  max-width: min(100%, 460px);
+  padding: clamp(0.25rem, 0.9vw, 0.65rem);
 }
 
-.diagram-screen span {
-  display: inline-block;
-  width: 0.55rem;
-  height: 0.55rem;
-  margin-right: 0.38rem;
-  border-radius: 50%;
-  background: var(--color-surface-glass-line-soft);
-}
-
-.diagram-screen i,
-.diagram-api span,
-.diagram-pill {
+.project-diagram__image {
   display: block;
-  border-radius: var(--radius-pill);
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 43 / 24;
+  border-radius: calc(var(--radius-lg) - 0.35rem);
+  object-fit: contain;
+  filter: drop-shadow(0 18px 26px rgb(20 33 29 / 0.14));
+  transform: translateZ(0);
 }
 
-.diagram-screen i {
-  height: 0.58rem;
-  margin-top: 0.8rem;
-  background: var(--gradient-diagram-line);
-}
-
-.diagram-screen i:nth-of-type(2) {
-  width: 76%;
-}
-
-.diagram-screen i:nth-of-type(3) {
-  width: 54%;
-}
-
-.diagram-api {
-  top: 2rem;
-  right: 2rem;
-  width: 7.4rem;
-  height: 9.8rem;
-  padding: 1.2rem 0.9rem;
-  background: var(--gradient-diagram-api);
-  box-shadow: var(--shadow-diagram-api);
-}
-
-.diagram-api span {
-  height: 0.62rem;
-  margin-top: 1rem;
-  background: var(--color-surface-glass-line);
-}
-
-.diagram-api span:nth-of-type(2) {
-  width: 78%;
-}
-
-.diagram-api span:nth-of-type(3) {
-  width: 56%;
-}
-
-.diagram-pill {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.diagram-pill-top {
-  top: 0.75rem;
-  width: 4.6rem;
-  height: 0.8rem;
-  background: var(--color-surface-glass-line-soft);
-}
-
-.diagram-link {
-  position: absolute;
-  left: 12.5rem;
-  top: 5rem;
-  width: 5.4rem;
-  height: 0.7rem;
-  border-radius: var(--radius-pill);
-  background: var(--gradient-diagram-link);
-}
-
-.diagram-link::after {
-  content: '';
-  position: absolute;
-  right: -0.4rem;
-  top: 50%;
-  width: 0.85rem;
-  height: 0.85rem;
-  margin-top: -0.425rem;
-  border-radius: 50%;
-  border: var(--border-accent-node);
-  background: var(--color-surface-strong);
-}
-
-.diagram-link-vertical {
-  left: auto;
-  top: 11.8rem;
-  right: 4.6rem;
-  width: 0.7rem;
-  height: 3.4rem;
-  background: var(--gradient-diagram-link-vertical);
-}
-
-.diagram-link-vertical::after {
-  right: 50%;
-  top: auto;
-  bottom: -0.42rem;
-  margin-right: -0.42rem;
-  margin-top: 0;
-  border-color: var(--color-warm-node-border);
-}
-
-.diagram-data {
-  right: 1.4rem;
-  bottom: 1.3rem;
-  width: 7.8rem;
-  height: 4.8rem;
-  border-radius: 1.4rem 1.4rem 1rem 1rem;
-  border: var(--border-default);
-  background: var(--gradient-diagram-data);
-  box-shadow: var(--shadow-diagram-data);
-}
-
-.diagram-data::before,
-.diagram-data::after {
-  content: '';
-  position: absolute;
-}
-
-.diagram-data::before {
-  top: -0.7rem;
-  left: 50%;
-  width: 5.3rem;
-  height: 1.15rem;
-  transform: translateX(-50%);
-  border: var(--border-default);
-  border-radius: var(--radius-pill);
-  background: var(--color-data-surface-strong);
-}
-
-.diagram-data::after {
-  inset: 1rem 1.2rem;
-  border-radius: var(--radius-pill);
-  background:
-    var(--gradient-diagram-data-lines);
-  box-shadow: var(--shadow-data-lines);
+[data-theme='dark'] .project-diagram__image {
+  filter: drop-shadow(0 22px 34px rgb(0 0 0 / 0.45))
+    drop-shadow(0 0 18px rgb(70 167 123 / 0.1));
 }
 
 .muted-text {
   color: var(--color-text-muted);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   white-space: nowrap;
 }
 
@@ -607,6 +534,29 @@
   .auth-side-visual {
     min-height: 220px;
   }
+
+  .project-diagram-wide {
+    max-width: min(100%, 580px);
+  }
+
+  .project-diagram-compact {
+    max-width: min(100%, 430px);
+  }
+
+  .project-visual-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .hero-points,
+  .quick-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .project-visual-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -619,6 +569,7 @@
   .project-diagram-wide,
   .project-diagram-compact {
     width: 100%;
+    max-width: min(100%, 520px);
   }
 
   .table-actions .button + .button {
@@ -649,42 +600,16 @@
   }
 
   .project-diagram {
-    min-height: 220px;
+    max-width: 100%;
+    padding-inline: 0;
   }
 
-  .diagram-screen {
-    left: 0.75rem;
-    top: 1.1rem;
-    width: min(9.2rem, calc(100% - 7.5rem));
-    height: 6.5rem;
-    padding: var(--space-3);
+  .project-diagram-compact {
+    max-width: min(100%, 400px);
   }
 
-  .diagram-link {
-    left: min(10.35rem, calc(100% - 8.9rem));
-    top: 4.2rem;
-    width: min(3.8rem, 16vw);
-  }
-
-  .diagram-api {
-    top: 1.4rem;
-    right: 0.75rem;
-    width: 6rem;
-    height: 8.5rem;
-    padding: 1rem 0.75rem;
-  }
-
-  .diagram-link-vertical {
-    top: 10rem;
-    right: 3.25rem;
-    height: 2.8rem;
-  }
-
-  .diagram-data {
-    right: 0.75rem;
-    bottom: 1rem;
-    width: 6.4rem;
-    height: 4.1rem;
+  .project-visual-card {
+    padding: var(--space-4);
   }
 
   .auth-side-visual {

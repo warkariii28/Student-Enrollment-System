@@ -17,6 +17,10 @@ body {
   font-family: var(--font-body);
   background: var(--gradient-page-bg);
   background-attachment: fixed;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -25,7 +29,8 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
+  opacity:0.88;
 }
 
 button,
@@ -35,10 +40,10 @@ button,
   min-height: var(--button-height);
   border: var(--border-transparent);
   border-radius: var(--radius-md);
-  padding: 0.8rem var(--button-padding-x);
-  margin-top:var(--space-1);
+  padding: var(--space-2) var(--button-padding-x);
+  margin-top: var(--space-1);
   font: inherit;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   line-height: 1;
   display: inline-flex;
   align-items: center;
@@ -49,11 +54,11 @@ button,
   text-align: center;
   white-space: normal;
   transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast),
-    background-color var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast);
+    transform var(--motion-fast),
+    box-shadow var(--motion-medium),
+    background-color var(--motion-medium),
+    border-color var(--motion-medium),
+    color var(--motion-medium);
 }
 
 button:hover,
@@ -78,17 +83,23 @@ textarea,
 select {
   width: 100%;
   max-width: 100%;
-  min-height: 3.35rem;
+  min-height: 3rem;
   border: var(--border-strong);
   border-radius: var(--radius-md);
-  padding: 0.95rem 1rem;
-  background: var(--color-surface-input);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-elevated);
   color: var(--color-text);
   font: inherit;
   transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    background-color var(--transition-fast);
+    border-color var(--motion-medium),
+    box-shadow var(--motion-medium),
+    background-color var(--motion-medium),
+    transform var(--motion-fast);
+}
+
+textarea:focus,
+select:focus {
+  transform: translateY(-1px);
 }
 
 input::placeholder,
@@ -132,7 +143,7 @@ tbody tr:last-child td:last-child {
 
 th,
 td {
-  padding: 1rem 1.1rem;
+  padding:var(--space-3);
   text-align: center;
   vertical-align: middle;
   overflow-wrap: anywhere;
@@ -143,15 +154,14 @@ td {
 th {
   color: var(--color-text-light);
   background: var(--color-accent);
-  font-size: 0.83rem;
-  letter-spacing: 0.08em;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   text-align: center;
 }
 
 tbody tr {
   transition: background-color var(--transition-fast);
-
 }
 
 tbody tr:hover {
@@ -170,36 +180,36 @@ h6 {
 
 h1 {
   font-size: clamp(2.25rem, 4vw, 4rem);
-  line-height: 0.98;
+  line-height: 1.05;
   letter-spacing: -0.04em;
 }
 
 h2 {
   font-size: clamp(1.55rem, 2.8vw, 2.2rem);
-  line-height: 1.05;
+  line-height: 1.15;
 }
 
 p {
   margin: 0;
+  line-height: 1.7;
 }
 
 label {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
   line-height: 1.2;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
 
-.pagination{
+.pagination {
   display: flex;
   flex-direction: row;
-  gap:var(--space-7);
-
+  gap: var(--space-7);
 }
 
-.pagination span{
+.pagination span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -209,15 +219,15 @@ label {
   background: var(--color-surface);
   color: var(--color-text);
   font-size: var(--font-size-md);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   line-height: 1;
 }
-.pagination button{
+.pagination button {
   font-size: var(--font-size-sm);
 }
 
 @media (max-width: 575.98px) {
-  td{
+  td {
     padding: var(--space-2);
-  }  
+  }
 }

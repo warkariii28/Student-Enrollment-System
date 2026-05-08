@@ -5,7 +5,11 @@
         <p class="eyebrow">{{ isEditMode ? 'Update course' : 'New course' }}</p>
         <h1>{{ isEditMode ? 'Edit course' : 'Add course' }}</h1>
         <p class="page-copy">
-          {{ isEditMode ? 'Revise an existing course without disturbing the rest of the catalog.' : 'Create a course entry so it becomes available inside the enrollment workflow.' }}
+          {{
+            isEditMode
+              ? 'Revise an existing course without disturbing the rest of the catalog.'
+              : 'Create a course entry so it becomes available inside the enrollment workflow.'
+          }}
         </p>
       </div>
 
@@ -17,7 +21,11 @@
         <article class="mini-panel">
           <strong>{{ isEditMode ? 'Catalog update' : 'Catalog entry' }}</strong>
           <span>
-            {{ isEditMode ? 'Update the name, fee, or duration while keeping the course available for enrollment.' : 'Each course needs a clear name, fee, and duration before learners can be enrolled.' }}
+            {{
+              isEditMode
+                ? 'Update the name, fee, or duration while keeping the course available for enrollment.'
+                : 'Each course needs a clear name, fee, and duration before learners can be enrolled.'
+            }}
           </span>
         </article>
         <article class="mini-panel">
@@ -26,18 +34,20 @@
         </article>
       </div>
 
-      <div class="project-diagram project-diagram-compact" aria-hidden="true">
-        <div class="diagram-screen">
-          <span></span><span></span><span></span>
-          <i></i><i></i><i></i>
+      <div class="project-visual-row">
+        <div class="project-diagram project-diagram-compact">
+          <img
+            src="/icons/dashboard-image.png"
+            alt="Student Management Dashboard Illustration"
+            class="project-diagram__image"
+          >
         </div>
-        <div class="diagram-link"></div>
-        <div class="diagram-api">
-          <span class="diagram-pill diagram-pill-top"></span>
-          <span></span><span></span><span></span>
-        </div>
-        <div class="diagram-link diagram-link-vertical"></div>
-        <div class="diagram-data"></div>
+
+        <article class="project-visual-card">
+          <p class="badge">Catalog flow</p>
+          <strong>Course details feed directly into enrollment decisions.</strong>
+          <span>Keep names, fees, and durations clear so admins can move quickly later.</span>
+        </article>
       </div>
     </article>
   </section>
@@ -48,13 +58,22 @@
         <p class="badge">Course entry</p>
         <h2>{{ isEditMode ? 'Revise course details' : 'Enter course details' }}</h2>
         <p class="page-copy">
-          {{ isEditMode ? 'This form now supports the backend course update flow as well.' : 'This flow supports creating new courses without altering the existing student screens.' }}
+          {{
+            isEditMode
+              ? 'This form now supports the backend course update flow as well.'
+              : 'This flow supports creating new courses without altering the existing student screens.'
+          }}
         </p>
       </div>
 
       <div class="field">
         <label for="courseName">Course name</label>
-        <input id="courseName" type="text" formControlName="courseName" placeholder="Full stack foundations" />
+        <input
+          id="courseName"
+          type="text"
+          formControlName="courseName"
+          placeholder="Full stack foundations"
+        />
         @if (courseForm.controls.courseName.touched && courseForm.controls.courseName.invalid) {
           <span class="field-error">Course name is required.</span>
         }
@@ -62,7 +81,14 @@
 
       <div class="field">
         <label for="fee">Fee</label>
-        <input id="fee" type="number" min="0" step="0.01" formControlName="fee" placeholder="25000" />
+        <input
+          id="fee"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="fee"
+          placeholder="25000"
+        />
         @if (courseForm.controls.fee.touched && courseForm.controls.fee.invalid) {
           <span class="field-error">Enter a valid fee.</span>
         }
@@ -70,8 +96,17 @@
 
       <div class="field">
         <label for="durationWeeks">Duration in weeks</label>
-        <input id="durationWeeks" type="number" min="1" step="1" formControlName="durationWeeks" placeholder="12" />
-        @if (courseForm.controls.durationWeeks.touched && courseForm.controls.durationWeeks.invalid) {
+        <input
+          id="durationWeeks"
+          type="number"
+          min="1"
+          step="1"
+          formControlName="durationWeeks"
+          placeholder="12"
+        />
+        @if (
+          courseForm.controls.durationWeeks.touched && courseForm.controls.durationWeeks.invalid
+        ) {
           <span class="field-error">Enter a valid duration in weeks.</span>
         }
       </div>
@@ -81,7 +116,11 @@
       }
 
       <div class="actions-row">
-        <button class="button button-primary" type="submit" [disabled]="!authService.hasRole('Admin')|| isSubmitting || isLoadingCourse">
+        <button
+          class="button button-primary"
+          type="submit"
+          [disabled]="!authService.hasRole('Admin') || isSubmitting || isLoadingCourse"
+        >
           {{ isSubmitting ? 'Saving...' : isEditMode ? 'Update course' : 'Save course' }}
         </button>
         <a class="button button-secondary" routerLink="/dashboard/courses">Cancel</a>

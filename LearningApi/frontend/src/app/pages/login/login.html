@@ -5,7 +5,8 @@
         <p class="eyebrow">Learning API</p>
         <h1>Sign in to the student workspace.</h1>
         <p class="page-copy">
-          Access your protected dashboard, keep records current, and move into the workflow without distractions.
+          Access your protected dashboard, keep records current, and move into the workflow without
+          distractions.
         </p>
       </div>
 
@@ -20,18 +21,20 @@
         </article>
       </div>
 
-      <div class="project-diagram project-diagram-compact" aria-hidden="true">
-        <div class="diagram-screen">
-          <span></span><span></span><span></span>
-          <i></i><i></i><i></i>
+      <div class="project-visual-row">
+        <div class="project-diagram project-diagram-compact">
+          <img
+            src="/icons/dashboard-image.png"
+            alt="Student Management Dashboard Illustration"
+            class="project-diagram__image"
+          >
         </div>
-        <div class="diagram-link"></div>
-        <div class="diagram-api">
-          <span class="diagram-pill diagram-pill-top"></span>
-          <span></span><span></span><span></span>
-        </div>
-        <div class="diagram-link diagram-link-vertical"></div>
-        <div class="diagram-data"></div>
+
+        <article class="project-visual-card">
+          <p class="badge">Workspace ready</p>
+          <strong>Sign in once and move straight into the operational dashboard.</strong>
+          <span>Protected access keeps the workflow focused while the interface stays lightweight.</span>
+        </article>
       </div>
     </article>
   </section>
@@ -46,7 +49,13 @@
 
       <div class="field">
         <label for="email">Email</label>
-        <input id="email" type="email" autocomplete="email" formControlName="email" placeholder="you@example.com" />
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          formControlName="email"
+          placeholder="you@example.com"
+        />
         @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) {
           <span class="field-error">Enter a valid email address.</span>
         }
@@ -84,18 +93,20 @@
       <div class="auth-visual-copy">
         <p class="badge">Workspace flow</p>
         <strong>Secure entry, quick access, cleaner handoff.</strong>
-        <span>The lower panel now carries a quiet visual story instead of leaving the layout unfinished.</span>
+        <span
+          >The lower panel now carries a quiet visual story instead of leaving the layout
+          unfinished.</span
+        >
       </div>
 
-      <div class="auth-visual-scene">
+      <!-- <div class="auth-visual-scene">
         <div class="auth-visual-window">
-          <span></span><span></span><span></span>
-          <i></i><i></i><i></i>
+          <span></span><span></span><span></span> <i></i><i></i><i></i>
         </div>
         <div class="auth-visual-float auth-visual-float-top"></div>
         <div class="auth-visual-float auth-visual-float-bottom"></div>
         <div class="auth-visual-glow"></div>
-      </div>
+      </div> -->
     </aside>
   </section>
 </main>
