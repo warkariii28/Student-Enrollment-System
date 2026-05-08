@@ -182,7 +182,7 @@ GO
 CREATE OR ALTER PROCEDURE dbo.RegisterUsers
     @Username NVARCHAR(100),
     @Email NVARCHAR(256),
-    @PasswordHash NVARCHAR(255),
+    @PasswordHash NVARCHAR(500),
     @Role NVARCHAR(50)
 AS
 BEGIN
@@ -228,5 +228,37 @@ BEGIN
     UPDATE dbo.Users
     SET Role = @Role
     WHERE UserID = @UserID;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.AddAdminAuditLog
+    @AdminUserID INT,
+    @Action NVARCHAR(100),
+    @EntityName NVARCHAR(100),
+    @EntityID INT = NULL,
+    @Details NVARCHAR(500) = NULL,
+    @IpAddress NVARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.AdminAuditLogs
+    (
+        AdminUserID,
+        Action,
+        EntityName,
+        EntityID,
+        Details,
+        IpAddress
+    )
+    VALUES
+    (
+        @AdminUserID,
+        @Action,
+        @EntityName,
+        @EntityID,
+        @Details,
+        @IpAddress
+    );
 END;
 GO

@@ -1,8 +1,16 @@
---SELECT * from Students;
-SELECT * from Users;
---SELECT * from Enrollments;
---SELECT * from Courses;
+USE LearningDB;
+GO
 
+-- Checks to run after setup:
+SELECT * FROM dbo.Students;
+SELECT * FROM dbo.Users;
+SELECT * FROM dbo.Enrollments;
+SELECT * FROM dbo.Courses;
+SELECT * FROM dbo.RefreshTokens;
+SELECT * FROM dbo.AdminAuditLogs;
+
+
+-- Optional admin promotion:
 UPDATE dbo.Users
-SET Role = 'Admin'
-WHERE Email = 'aw@email.com';
+SET Role = N'Admin'
+WHERE Email = N'ashw@email.com';

@@ -20,6 +20,7 @@ Tables:
 - `Enrollments`: `EnrollmentID`, `StudentID`, `CourseID`, `EnrollmentDate`
 - `Users`: `UserID`, `Username`, `Email`, `PasswordHash`, `Role`
 - `RefreshTokens`: `UserId`, `Token`, `ExpiresAt`, `IsRevoked`
+- `AdminAuditLogs`: `AuditLogID`, `AdminUserID`, `Action`, `EntityName`, `EntityID`, `Details`, `IpAddress`, `CreatedAt`
 
 Stored procedures used by the API:
 
@@ -27,5 +28,6 @@ Stored procedures used by the API:
 - Courses: `GetAllCourses`, `GetCourseByID`, `AddCourse`, `UpdateCourse`, `RemoveCourse`
 - Enrollments: `GetEnrollmentDetails`, `EnrollStudent`, `RemoveEnrollment`
 - Auth: `RegisterUsers`, `GetUserByEmail`, `UpdateUserEmail`, `UpdateUserRole`
+- Admin audit: `AddAdminAuditLog`
 
 `AuthRepository` also uses direct SQL for refresh token insert/revoke/read and `GetById`.
