@@ -176,4 +176,25 @@ public class AuthRepository : IAuthRepository
             Role = reader["Role"].ToString() ?? ""
         };
     }
+    public void CleanupExpiredRefreshTokens()
+    {
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("CleanupExpiredRefreshTokens", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+    public void RevokeActiveRefreshTokensForUser(int userId)
+    {
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("RevokeActiveRefreshTokensForUser", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
 }

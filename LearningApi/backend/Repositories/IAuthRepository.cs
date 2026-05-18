@@ -14,4 +14,7 @@ public interface IAuthRepository
     void SaveRefreshToken(int userId, string token);
     RefreshToken? GetRefreshToken(string token);
     void RevokeRefreshToken(string token);
+
+    void CleanupExpiredRefreshTokens();
+    void RevokeActiveRefreshTokensForUser(int userId);
 }

@@ -1,5 +1,6 @@
 using LearningApi.DTOs;
 using LearningApi.Models;
+using LearningApi.Exceptions;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -98,9 +99,15 @@ public class CourseRepository : ICourseRepository
 
         conn.Open();
 
-        var result = cmd.ExecuteScalar();
-
-        return Convert.ToInt32(result);
+        try
+        {
+            var result = cmd.ExecuteScalar();
+            return Convert.ToInt32(result);
+        }
+        catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
+        {
+            throw new BadRequestException("Course name already exists");
+        }
     }
 
     public bool Delete(int id)
@@ -159,8 +166,14 @@ public class CourseRepository : ICourseRepository
 
         conn.Open();
 
-        int rows = cmd.ExecuteNonQuery();
-
-        return rows > 0;
+        try
+        {
+            int rows = cmd.ExecuteNonQuery();
+            return rows > 0;
+        }
+        catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
+        {
+            throw new BadRequestException("Course name already exists");
+        }
     }
 }

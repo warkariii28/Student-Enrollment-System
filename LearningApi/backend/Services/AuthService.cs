@@ -31,6 +31,8 @@ public class AuthService : IAuthService
 
     public AuthResultDto Login(LoginDto dto)
     {
+        _repo.CleanupExpiredRefreshTokens();
+
         var user = _repo.GetByEmail(dto.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
@@ -40,7 +42,9 @@ public class AuthService : IAuthService
         var refreshToken = GenerateRefreshToken();
         var refreshTokenHash = HashRefreshToken(refreshToken);
 
+        _repo.RevokeActiveRefreshTokensForUser(user.UserID);
         _repo.SaveRefreshToken(user.UserID, refreshTokenHash);
+
 
         return new AuthResultDto
         {
@@ -142,17 +146,22 @@ public class AuthService : IAuthService
         _repo.RevokeRefreshToken(oldTokenHash);
 
         var newToken = GenerateRefreshToken();
-        var newTokenHash=HashRefreshToken(newToken);
+        var newTokenHash = HashRefreshToken(newToken);
 
         _repo.SaveRefreshToken(stored.UserId, newTokenHash);
 
         return newToken;
     }
     public void RevokeRefreshToken(string refreshToken)
-{
-    var tokenHash = HashRefreshToken(refreshToken);
-    _repo.RevokeRefreshToken(tokenHash);
-}
+    {
+        var tokenHash = HashRefreshToken(refreshToken);
+        _repo.RevokeRefreshToken(tokenHash);
+    }
+
+    public void CleanupExpiredRefreshTokens()
+    {
+        _repo.CleanupExpiredRefreshTokens();
+    }
 
 
 }

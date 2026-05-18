@@ -1,4 +1,5 @@
 using LearningApi.Models;
+using LearningApi.DTOs;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -29,5 +30,56 @@ public class AdminAuditLogRepository : IAdminAuditLogRepository
 
         conn.Open();
         cmd.ExecuteNonQuery();
+    }
+
+    public PagedResultDto<AdminAuditLogResponseDto> GetPaged(int page, int pageSize, string? search)
+    {
+        var logs = new List<AdminAuditLogResponseDto>();
+        var totalCount = 0;
+
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("GetAdminAuditLogs", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 30;
+
+        cmd.Parameters.Add("@Page", SqlDbType.Int).Value = page;
+        cmd.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize;
+        cmd.Parameters.Add("@Search", SqlDbType.NVarChar, 200).Value =
+            string.IsNullOrWhiteSpace(search) ? DBNull.Value : search.Trim();
+
+        conn.Open();
+
+        using SqlDataReader reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            logs.Add(new AdminAuditLogResponseDto
+            {
+                AuditLogID = Convert.ToInt32(reader["AuditLogID"]),
+                AdminUserID = Convert.ToInt32(reader["AdminUserID"]),
+                AdminName = reader["AdminName"]?.ToString() ?? "",
+                AdminEmail = reader["AdminEmail"]?.ToString() ?? "",
+                Action = reader["Action"]?.ToString() ?? "",
+                EntityName = reader["EntityName"]?.ToString() ?? "",
+                EntityID = reader["EntityID"] == DBNull.Value ? null : Convert.ToInt32(reader["EntityID"]),
+                Details = reader["Details"] == DBNull.Value ? null : reader["Details"].ToString(),
+                IpAddress = reader["IpAddress"] == DBNull.Value ? null : reader["IpAddress"].ToString(),
+                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+            });
+        }
+
+        if (reader.NextResult() && reader.Read())
+        {
+            totalCount = Convert.ToInt32(reader["TotalCount"]);
+        }
+
+        return new PagedResultDto<AdminAuditLogResponseDto>
+        {
+            Items = logs,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 }

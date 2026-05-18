@@ -43,4 +43,14 @@ public static class ResponseHelper
             Data = null
         };
     }
+
+    public static ApiResponse<T?> Fail<T>(T? data, string message)
+    {
+        return new ApiResponse<T?>
+        {
+            Success = false,
+            Message = message,
+            Data = data
+        };
+    }
 }

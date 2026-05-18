@@ -1,5 +1,6 @@
 namespace LearningApi.Repositories;
 
+using LearningApi.Exceptions;
 using LearningApi.DTOs;
 using LearningApi.Models;
 using Microsoft.Data.SqlClient;
@@ -119,9 +120,15 @@ public class StudentRepository : IStudentRepository
 
         conn.Open();
 
-        var result = cmd.ExecuteScalar();
-
-        return Convert.ToInt32(result);
+        try
+        {
+            var result = cmd.ExecuteScalar();
+            return Convert.ToInt32(result);
+        }
+        catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
+        {
+            throw new BadRequestException("Student email already exists");
+        }
     }
 
     public bool Delete(int id)
@@ -151,9 +158,15 @@ public class StudentRepository : IStudentRepository
 
         conn.Open();
 
-        int rows = cmd.ExecuteNonQuery();
-
-        return rows > 0;
+        try
+        {
+            int rows = cmd.ExecuteNonQuery();
+            return rows > 0;
+        }
+        catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
+        {
+            throw new BadRequestException("Student email already exists");
+        }
 
     }
 }

@@ -6,6 +6,7 @@ public class CourseUpdateDto
 {
     [Required]
     [StringLength(200, MinimumLength = 2)]
+    [RegularExpression(@"^(?=.*[A-Za-z])[A-Za-z0-9\s.'+#&()-]+$", ErrorMessage = "Course name must include letters and valid course characters only.")]
     public string CourseName { get; set; } = "";
 
     [Required]

@@ -27,9 +27,19 @@ builder.Services.AddControllers()
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = context =>
-        new BadRequestObjectResult(ResponseHelper.Fail<object>("Invalid request data"));
-});
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .ToDictionary(
+                x => string.IsNullOrWhiteSpace(x.Key) ? "request" : char.ToLowerInvariant(x.Key[0]) + x.Key[1..],
+                x => x.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+            );
 
+        return new BadRequestObjectResult(
+            ResponseHelper.Fail<object>(errors, "Invalid request data")
+        );
+    };
+});
 // Swagger base
 builder.Services.AddEndpointsApiExplorer();
 
@@ -93,8 +103,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment(); 
-    options.SaveToken = true;               
+    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+    options.SaveToken = true;
 
     options.TokenValidationParameters = new TokenValidationParameters
     {

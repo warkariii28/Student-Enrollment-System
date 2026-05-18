@@ -18,4 +18,5 @@ public interface IAuthService
     string GenerateToken(User user);
     string RotateRefreshToken(string oldToken);
     void RevokeRefreshToken(string refreshToken);
+    void CleanupExpiredRefreshTokens();
 }
