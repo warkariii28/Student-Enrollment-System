@@ -11,15 +11,16 @@ import { CourseService } from '../../core/services/course.service';
 import { EnrollmentService } from '../../core/services/enrollment.service';
 import { StudentService } from '../../core/services/student.service';
 import { ToastService } from '../../core/services/toast.service';
+import { ValidationErrors } from '../../core/models/api-response';
+import { getFieldError } from '../../core/utils/validation-errors';
 
 @Component({
   selector: 'app-enrollment-form',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './enrollment-form.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnrollmentForm implements OnInit {
-
   // ✅ inject where needed for signals
   private readonly fb = inject(FormBuilder);
   private readonly studentService = inject(StudentService);
@@ -30,8 +31,8 @@ export class EnrollmentForm implements OnInit {
     private readonly router: Router,
     /* private readonly courseService: CourseService, */
     private readonly toast: ToastService,
-    private readonly enrollmentService: EnrollmentService
-  ) { }
+    private readonly enrollmentService: EnrollmentService,
+  ) {}
 
   // ✅ reactive state
   readonly students = toSignal(this.studentService.students$, { initialValue: [] });
@@ -41,13 +42,15 @@ export class EnrollmentForm implements OnInit {
   isSubmitting = false;
   isLoadingOptions = true;
 
+  validationErrors: ValidationErrors | null = null;
+  readonly getFieldError = getFieldError;
+
   enrollmentForm = this.fb.nonNullable.group({
     studentID: [0, [Validators.required, Validators.min(1)]],
-    courseID: [0, [Validators.required, Validators.min(1)]]
+    courseID: [0, [Validators.required, Validators.min(1)]],
   });
 
   ngOnInit(): void {
-
     // ✅ fetch only if needed
     if (!this.studentService.hasStudents()) {
       this.studentService.fetchStudents().subscribe();
@@ -71,7 +74,6 @@ export class EnrollmentForm implements OnInit {
         }
       }); */
 
-
   submit(): void {
     if (this.enrollmentForm.invalid) {
       this.enrollmentForm.markAllAsTouched();
@@ -80,20 +82,22 @@ export class EnrollmentForm implements OnInit {
 
     this.error = '';
     this.isSubmitting = true;
+    this.validationErrors = null;
 
     this.enrollmentService
       .addEnrollment(this.enrollmentForm.getRawValue())
-      .pipe(finalize(() => this.isSubmitting = false))
+      .pipe(finalize(() => (this.isSubmitting = false)))
       .subscribe({
         next: () => {
           this.toast.success('Enrollment created');
           this.router.navigate(['/dashboard/enrollments']);
         },
         error: (err) => {
+          this.validationErrors = err.error?.data ?? null;
           const msg = err.error?.message || 'Could not save enrollment';
           this.toast.error(msg);
           this.error = msg;
-        }
+        },
       });
   }
 }

@@ -4,11 +4,13 @@
       <div class="hero-kicker">
         <p class="eyebrow">New enrollment</p>
         <h1>Create enrollment</h1>
-        <p class="page-copy">Link a student to a course using the records already available from both modules.</p>
+        <p class="page-copy">
+          Link a student to a course using the records already available from both modules.
+        </p>
       </div>
 
       @if (isLoadingOptions) {
-      <p class="status-banner status-neutral">Loading students and courses...</p>
+        <p class="status-banner status-neutral">Loading students and courses...</p>
       }
 
       <div class="quick-stats">
@@ -28,7 +30,7 @@
             src="/icons/dashboard-image.png"
             alt="Student Management Dashboard Illustration"
             class="project-diagram__image"
-          >
+          />
         </div>
 
         <article class="project-visual-card">
@@ -45,8 +47,10 @@
       <div class="form-header">
         <p class="badge">Enrollment entry</p>
         <h2>Select student and course</h2>
-        <p class="page-copy">The UI only allows valid selections from existing records so enrollment data stays
-          consistent.</p>
+        <p class="page-copy">
+          The UI only allows valid selections from existing records so enrollment data stays
+          consistent.
+        </p>
       </div>
 
       <div class="field">
@@ -54,11 +58,16 @@
         <select id="studentID" formControlName="studentID">
           <option [value]="0">Select a student</option>
           @for (student of students(); track student.studentID) {
-          <option [value]="student.studentID">{{ student.name }} ({{ student.email }})</option>
+            <option [value]="student.studentID">{{ student.name }} ({{ student.email }})</option>
           }
         </select>
-        @if (enrollmentForm.controls.studentID.touched && enrollmentForm.controls.studentID.invalid) {
-        <span class="field-error">Choose a student.</span>
+        @if (
+          enrollmentForm.controls.studentID.touched && enrollmentForm.controls.studentID.invalid
+        ) {
+          <span class="field-error">Choose a student.</span>
+        }
+        @if (getFieldError(validationErrors, 'studentID')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'studentID') }}</span>
         }
       </div>
 
@@ -67,22 +76,34 @@
         <select id="courseID" formControlName="courseID">
           <option [value]="0">Select a course</option>
           @for (course of courses(); track course.courseID) {
-          <option [value]="course.courseID">
-            {{ course.courseName }} - {{ course.durationWeeks }} weeks
-          </option>
+            <option [value]="course.courseID">
+              {{ course.courseName }} - {{ course.durationWeeks }} weeks
+            </option>
           }
         </select>
         @if (enrollmentForm.controls.courseID.touched && enrollmentForm.controls.courseID.invalid) {
-        <span class="field-error">Choose a course.</span>
+          <span class="field-error">Choose a course.</span>
+        }
+        @if (getFieldError(validationErrors, 'courseID')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'courseID') }}</span>
         }
       </div>
 
       @if (error) {
-      <p class="status-banner status-error">{{ error }}</p>
+        <p class="status-banner status-error">{{ error }}</p>
       }
 
       <div class="actions-row">
-        <button class="button button-primary" type="submit" [disabled]="isSubmitting ||isLoadingOptions ||enrollmentForm.invalid || !authService.hasRole('Admin') ">
+        <button
+          class="button button-primary"
+          type="submit"
+          [disabled]="
+            isSubmitting ||
+            isLoadingOptions ||
+            enrollmentForm.invalid ||
+            !authService.hasRole('Admin')
+          "
+        >
           {{ isSubmitting ? 'Saving...' : 'Save enrollment' }}
         </button>
         <a class="button button-secondary" routerLink="/dashboard/enrollments">Cancel</a>

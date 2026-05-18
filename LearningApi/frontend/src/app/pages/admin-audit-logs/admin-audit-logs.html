@@ -1,0 +1,117 @@
+<main class="page-shell dashboard-grid">
+  <app-page-header
+    activeSection="students"
+    eyebrow="Admin activity"
+    title="Audit logs"
+    description="Review recent admin actions across students, courses, enrollments, and user roles."
+    statusLabel="Audit status"
+    [statusTitle]="loading() ? 'Loading logs' : error() ? 'Needs attention' : 'Ready'"
+    statusDescription="Audit logs help you understand who changed important records and when."
+  />
+
+  @if (error()) {
+    <section class="status-banner status-error">{{ error() }}</section>
+  }
+
+  <section class="surface table-section" [attr.aria-busy]="loading()">
+    <div class="section-header">
+      <div>
+        <p class="badge">Security records</p>
+        <h2>Recent admin actions</h2>
+      </div>
+
+      <div class="toolbar">
+        <input
+          type="search"
+          placeholder="Search audit logs..."
+          [value]="query()"
+          (input)="setQuery($any($event.target).value)"
+          class="input"
+        />
+
+        <button
+          class="button button-secondary"
+          type="button"
+          (click)="loadLogs()"
+          [disabled]="loading()"
+        >
+          Refresh
+        </button>
+      </div>
+
+      <!-- <button
+        class="button button-secondary"
+        type="button"
+        (click)="loadLogs()"
+        [disabled]="loading()"
+      >
+        Refresh
+      </button> -->
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Admin</th>
+            <th>Action</th>
+            <th>Entity</th>
+            <th>Details</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @if (loading()) {
+            <tr>
+              <td colspan="6">
+                <app-skeleton-table [rows]="5" [cols]="6"></app-skeleton-table>
+              </td>
+            </tr>
+          } @else if (logs().length === 0) {
+            <tr>
+              <td colspan="6" class="table-state">No audit logs found.</td>
+            </tr>
+          } @else {
+            @for (log of logs(); track log.auditLogID) {
+              <tr>
+                <td>{{ log.createdAt | date: 'medium' }}</td>
+                <td>
+                  <strong>{{ log.adminName }}</strong
+                  ><br />
+                  <small class="muted-text">{{ log.adminEmail }}</small>
+                </td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.entityName }} {{ log.entityID ? '#' + log.entityID : '' }}</td>
+                <td>{{ log.details || '-' }}</td>
+                <td>{{ log.ipAddress || '-' }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+      <div class="pagination">
+        <button
+          class="button button-secondary button-small"
+          type="button"
+          (click)="prevPage()"
+          [disabled]="page() === 1"
+        >
+          Prev
+        </button>
+
+        <span>Page {{ page() }} / {{ totalPages() }}</span>
+
+        <button
+          class="button button-secondary button-small"
+          type="button"
+          (click)="nextPage()"
+          [disabled]="page() === totalPages()"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </section>
+</main>

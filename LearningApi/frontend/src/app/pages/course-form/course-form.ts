@@ -4,11 +4,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { CourseService } from '../../core/services/course.service';
+import { ValidationErrors } from '../../core/models/api-response';
+import { getFieldError } from '../../core/utils/validation-errors';
 
 @Component({
   selector: 'app-course-form',
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './course-form.html'
+  templateUrl: './course-form.html',
 })
 export class CourseForm implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -18,10 +20,13 @@ export class CourseForm implements OnInit {
   isLoadingCourse = false;
   courseId: number | null = null;
 
+  validationErrors: ValidationErrors | null = null;
+  readonly getFieldError = getFieldError;
+
   courseForm = this.fb.nonNullable.group({
     courseName: ['', Validators.required],
     fee: [0, [Validators.required, Validators.min(0)]],
-    durationWeeks: [1, [Validators.required, Validators.min(1)]]
+    durationWeeks: [1, [Validators.required, Validators.min(1)]],
   });
 
   get isEditMode(): boolean {
@@ -32,7 +37,7 @@ export class CourseForm implements OnInit {
     public readonly authService: AuthService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly courseService: CourseService
+    private readonly courseService: CourseService,
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +57,7 @@ export class CourseForm implements OnInit {
       error: () => {
         this.error = 'Could not load course';
         this.isLoadingCourse = false;
-      }
+      },
     });
   }
 
@@ -61,6 +66,8 @@ export class CourseForm implements OnInit {
       this.courseForm.markAllAsTouched();
       return;
     }
+
+    this.validationErrors = null;
 
     this.error = '';
     this.isSubmitting = true;
@@ -72,7 +79,10 @@ export class CourseForm implements OnInit {
         .pipe(finalize(() => (this.isSubmitting = false)))
         .subscribe({
           next: () => this.router.navigate(['/dashboard/courses']),
-          error: () => (this.error = 'Could not save course')
+          error: (err) => {
+            this.validationErrors = err.error?.data ?? null;
+            this.error = err.error?.message || 'Could not save course';
+          },
         });
       return;
     }
@@ -82,7 +92,10 @@ export class CourseForm implements OnInit {
       .pipe(finalize(() => (this.isSubmitting = false)))
       .subscribe({
         next: () => this.router.navigate(['/dashboard/courses']),
-        error: () => (this.error = 'Could not save course')
+        error: (err) => {
+          this.validationErrors = err.error?.data ?? null;
+          this.error = err.error?.message || 'Could not save course';
+        },
       });
   }
 }

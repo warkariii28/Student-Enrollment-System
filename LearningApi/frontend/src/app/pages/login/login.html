@@ -27,13 +27,16 @@
             src="/icons/dashboard-image.png"
             alt="Student Management Dashboard Illustration"
             class="project-diagram__image"
-          >
+          />
         </div>
 
         <article class="project-visual-card">
           <p class="badge">Workspace ready</p>
           <strong>Sign in once and move straight into the operational dashboard.</strong>
-          <span>Protected access keeps the workflow focused while the interface stays lightweight.</span>
+          <span
+            >Protected access keeps the workflow focused while the interface stays
+            lightweight.</span
+          >
         </article>
       </div>
     </article>
@@ -59,6 +62,9 @@
         @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) {
           <span class="field-error">Enter a valid email address.</span>
         }
+        @if (getFieldError(validationErrors, 'email')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'email') }}</span>
+        }
       </div>
 
       <div class="field">
@@ -72,6 +78,9 @@
         />
         @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
           <span class="field-error">Password is required.</span>
+        }
+        @if (getFieldError(validationErrors, 'password')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'password') }}</span>
         }
       </div>
 

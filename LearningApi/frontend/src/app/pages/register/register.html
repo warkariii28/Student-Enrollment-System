@@ -5,7 +5,8 @@
         <p class="eyebrow">Create account</p>
         <h1>Set up access for the learning portal.</h1>
         <p class="page-copy">
-          Register once, then sign in to manage the student list, protected routes, and day-to-day updates.
+          Register once, then sign in to manage the student list, protected routes, and day-to-day
+          updates.
         </p>
       </div>
 
@@ -43,17 +44,35 @@
 
       <div class="field">
         <label for="username">Username</label>
-        <input id="username" type="text" autocomplete="username" formControlName="username" placeholder="Choose a username" />
+        <input
+          id="username"
+          type="text"
+          autocomplete="username"
+          formControlName="username"
+          placeholder="Choose a username"
+        />
         @if (registerForm.controls.username.touched && registerForm.controls.username.invalid) {
           <span class="field-error">Username is required.</span>
+        }
+        @if (getFieldError(validationErrors, 'username')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'username') }}</span>
         }
       </div>
 
       <div class="field">
         <label for="email">Email</label>
-        <input id="email" type="email" autocomplete="email" formControlName="email" placeholder="you@example.com" />
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          formControlName="email"
+          placeholder="you@example.com"
+        />
         @if (registerForm.controls.email.touched && registerForm.controls.email.invalid) {
           <span class="field-error">Enter a valid email address.</span>
+        }
+        @if (getFieldError(validationErrors, 'email')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'email') }}</span>
         }
       </div>
 
@@ -68,6 +87,9 @@
         />
         @if (registerForm.controls.password.touched && registerForm.controls.password.invalid) {
           <span class="field-error">Password is required.</span>
+        }
+        @if (getFieldError(validationErrors, 'password')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'password') }}</span>
         }
       </div>
 

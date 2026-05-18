@@ -11,9 +11,9 @@ import { Register } from './pages/register/register';
 import { StudentForm } from './pages/student-form/student-form';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout';
 import { AppLayoutComponent } from './layouts/app-layout/app-layout';
+import { AdminAuditLogs } from './pages/admin-audit-logs/admin-audit-logs';
 
 export const routes: Routes = [
-
   // Redirect root
   { path: '', pathMatch: 'full', redirectTo: 'login' },
 
@@ -23,8 +23,8 @@ export const routes: Routes = [
     component: AuthLayoutComponent,
     children: [
       { path: 'login', component: Login },
-      { path: 'register', component: Register }
-    ]
+      { path: 'register', component: Register },
+    ],
   },
 
   {
@@ -39,48 +39,54 @@ export const routes: Routes = [
         path: 'add',
         component: StudentForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] }
+        data: { roles: ['Admin'] },
       },
       {
         path: 'edit/:id',
         component: StudentForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] }
+        data: { roles: ['Admin'] },
+      },
+      {
+        path: 'audit-logs',
+        component: AdminAuditLogs,
+        canActivate: [roleGuard],
+        data: { roles: ['Admin'] },
       },
 
-      // STUDENT + ADMIN 
+      // STUDENT + ADMIN
       {
         path: 'courses',
-        component: Courses
+        component: Courses,
       },
       {
         path: 'courses/add',
         component: CourseForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] }
+        data: { roles: ['Admin'] },
       },
       {
         path: 'courses/edit/:id',
         component: CourseForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] }
+        data: { roles: ['Admin'] },
       },
 
       // VIEW ALLOWED
       {
         path: 'enrollments',
-        component: Enrollments
+        component: Enrollments,
       },
       // ADD = ONLY ADMIN
       {
         path: 'enrollments/add',
         component: EnrollmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] }
-      }
-    ]
+        data: { roles: ['Admin'] },
+      },
+    ],
   },
 
   // Fallback
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login' },
 ];

@@ -9,3 +9,5 @@ export interface PagedResult<T> {
   page: number;
   pageSize: number;
 }
+
+export type ValidationErrors = Record<string, string[]>;

@@ -6,10 +6,13 @@ import { AuthService } from '../../core/services/auth.service';
 import { StudentService } from '../../core/services/student.service';
 import { ToastService } from '../../core/services/toast.service';
 
+import { ValidationErrors } from '../../core/models/api-response';
+import { getFieldError } from '../../core/utils/validation-errors';
+
 @Component({
   selector: 'app-student-form',
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './student-form.html'
+  templateUrl: './student-form.html',
 })
 export class StudentForm implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -19,9 +22,12 @@ export class StudentForm implements OnInit {
   isLoadingStudent = false;
   studentId: number | null = null;
 
+  validationErrors: ValidationErrors | null = null;
+  readonly getFieldError = getFieldError;
+
   studentForm = this.fb.nonNullable.group({
     name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
   });
 
   get isEditMode(): boolean {
@@ -29,12 +35,12 @@ export class StudentForm implements OnInit {
   }
 
   constructor(
-    public readonly authService:AuthService,
+    public readonly authService: AuthService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly studentService: StudentService,
-    private readonly toast: ToastService
-  ) { }
+    private readonly toast: ToastService,
+  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -53,7 +59,7 @@ export class StudentForm implements OnInit {
       error: () => {
         this.toast.error('Could not load student');
         this.isLoadingStudent = false;
-      }
+      },
     });
   }
 
@@ -62,6 +68,7 @@ export class StudentForm implements OnInit {
       this.studentForm.markAllAsTouched();
       return;
     }
+    this.validationErrors = null;
 
     this.error = '';
     this.isSubmitting = true;
@@ -77,8 +84,10 @@ export class StudentForm implements OnInit {
             this.router.navigate(['/dashboard']);
           },
           error: (err) => {
-            this.toast.error(err.error?.message || 'Could not save student');
-          }
+            this.validationErrors = err.error?.data ?? null;
+            this.error = err.error?.message || 'Could not save student';
+            this.toast.error(this.error);
+          },
         });
       return;
     }
@@ -90,7 +99,12 @@ export class StudentForm implements OnInit {
         next: () => {
           this.toast.success('Student added');
           this.router.navigate(['/dashboard']);
-        }
+        },
+        error: (err) => {
+          this.validationErrors = err.error?.data ?? null;
+          this.error = err.error?.message || 'Could not save student';
+          this.toast.error(this.error);
+        },
       });
   }
 }

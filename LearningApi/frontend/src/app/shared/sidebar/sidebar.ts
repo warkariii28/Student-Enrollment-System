@@ -13,6 +13,7 @@ import {
   ClipboardList,
   UserPlus,
   Plus,
+  ShieldCheck
 } from 'lucide-angular';
 import { Student } from '../../core/models/student';
 import { Course } from '../../core/models/course';
@@ -41,6 +42,7 @@ export class Sidebar implements OnInit, OnDestroy {
   readonly UserPlus = UserPlus;
   readonly Plus = Plus;
   readonly isCollapsed = signal(false);
+  readonly ShieldCheck = ShieldCheck;
 
   toggleCollapse(): void {
     this.isCollapsed.update((v) => !v);

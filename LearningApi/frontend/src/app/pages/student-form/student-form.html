@@ -32,13 +32,16 @@
             src="/icons/dashboard-image.png"
             alt="Student Management Dashboard Illustration"
             class="project-diagram__image"
-          >
+          />
         </div>
 
         <article class="project-visual-card">
           <p class="badge">Roster control</p>
           <strong>Student records stay easy to review before anything is saved.</strong>
-          <span>Use this screen for focused edits while the dashboard remains the source of truth.</span>
+          <span
+            >Use this screen for focused edits while the dashboard remains the source of
+            truth.</span
+          >
         </article>
       </div>
     </article>
@@ -66,6 +69,9 @@
         @if (studentForm.controls.name.touched && studentForm.controls.name.invalid) {
           <span class="field-error">Name is required.</span>
         }
+        @if (getFieldError(validationErrors, 'name')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'name') }}</span>
+        }
       </div>
 
       <div class="field">
@@ -79,6 +85,9 @@
         />
         @if (studentForm.controls.email.touched && studentForm.controls.email.invalid) {
           <span class="field-error">Enter a valid email address.</span>
+        }
+        @if (getFieldError(validationErrors, 'email')) {
+          <span class="field-error">{{ getFieldError(validationErrors, 'email') }}</span>
         }
       </div>
 
