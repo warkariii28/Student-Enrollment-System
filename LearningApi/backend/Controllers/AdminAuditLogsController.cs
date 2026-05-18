@@ -1,9 +1,10 @@
 using LearningApi.Helpers;
 using LearningApi.Repositories;
+using LearningApi.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = AppRoles.Admin)]
 [ApiController]
 [Route("api/admin-audit-logs")]
 public class AdminAuditLogsController : ControllerBase

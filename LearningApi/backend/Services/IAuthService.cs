@@ -15,8 +15,10 @@ public interface IAuthService
 
     RefreshToken? ValidateRefreshToken(string token);
     User GetUserById(int userId);
+    List<UserDto> GetAllUsers();
     string GenerateToken(User user);
     string RotateRefreshToken(string oldToken);
     void RevokeRefreshToken(string refreshToken);
     void CleanupExpiredRefreshTokens();
+    void AssignRoleSafely(int userId, string role);
 }

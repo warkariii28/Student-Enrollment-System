@@ -3,9 +3,12 @@ using LearningApi.Services;
 using LearningApi.Repositories;
 using LearningApi.DTOs;
 using LearningApi.Helpers;
+using LearningApi.Constants;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
+
 using System.ComponentModel.DataAnnotations;
 
 
@@ -24,12 +27,12 @@ public class AuthController : ControllerBase
         _auditRepo = auditRepo;
     }
 
-    private static readonly HashSet<string> AllowedRoles =
+    /* private static readonly HashSet<string> AllowedRoles =
     new(StringComparer.OrdinalIgnoreCase)
     {
         "Admin",
         "User"
-    };
+    }; */
 
     [EnableRateLimiting("AuthPolicy")]
     [HttpPost("register")]
@@ -42,7 +45,7 @@ public class AuthController : ControllerBase
         {
             Username = dto.Username,
             Email = dto.Email,
-            Role = "User"
+            Role = AppRoles.User
         };
 
         _service.Register(user, dto.Password);
@@ -97,7 +100,7 @@ public class AuthController : ControllerBase
         return Ok(ResponseHelper.Success<object>(null, "Email updated successfully"));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpPut("assign-role")]
     public IActionResult AssignRole([FromQuery] int userId, [FromQuery] string role)
     {
@@ -106,16 +109,16 @@ public class AuthController : ControllerBase
             return BadRequest(ResponseHelper.Fail<object>("Invalid user ID"));
         }
 
-        if (string.IsNullOrWhiteSpace(role) || !AllowedRoles.Contains(role))
+        if (string.IsNullOrWhiteSpace(role) || !AppRoles.All.Contains(role))
         {
             return BadRequest(ResponseHelper.Fail<object>("Invalid role"));
         }
 
-        var normalizedRole = AllowedRoles.First(r =>
+        var normalizedRole = AppRoles.All.First(r =>
             string.Equals(r, role, StringComparison.OrdinalIgnoreCase));
 
-        _service.UpdateRole(userId, normalizedRole);
-        
+        _service.AssignRoleSafely(userId, normalizedRole);
+
         var adminUserIdClaim = User.FindFirst("UserID")?.Value;
 
         if (int.TryParse(adminUserIdClaim, out int adminUserId))
@@ -174,7 +177,15 @@ public class AuthController : ControllerBase
         _service.RevokeRefreshToken(request.RefreshToken);
 
         return Ok(ResponseHelper.Success<object>(null, "Logged out successfully"));
-    }    
+    }
+
+    [Authorize(Roles = AppRoles.Admin)]
+    [HttpGet("users")]
+    public IActionResult GetUsers()
+    {
+        var users = _service.GetAllUsers();
+        return Ok(ResponseHelper.Success(users, "Users fetched successfully"));
+    }
 }
 
 // ✅ MUST be here (after controller)

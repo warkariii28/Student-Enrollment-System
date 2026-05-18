@@ -5,6 +5,7 @@ using LearningApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LearningApi.Helpers;
+using LearningApi.Constants;
 
 [Authorize]
 [ApiController]
@@ -35,7 +36,7 @@ public class EnrollmentsController : ControllerBase
         return Ok(ResponseHelper.Success(data, "Enrollments fetched successfully"));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpPost]
     public IActionResult Add(EnrollmentCreateDto dto)
     {
@@ -58,7 +59,7 @@ public class EnrollmentsController : ControllerBase
         return StatusCode(201, ResponseHelper.Success<object>(null, "Enrollment created successfully"));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {

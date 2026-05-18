@@ -2,6 +2,8 @@ using LearningApi.DTOs;
 using LearningApi.Models;
 using LearningApi.Repositories;
 using LearningApi.Exceptions;
+using LearningApi.Constants;
+
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -161,6 +163,33 @@ public class AuthService : IAuthService
     public void CleanupExpiredRefreshTokens()
     {
         _repo.CleanupExpiredRefreshTokens();
+    }
+
+    public List<UserDto> GetAllUsers()
+    {
+        return _repo.GetAllUsers();
+    }
+
+    public void AssignRoleSafely(int userId, string role)
+    {
+        var user = _repo.GetById(userId);
+
+        if (user == null)
+            throw new NotFoundException("User not found");
+
+        if (
+            string.Equals(user.Role, AppRoles.Admin, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(role, AppRoles.Admin, StringComparison.OrdinalIgnoreCase) &&
+            _repo.CountAdmins() <= 1
+        )
+        {
+            throw new BadRequestException("At least one admin account must remain");
+        }
+
+        bool updated = _repo.UpdateRole(userId, role);
+
+        if (!updated)
+            throw new NotFoundException("User not found");
     }
 
 

@@ -1,6 +1,8 @@
+using LearningApi.DTOs;
 using LearningApi.Models;
 
 namespace LearningApi.Repositories;
+using LearningApi.DTOs;
 
 public interface IAuthRepository
 {
@@ -17,4 +19,6 @@ public interface IAuthRepository
 
     void CleanupExpiredRefreshTokens();
     void RevokeActiveRefreshTokensForUser(int userId);
+    List<UserDto> GetAllUsers();
+    int CountAdmins();
 }

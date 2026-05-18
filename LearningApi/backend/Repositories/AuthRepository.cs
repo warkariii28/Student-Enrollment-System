@@ -1,4 +1,5 @@
 using LearningApi.Models;
+using LearningApi.DTOs;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using LearningApi.Exceptions;
@@ -197,4 +198,44 @@ public class AuthRepository : IAuthRepository
         conn.Open();
         cmd.ExecuteNonQuery();
     }
+    public List<UserDto> GetAllUsers()
+    {
+        var users = new List<UserDto>();
+
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("GetAllUsers", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        conn.Open();
+
+        using SqlDataReader reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            users.Add(new UserDto
+            {
+                UserId = Convert.ToInt32(reader["UserID"]),
+                Name = reader["Username"]?.ToString() ?? "",
+                Email = reader["Email"]?.ToString() ?? "",
+                Role = reader["Role"]?.ToString() ?? ""
+            });
+        }
+
+        return users;
+    }
+    public int CountAdmins()
+    {
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("CountAdmins", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        conn.Open();
+
+        var result = cmd.ExecuteScalar();
+
+        return Convert.ToInt32(result);
+    }
+
 }
