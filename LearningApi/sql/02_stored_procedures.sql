@@ -326,6 +326,17 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE dbo.GetAllUsers
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT UserID, Username, Email, Role
+    FROM dbo.Users
+    ORDER BY UserID;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE dbo.AddAdminAuditLog
     @AdminUserID INT,
     @Action NVARCHAR(100),
@@ -398,6 +409,17 @@ BEGIN
         OR l.Action LIKE '%' + @Search + '%'
         OR l.EntityName LIKE '%' + @Search + '%'
         OR l.Details LIKE '%' + @Search + '%';
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.CountAdmins
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS AdminCount
+    FROM dbo.Users
+    WHERE Role = 'Admin';
 END;
 GO
 

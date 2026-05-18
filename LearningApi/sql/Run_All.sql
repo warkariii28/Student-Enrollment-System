@@ -20,7 +20,9 @@ SELECT *
 FROM dbo.RefreshTokens
 WHERE ExpiresAt < SYSUTCDATETIME(); */
 
-SELECT UserId, IsRevoked, ExpiresAt
+/* SELECT UserId, IsRevoked, ExpiresAt
 FROM dbo.RefreshTokens
 WHERE UserId = 1
-ORDER BY ExpiresAt DESC;
+ORDER BY ExpiresAt DESC; */
+
+EXEC dbo.CountAdmins;
