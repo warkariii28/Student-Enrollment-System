@@ -12,6 +12,24 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE dbo.GetStudentsPaged
+    @Page INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT StudentID, Name, Email
+    FROM dbo.Students
+    ORDER BY StudentID
+    OFFSET (@Page-1)*@PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+
+    SELECT COUNT(*) AS TotalCount
+    FROM dbo.Students;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE dbo.GetStudentByID
     @StudentID INT
 AS
@@ -72,6 +90,24 @@ BEGIN
     SELECT CourseID, CourseName, Fee, DurationWeeks
     FROM dbo.Courses
     ORDER BY CourseID;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.GetCoursesPaged
+    @Page INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT CourseID, CourseName, Fee, DurationWeeks
+    FROM dbo.Courses
+    ORDER BY CourseID
+    OFFSET (@Page - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+
+    SELECT COUNT(*) AS TotalCount
+    FROM dbo.Courses;
 END;
 GO
 
@@ -144,6 +180,30 @@ BEGIN
     INNER JOIN dbo.Students s ON s.StudentID = e.StudentID
     INNER JOIN dbo.Courses c ON c.CourseID = e.CourseID
     ORDER BY e.EnrollmentID;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.GetEnrollmentsPaged
+    @Page INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        e.EnrollmentID,
+        s.Name AS StudentName,
+        c.CourseName,
+        e.EnrollmentDate
+    FROM dbo.Enrollments e
+    INNER JOIN dbo.Students s ON s.StudentID = e.StudentID
+    INNER JOIN dbo.Courses c ON c.CourseID = e.CourseID
+    ORDER BY e.EnrollmentID
+    OFFSET (@Page - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+
+    SELECT COUNT(*) AS TotalCount
+    FROM dbo.Enrollments;
 END;
 GO
 
