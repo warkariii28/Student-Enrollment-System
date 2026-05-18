@@ -67,6 +67,17 @@
         <span>Audit logs</span>
       </a>
     }
+    @if (authService.hasRole('Admin')) {
+      <a
+        class="app-sidebar__link"
+        routerLink="/dashboard/users"
+        routerLinkActive="app-sidebar__link-active"
+        (click)="closeSidebar()"
+      >
+        <lucide-icon [img]="UserCog" class="app-sidebar__icon"></lucide-icon>
+        <span>Users</span>
+      </a>
+    }
   </nav>
 
   <!-- ===== BOTTOM SECTION ===== -->

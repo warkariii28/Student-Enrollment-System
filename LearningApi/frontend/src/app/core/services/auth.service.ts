@@ -4,9 +4,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap, of, catchError } from 'rxjs';
 
-import { LoginRequest, LoginResponse, RegisterRequest } from '../models/user';
+import { LoginRequest, LoginResponse, RegisterRequest, User } from '../models/user';
 import { ApiResponse } from '../models/api-response';
 import { environment } from '../../../environments/environment';
+
+import { AppRoles } from '../constants/app-roles';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -32,7 +34,7 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.getRole() === 'Admin';
+    return this.getRole() === AppRoles.Admin;
   }
 
   private readonly refreshKey = 'refresh_token';
@@ -87,6 +89,15 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+  getUsers(): Observable<User[]> {
+    return this.http.get<ApiResponse<User[]>>(`${this.apiUrl}/users`).pipe(map((res) => res.data));
+  }
+
+  assignRole(userId: number, role: string): Observable<string> {
+    return this.http
+      .put<ApiResponse<null>>(`${this.apiUrl}/assign-role?userId=${userId}&role=${role}`, null)
+      .pipe(map((res) => res.message));
   }
 
   logout(): void {

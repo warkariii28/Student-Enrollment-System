@@ -12,6 +12,8 @@ import { StudentForm } from './pages/student-form/student-form';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout';
 import { AppLayoutComponent } from './layouts/app-layout/app-layout';
 import { AdminAuditLogs } from './pages/admin-audit-logs/admin-audit-logs';
+import { Users } from './pages/users/users';
+import { AppRoles } from './core/constants/app-roles';
 
 export const routes: Routes = [
   // Redirect root
@@ -39,19 +41,25 @@ export const routes: Routes = [
         path: 'add',
         component: StudentForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] },
+        data: { roles: [AppRoles.Admin] },
       },
       {
         path: 'edit/:id',
         component: StudentForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] },
+        data: { roles: [AppRoles.Admin] },
       },
       {
         path: 'audit-logs',
         component: AdminAuditLogs,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] },
+        data: { roles: [AppRoles.Admin] },
+      },
+      {
+        path: 'users',
+        component: Users,
+        canActivate: [roleGuard],
+        data: { roles: [AppRoles.Admin] },
       },
 
       // STUDENT + ADMIN
@@ -63,13 +71,13 @@ export const routes: Routes = [
         path: 'courses/add',
         component: CourseForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] },
+        data: { roles: [AppRoles.Admin] },
       },
       {
         path: 'courses/edit/:id',
         component: CourseForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] },
+        data: { roles: [AppRoles.Admin] },
       },
 
       // VIEW ALLOWED
@@ -82,7 +90,7 @@ export const routes: Routes = [
         path: 'enrollments/add',
         component: EnrollmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] },
+        data: { roles: [AppRoles.Admin] },
       },
     ],
   },

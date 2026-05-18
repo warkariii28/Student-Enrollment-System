@@ -1,0 +1,78 @@
+<main class="page-shell dashboard-grid">
+  <app-page-header
+    activeSection="students"
+    eyebrow="User access"
+    title="Role management"
+    description="Promote or demote users between regular access and admin access."
+    statusLabel="User status"
+    [statusTitle]="loading() ? 'Loading users' : error() ? 'Needs attention' : 'Ready'"
+    statusDescription="Role changes affect route access and protected admin operations."
+  />
+  @if (error()) {
+    <section class="status-banner status-error">{{ error() }}</section>
+  }
+  <section class="surface table-section" [attr.aria-busy]="loading()">
+    <div class="section-header">
+      <div>
+        <p class="badge">Accounts</p>
+        <h2>Registered users</h2>
+      </div>
+
+      <button
+        class="button button-secondary"
+        type="button"
+        (click)="loadUsers()"
+        [disabled]="loading()"
+      >
+        Refresh
+      </button>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Change role</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @if (loading()) {
+            <tr>
+              <td colspan="5">
+                <app-skeleton-table [rows]="5" [cols]="5"></app-skeleton-table>
+              </td>
+            </tr>
+          } @else if (users().length === 0) {
+            <tr>
+              <td colspan="5" class="table-state">No users found.</td>
+            </tr>
+          } @else {
+            @for (user of users(); track user.userId) {
+              <tr>
+                <td>{{ user.userId }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                  <select
+                    class="input"
+                    [value]="user.role"
+                    (change)="changeRole(user, $any($event.target).value)"
+                  >
+                    <option value="User">User</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
