@@ -19,6 +19,11 @@ public class StudentService : IStudentService
         return _repo.GetAll();
     }
 
+    public PagedResultDto<StudentResponseDto> GetPaged(int page, int pageSize)
+    {
+        return _repo.GetPaged(page, pageSize);
+    }
+
     public Student GetById(int id)
     {
         var student = _repo.GetById(id);

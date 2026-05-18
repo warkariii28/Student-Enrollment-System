@@ -30,10 +30,7 @@ public class EnrollmentsController : ControllerBase
             return BadRequest(ResponseHelper.Fail<object>("Invalid pagination values"));
         }
 
-        var data = _service.GetAll()
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        var data = _service.GetPaged(page, pageSize);
 
         return Ok(ResponseHelper.Success(data, "Enrollments fetched successfully"));
     }
@@ -74,7 +71,7 @@ public class EnrollmentsController : ControllerBase
 
         WriteAdminAudit("DeleteEnrollment", id);
 
-        return NoContent();
+        return Ok(ResponseHelper.Success<object>(null, "Enrollment  deleted successfully"));
     }
 
     private void WriteAdminAudit(string action, int? entityId, string? details = null)

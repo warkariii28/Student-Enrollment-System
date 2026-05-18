@@ -2,7 +2,6 @@ using LearningApi.Models;
 using LearningApi.Services;
 using LearningApi.Repositories;
 using LearningApi.DTOs;
-using LearningApi.Models;
 using LearningApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;

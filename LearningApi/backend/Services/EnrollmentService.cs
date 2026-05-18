@@ -19,6 +19,11 @@ public class EnrollmentService : IEnrollmentService
         return _repo.GetAll();
     }
 
+    public PagedResultDto<EnrollmentResponseDto> GetPaged(int page, int pageSize)
+    {
+        return _repo.GetPaged(page, pageSize);
+    }
+
     public void Add(Enrollment enrollment)
     {
         _repo.Add(enrollment);

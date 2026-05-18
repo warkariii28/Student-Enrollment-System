@@ -6,6 +6,7 @@ namespace LearningApi.Repositories;
 public interface ICourseRepository
 {
     List<CourseResponseDto> GetAll();
+    PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize);
     int Add(Course course);
     bool Delete(int id);
 

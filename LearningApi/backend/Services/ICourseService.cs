@@ -6,6 +6,7 @@ namespace LearningApi.Services;
 public interface ICourseService
 {
     List<CourseResponseDto> GetAll();
+    PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize);
 
     Course GetById(int id);
 

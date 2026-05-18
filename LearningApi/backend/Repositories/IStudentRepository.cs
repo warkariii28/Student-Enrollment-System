@@ -6,6 +6,7 @@ using LearningApi.Models;
 public interface IStudentRepository
 {
     List<StudentResponseDto> GetAll();
+    PagedResultDto<StudentResponseDto> GetPaged(int page, int pageSize);
     Student? GetById(int id);
     int Add(Student student);
     bool Delete(int id);

@@ -1,13 +1,12 @@
 using LearningApi.Models;
 using LearningApi.Services;
-using LearningApi.Models;
 using LearningApi.Repositories;
 using LearningApi.DTOs;
 using LearningApi.Helpers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+// using Microsoft.AspNetCore.Mvc.RazorPages;
 
 [Authorize]
 [ApiController]
@@ -31,10 +30,7 @@ public class StudentsController : ControllerBase
             return BadRequest(ResponseHelper.Fail<object>("Invalid pagination values"));
         }
 
-        var data = _service.GetAll()
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        var data = _service.GetPaged(page, pageSize);
         return Ok(ResponseHelper.Success(data, "Students fetched successfully"));
     }
 
@@ -108,7 +104,7 @@ public class StudentsController : ControllerBase
         _service.Delete(id);
         WriteAdminAudit("DeleteStudent", id);
 
-        return NoContent();
+        return Ok(ResponseHelper.Success<object>(null, "Student deleted successfully"));
     }
 
     [HttpGet("me")]

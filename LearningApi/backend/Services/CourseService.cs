@@ -19,6 +19,11 @@ public class CourseService : ICourseService
         return _repo.GetAll();
     }
 
+    public PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize)
+    {
+        return _repo.GetPaged(page, pageSize);
+    }
+
     public Course GetById(int id)
     {
         var course = _repo.GetById(id);

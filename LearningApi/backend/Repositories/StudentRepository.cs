@@ -40,6 +40,47 @@ public class StudentRepository : IStudentRepository
         return students;
     }
 
+    public PagedResultDto<StudentResponseDto> GetPaged(int page, int pageSize)
+    {
+        var students = new List<StudentResponseDto>();
+        var totalCount = 0;
+
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("GetStudentsPaged", conn);
+
+        cmd.CommandTimeout = 30;
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.Add("@Page", SqlDbType.Int).Value = page;
+        cmd.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize;
+
+        conn.Open();
+
+        using SqlDataReader reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            students.Add(new StudentResponseDto
+            {
+                StudentID = Convert.ToInt32(reader["StudentID"]),
+                Name = reader["Name"]?.ToString() ?? "",
+                Email = reader["Email"]?.ToString() ?? ""
+            });
+        }
+
+        if (reader.NextResult() && reader.Read())
+        {
+            totalCount = Convert.ToInt32(reader["TotalCount"]);
+        }
+
+        return new PagedResultDto<StudentResponseDto>
+        {
+            Items = students,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
     public Student? GetById(int id)
     {
         using SqlConnection conn = new SqlConnection(_conn);

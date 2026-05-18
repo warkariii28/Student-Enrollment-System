@@ -41,6 +41,48 @@ public class CourseRepository : ICourseRepository
         return courses;
     }
 
+    public PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize)
+    {
+        var courses = new List<CourseResponseDto>();
+        var totalCount = 0;
+
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("GetCoursesPaged", conn);
+
+        cmd.CommandTimeout = 30;
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.Add("@Page", SqlDbType.Int).Value = page;
+        cmd.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize;
+
+        conn.Open();
+
+        using SqlDataReader reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            courses.Add(new CourseResponseDto
+            {
+                CourseID = Convert.ToInt32(reader["CourseID"]),
+                CourseName = reader["CourseName"]?.ToString() ?? "",
+                Fee = Convert.ToDecimal(reader["Fee"]),
+                DurationWeeks = Convert.ToInt32(reader["DurationWeeks"])
+            });
+        }
+
+        if (reader.NextResult() && reader.Read())
+        {
+            totalCount = Convert.ToInt32(reader["TotalCount"]);
+        }
+
+        return new PagedResultDto<CourseResponseDto>
+        {
+            Items = courses,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
     public int Add(Course course)
     {
         using SqlConnection conn = new SqlConnection(_conn);

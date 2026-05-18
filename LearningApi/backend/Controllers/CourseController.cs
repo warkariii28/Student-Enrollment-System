@@ -30,10 +30,7 @@ public class CoursesController : ControllerBase
             return BadRequest(ResponseHelper.Fail<object>("Invalid pagination values"));
         }
 
-        var data = _service.GetAll()
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        var data = _service.GetPaged(page, pageSize);
 
         return Ok(ResponseHelper.Success(data, "Courses fetched successfully"));
     }
@@ -111,7 +108,7 @@ public class CoursesController : ControllerBase
 
         WriteAdminAudit("DeleteCourse", id);
 
-        return NoContent();
+        return Ok(ResponseHelper.Success<object>(null, "Course deleted successfully"));
     }
 
     private void WriteAdminAudit(string action, int? entityId, string? details = null)

@@ -42,6 +42,48 @@ public class EnrollmentRepository : IEnrollmentRepository
         return list;
     }
 
+    public PagedResultDto<EnrollmentResponseDto> GetPaged(int page, int pageSize)
+    {
+        var enrollments = new List<EnrollmentResponseDto>();
+        var totalCount = 0;
+
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("GetEnrollmentsPaged", conn);
+
+        cmd.CommandTimeout = 30;
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.Add("@Page", SqlDbType.Int).Value = page;
+        cmd.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize;
+
+        conn.Open();
+
+        using SqlDataReader reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            enrollments.Add(new EnrollmentResponseDto
+            {
+                EnrollmentID = Convert.ToInt32(reader["EnrollmentID"]),
+                StudentName = reader["StudentName"]?.ToString() ?? "",
+                CourseName = reader["CourseName"]?.ToString() ?? "",
+                EnrollmentDate = Convert.ToDateTime(reader["EnrollmentDate"])
+            });
+        }
+
+        if (reader.NextResult() && reader.Read())
+        {
+            totalCount = Convert.ToInt32(reader["TotalCount"]);
+        }
+
+        return new PagedResultDto<EnrollmentResponseDto>
+        {
+            Items = enrollments,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+    
     public void Add(Enrollment enrollment)
     {
         using SqlConnection conn = new SqlConnection(_conn);
