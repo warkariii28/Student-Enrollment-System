@@ -12,11 +12,12 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header';
 @Component({
   selector: 'app-enrollments',
   imports: [DatePipe, SkeletonTableComponent, PageHeaderComponent],
-  templateUrl: './enrollments.html'
+  templateUrl: './enrollments.html',
 })
 export class Enrollments implements OnInit {
   private readonly enrollmentService = inject(EnrollmentService);
   readonly enrollments = toSignal(this.enrollmentService.enrollments$, { initialValue: [] });
+  readonly totalCount = toSignal(this.enrollmentService.totalCount$, { initialValue: 0 });
   readonly error = signal('');
   readonly loading = signal(true);
 
@@ -26,33 +27,20 @@ export class Enrollments implements OnInit {
   readonly pageSize = signal(5);
 
   // ✅ Filtered data
-  readonly filtered = computed(() => {
-    const q = this.query().toLowerCase().trim();
-    if (!q) return this.enrollments();
-
-    return this.enrollments().filter(e =>
-      e.studentName.toLowerCase().includes(q) ||
-      e.courseName.toLowerCase().includes(q)
-    );
-  });
+  readonly filtered = computed(() => this.enrollments());
 
   // ✅ Total pages
-  readonly totalPages = computed(() =>
-    Math.max(1, Math.ceil(this.filtered().length / this.pageSize()))
-  );
+  readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.pageSize())));
 
   // ✅ Paginated data
-  readonly paged = computed(() => {
-    const start = (this.page() - 1) * this.pageSize();
-    return this.filtered().slice(start, start + this.pageSize());
-  });
+  readonly paged = computed(() => this.filtered());
 
   constructor(
     /*  private readonly enrollmentService: EnrollmentService, */
     public readonly authService: AuthService,
     private readonly router: Router,
-    private readonly confirm: ConfirmService
-  ) { }
+    private readonly confirm: ConfirmService,
+  ) {}
 
   ngOnInit(): void {
     this.loadEnrollments();
@@ -62,62 +50,57 @@ export class Enrollments implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    this.enrollmentService.fetchEnrollments(true).subscribe({
-      next: () => {
-        this.loading.set(false);
-        this.page.set(1);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set('Could not load enrollments. Check backend API and authentication.');
-      }
-    });
-
-    /* this.enrollmentService.getEnrollments().subscribe({
-      next: (enrollments) => {
-        this.enrollments.set(enrollments);
-        this.loading.set(false);
-        this.page.set(1); // ✅ reset page after reload
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set('Could not load enrollments. Check backend API and authentication.');
-      }
-    }); */
+    this.enrollmentService
+      .fetchEnrollments(this.page(), this.pageSize(), this.query(), true)
+      .subscribe({
+        next: () => {
+          this.loading.set(false);
+          /* this.page.set(1); */
+        },
+        error: () => {
+          this.loading.set(false);
+          this.error.set('Could not load enrollments. Check backend API and authentication.');
+        },
+      });
   }
 
   // 🔍 Search handler
   setQuery(value: string): void {
     this.query.set(value);
     this.page.set(1);
+    this.loadEnrollments();
   }
 
   // ⬅️➡️ Pagination
   nextPage(): void {
     if (this.page() < this.totalPages()) {
-      this.page.update(p => p + 1);
+      this.page.update((p) => p + 1);
+      this.loadEnrollments();
     }
   }
 
   prevPage(): void {
     if (this.page() > 1) {
-      this.page.update(p => p - 1);
+      this.page.update((p) => p - 1);
+      this.loadEnrollments();
     }
   }
 
   async deleteEnrollment(enrollment: Enrollment): Promise<void> {
     const ok = await this.confirm.ask(
-      `Remove ${enrollment.studentName} from ${enrollment.courseName}?`
+      `Remove ${enrollment.studentName} from ${enrollment.courseName}?`,
     );
     if (!ok) return;
 
     this.enrollmentService.deleteEnrollment(enrollment.enrollmentID).subscribe({
-      next: () => this.loadEnrollments()
+      next: () => this.loadEnrollments(),
     });
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logoutFromServer().subscribe(() => {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    });
   }
 }

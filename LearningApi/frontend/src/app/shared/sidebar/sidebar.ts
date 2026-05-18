@@ -1,4 +1,4 @@
-import { Component, computed, signal, OnDestroy, OnInit, HostBinding  } from '@angular/core';
+import { Component, computed, signal, OnDestroy, OnInit, HostBinding } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -6,7 +6,14 @@ import { AuthService } from '../../core/services/auth.service';
 import { StudentService } from '../../core/services/student.service';
 import { CourseService } from '../../core/services/course.service';
 import { EnrollmentService } from '../../core/services/enrollment.service';
-import { LucideAngularModule, Users, BookOpen, ClipboardList, UserPlus, Plus } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  Users,
+  BookOpen,
+  ClipboardList,
+  UserPlus,
+  Plus,
+} from 'lucide-angular';
 import { Student } from '../../core/models/student';
 import { Course } from '../../core/models/course';
 import { Enrollment } from '../../core/models/enrollment';
@@ -16,9 +23,8 @@ import { Enrollment } from '../../core/models/enrollment';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, CommonModule, LucideAngularModule],
   templateUrl: './sidebar.html',
-  styleUrls: ['./sidebar.css']
+  styleUrls: ['./sidebar.css'],
 })
-
 export class Sidebar implements OnInit, OnDestroy {
   private readonly sidebarOpenClass = 'sidebar-open';
   private readonly body = document.body;
@@ -36,19 +42,17 @@ export class Sidebar implements OnInit, OnDestroy {
   readonly Plus = Plus;
   readonly isCollapsed = signal(false);
 
-  
-
-toggleCollapse(): void {
-  this.isCollapsed.update(v => !v);
-}
+  toggleCollapse(): void {
+    this.isCollapsed.update((v) => !v);
+  }
 
   constructor(
     private studentService: StudentService,
     private courseService: CourseService,
     private enrollmentService: EnrollmentService,
     public authService: AuthService,
-    private readonly router: Router
-  ) { }
+    private readonly router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.studentService.fetchStudents().subscribe();
@@ -56,22 +60,21 @@ toggleCollapse(): void {
       this.courseService.fetchCourses().subscribe();
     }
 
-    this.courseService.courses$
-      .subscribe((data: Course[]) => this.courses.set(data));
+    this.courseService.courses$.subscribe((data: Course[]) => this.courses.set(data));
     if (!this.enrollmentService.hasEnrollments()) {
       this.enrollmentService.fetchEnrollments().subscribe();
     }
 
-    this.enrollmentService.enrollments$
-      .subscribe((data: Enrollment[]) => this.enrollments.set(data));
+    this.enrollmentService.enrollments$.subscribe((data: Enrollment[]) =>
+      this.enrollments.set(data),
+    );
 
-    this.studentService.students$
-      .subscribe((data: Student[]) => this.students.set(data));
+    this.studentService.students$.subscribe((data: Student[]) => this.students.set(data));
 
     this.routerSubscriptions.add(
       this.router.events
-        .pipe(filter(event => event instanceof NavigationEnd))
-        .subscribe(() => this.closeSidebar())
+        .pipe(filter((event) => event instanceof NavigationEnd))
+        .subscribe(() => this.closeSidebar()),
     );
   }
 
@@ -103,7 +106,10 @@ toggleCollapse(): void {
   }
 
   logout(): void {
-    this.authService.logout();
+    this.authService.logoutFromServer().subscribe(() => {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    });
   }
 
   menu = [
@@ -111,20 +117,20 @@ toggleCollapse(): void {
       label: 'Students',
       route: '/dashboard',
       icon: this.Users,
-      roles: ['User', 'Admin']
+      roles: ['User', 'Admin'],
     },
     {
       label: 'Courses',
       route: '/dashboard/courses',
       icon: this.BookOpen,
-      roles: ['User', 'Admin']
+      roles: ['User', 'Admin'],
     },
     {
       label: 'Enrollments',
       route: '/dashboard/enrollments',
       icon: this.ClipboardList,
-      roles: ['User', 'Admin']
-    }
+      roles: ['User', 'Admin'],
+    },
   ];
 
   quickActions = [
@@ -132,20 +138,20 @@ toggleCollapse(): void {
       label: 'Student',
       route: '/dashboard/add',
       icon: this.Plus,
-      roles: ['Admin']
+      roles: ['Admin'],
     },
     {
       label: 'Course',
       route: '/dashboard/courses/add',
       icon: this.Plus,
-      roles: ['Admin']
+      roles: ['Admin'],
     },
     {
       label: 'Enroll',
       route: '/dashboard/enrollments/add',
       icon: this.Plus,
-      roles: ['Admin']
-    }
+      roles: ['Admin'],
+    },
   ];
 
   hasAccess(roles: string[]): boolean {

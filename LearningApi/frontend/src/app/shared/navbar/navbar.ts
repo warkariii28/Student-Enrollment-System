@@ -6,7 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-navbar',
   imports: [RouterLink],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css'
+  styleUrl: './navbar.css',
 })
 export class Navbar {
   readonly isLoggedIn = computed(() => this.authService.isLoggedIn());
@@ -18,29 +18,26 @@ export class Navbar {
 
     return user?.username || user?.name || user?.email || 'User';
   });
-  
+
   constructor(
     private readonly authService: AuthService,
-    private readonly router: Router
-  ) { }
+    private readonly router: Router,
+  ) {}
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logoutFromServer().subscribe(() => {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    });
   }
 
   toggleTheme(): void {
-  const currentTheme =
-    document.documentElement.getAttribute('data-theme');
+    const currentTheme = document.documentElement.getAttribute('data-theme');
 
-  const nextTheme =
-    currentTheme === 'dark' ? 'light' : 'dark';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-  document.documentElement.setAttribute(
-    'data-theme',
-    nextTheme
-  );
+    document.documentElement.setAttribute('data-theme', nextTheme);
 
-  localStorage.setItem('theme', nextTheme);
-}
+    localStorage.setItem('theme', nextTheme);
+  }
 }

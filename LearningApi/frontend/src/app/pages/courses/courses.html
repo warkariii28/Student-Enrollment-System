@@ -16,7 +16,7 @@
     <div class="metric-grid">
       <article class="metric">
         <span>Total courses</span>
-        <strong>{{ courses().length }}</strong>
+        <strong>{{ totalCount() }}</strong>
       </article>
       <article class="metric">
         <span>Status</span>
@@ -30,13 +30,12 @@
   </section>
 
   @if (error()) {
-  <section class="status-banner status-error">
-    {{ error() }}
-  </section>
+    <section class="status-banner status-error">
+      {{ error() }}
+    </section>
   }
 
   <section class="surface table-section" [attr.aria-busy]="loading()">
-
     <!-- HEADER + SEARCH -->
     <div class="section-header">
       <div>
@@ -52,6 +51,7 @@
           (input)="setQuery($any($event.target).value)"
           class="input"
         />
+        <!-- <small class="muted-text">Search applies to the current page.</small> -->
 
         <button
           class="button button-secondary"
@@ -77,72 +77,71 @@
         </thead>
 
         <tbody>
-
           <!-- LOADING -->
           @if (loading()) {
-          <tr>
-            <td colspan="5">
-              <app-skeleton-table [rows]="5" [cols]="5"></app-skeleton-table>
-            </td>
-          </tr>
+            <tr>
+              <td colspan="5">
+                <app-skeleton-table [rows]="5" [cols]="5"></app-skeleton-table>
+              </td>
+            </tr>
           }
 
           <!-- EMPTY -->
           @else if (filteredCourses().length === 0) {
-          <tr>
-            <td colspan="5" class="table-state">
-              @if (query()) {
-                No courses match "{{ query() }}".
-              } @else {
-                No courses have been added yet.
-              }
-            </td>
-          </tr>
+            <tr>
+              <td colspan="5" class="table-state">
+                @if (query()) {
+                  No courses match "{{ query() }}".
+                } @else {
+                  No courses have been added yet.
+                }
+              </td>
+            </tr>
           }
 
           <!-- DATA -->
           @else {
-          @for (course of pagedCourses(); track course.courseID) {
-          <tr>
-            <td>{{ course.courseID }}</td>
-            <td>{{ course.courseName }}</td>
-            <td>{{ course.fee | currency:'INR':'symbol':'1.0-2' }}</td>
-            <td>{{ course.durationWeeks }} weeks</td>
-            <td class="table-actions">
-              @if (authService.hasRole('Admin')){
-              <a class="button button-secondary button-small"
-                [routerLink]="['/dashboard/courses/edit', course.courseID]">
-                Edit
-              </a>
-              
+            @for (course of pagedCourses(); track course.courseID) {
+              <tr>
+                <td>{{ course.courseID }}</td>
+                <td>{{ course.courseName }}</td>
+                <td>{{ course.fee | currency: 'INR' : 'symbol' : '1.0-2' }}</td>
+                <td>{{ course.durationWeeks }} weeks</td>
+                <td class="table-actions">
+                  @if (authService.hasRole('Admin')) {
+                    <a
+                      class="button button-secondary button-small"
+                      [routerLink]="['/dashboard/courses/edit', course.courseID]"
+                    >
+                      Edit
+                    </a>
 
-              <button class="button button-danger button-small" type="button" [disabled]="!authService.hasRole('Admin')"
-                (click)="deleteCourse(course)">
-                Delete
-              </button>
-              }
-              @else {<span class="muted-text">View Only</span>}
-            </td>
-          </tr>
+                    <button
+                      class="button button-danger button-small"
+                      type="button"
+                      [disabled]="!authService.hasRole('Admin')"
+                      (click)="deleteCourse(course)"
+                    >
+                      Delete
+                    </button>
+                  } @else {
+                    <span class="muted-text">View Only</span>
+                  }
+                </td>
+              </tr>
+            }
           }
-          }
-
         </tbody>
       </table>
     </div>
 
     <!-- PAGINATION -->
     <div class="pagination">
-      <button (click)="prevPage()" [disabled]="page() === 1">
-        Prev
-      </button>
+      <button (click)="prevPage()" [disabled]="page() === 1">Prev</button>
 
       <span>Page {{ page() }} / {{ totalPages() }}</span>
 
-      <button (click)="nextPage()" [disabled]="page() === totalPages()">
-        Next
-      </button>
+      <button (click)="nextPage()" [disabled]="page() === totalPages()">Next</button>
     </div>
-
   </section>
 </main>

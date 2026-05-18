@@ -29,8 +29,6 @@
     </div>
   </section>
 
-  
-
   @if (error()) {
     <section class="status-banner status-error">
       {{ error() }}
@@ -52,6 +50,7 @@
           (input)="setQuery($any($event.target).value)"
           class="input"
         />
+        <!-- <small class="muted-text">Search applies to the current page.</small> -->
 
         <button
           class="button button-secondary"
@@ -82,7 +81,6 @@
                 <app-skeleton-table [rows]="5" [cols]="4"></app-skeleton-table>
               </td>
             </tr>
-
           } @else if (filteredStudents().length === 0) {
             <tr>
               <td colspan="4" class="table-state">
@@ -93,7 +91,6 @@
                 }
               </td>
             </tr>
-
           } @else {
             @for (student of pagedStudents(); track student.studentID) {
               <tr>
