@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap, of, shareReplay, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, tap, of, shareReplay, finalize, map } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Course, CoursePayload } from '../models/course';
+import { PagedResult } from '../models/api-response';
 import { BaseApiService } from './base-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class CourseService extends BaseApiService {
-
   private readonly apiUrl = `${environment.apiBaseUrl}/api/courses`;
 
   private coursesSubject = new BehaviorSubject<Course[]>([]);
@@ -36,15 +36,16 @@ export class CourseService extends BaseApiService {
 
     this.loadingSubject.next(true);
 
-    this.inflight$ = this.get<Course[]>(this.apiUrl).pipe(
+    this.inflight$ = this.get<PagedResult<Course>>(this.apiUrl).pipe(
+      map((result) => result.items || []),
       tap((courses) => {
-        this.coursesSubject.next(courses || []);
+        this.coursesSubject.next(courses);
       }),
       finalize(() => {
         this.loadingSubject.next(false);
         this.inflight$ = undefined;
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     return this.inflight$;
@@ -63,27 +64,27 @@ export class CourseService extends BaseApiService {
       tap((courseID) => {
         const newCourse: Course = { courseID, ...payload };
         this.coursesSubject.next([newCourse, ...this.coursesSubject.value]);
-      })
+      }),
     );
   }
 
   updateCourse(id: number, payload: CoursePayload): Observable<string> {
     return this.putWithMessage(`${this.apiUrl}/${id}`, payload).pipe(
       tap(() => {
-        const updated = this.coursesSubject.value.map(c =>
-          c.courseID === id ? { ...c, ...payload } : c
+        const updated = this.coursesSubject.value.map((c) =>
+          c.courseID === id ? { ...c, ...payload } : c,
         );
         this.coursesSubject.next(updated);
-      })
+      }),
     );
   }
 
   deleteCourse(id: number): Observable<void> {
     return this.delete<void>(`${this.apiUrl}/${id}`).pipe(
       tap(() => {
-        const filtered = this.coursesSubject.value.filter(c => c.courseID !== id);
+        const filtered = this.coursesSubject.value.filter((c) => c.courseID !== id);
         this.coursesSubject.next(filtered);
-      })
+      }),
     );
   }
 }

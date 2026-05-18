@@ -76,7 +76,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       refreshSubject.next(null);
 
       return http
-        .post<any>(`${auth['apiUrl']}/refresh`, { refreshToken })
+        .post<any>(auth.getRefreshUrl(), { refreshToken })
         .pipe(
           switchMap(res => {
             const newToken = res.data.token;

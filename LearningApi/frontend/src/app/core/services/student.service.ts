@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap, of, shareReplay, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, tap, of, shareReplay, finalize,map } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Student, StudentPayload } from '../models/student';
+import { PagedResult } from '../models/api-response';
 import { BaseApiService } from './base-api.service';
 
 @Injectable({ providedIn: 'root' })
@@ -36,9 +37,10 @@ export class StudentService extends BaseApiService {
 
     this.loadingSubject.next(true);
 
-    this.inflight$ = this.get<Student[]>(this.apiUrl).pipe(
+    this.inflight$ = this.get<PagedResult<Student>>(this.apiUrl).pipe(
+      map((result) => result.items || []),
       tap((students) => {
-        this.studentsSubject.next(students || []);
+        this.studentsSubject.next(students);
       }),
       finalize(() => {
         this.loadingSubject.next(false);

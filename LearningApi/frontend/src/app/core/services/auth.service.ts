@@ -1,5 +1,4 @@
-
-''
+'';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -8,7 +7,6 @@ import { map, Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse, RegisterRequest } from '../models/user';
 import { ApiResponse } from '../models/api-response';
 import { environment } from '../../../environments/environment';
-
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -47,26 +45,26 @@ export class AuthService {
     return localStorage.getItem(this.refreshKey);
   }
 
-  constructor(private readonly http: HttpClient) { }
+  getRefreshUrl(): string {
+    return `${this.apiUrl}/refresh`;
+  }
+
+  constructor(private readonly http: HttpClient) {}
 
   login(credentials: LoginRequest): Observable<string> {
-    console.log('LOGIN URL:', `${this.apiUrl}/login`); //
-    return this.http
-      .post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login`, credentials)
-      .pipe(
-        tap(res => {
-          this.setToken(res.data.token);
-          this.setUser(res.data.user);
-          this.setRefreshToken(res.data.refreshToken);
-        }),
-        map(res => res.data.token)
-      );
+    /* console.log('LOGIN URL:', `${this.apiUrl}/login`); */
+    return this.http.post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login`, credentials).pipe(
+      tap((res) => {
+        this.setToken(res.data.token);
+        this.setUser(res.data.user);
+        this.setRefreshToken(res.data.refreshToken);
+      }),
+      map((res) => res.data.token),
+    );
   }
 
   register(user: RegisterRequest): Observable<void> {
-    return this.http
-      .post<ApiResponse<null>>(`${this.apiUrl}/register`, user)
-      .pipe(map(() => { }));
+    return this.http.post<ApiResponse<null>>(`${this.apiUrl}/register`, user).pipe(map(() => {}));
   }
 
   setToken(token: string): void {
@@ -94,5 +92,6 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.refreshKey);
   }
 }

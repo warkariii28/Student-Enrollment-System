@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap, of, shareReplay, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, tap, of, shareReplay, finalize, map } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Enrollment, EnrollmentPayload } from '../models/enrollment';
+import { PagedResult } from '../models/api-response';
 import { BaseApiService } from './base-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class EnrollmentService extends BaseApiService {
-
   private readonly apiUrl = `${environment.apiBaseUrl}/api/enrollments`;
 
   private enrollmentsSubject = new BehaviorSubject<Enrollment[]>([]);
@@ -36,15 +36,16 @@ export class EnrollmentService extends BaseApiService {
 
     this.loadingSubject.next(true);
 
-    this.inflight$ = this.get<Enrollment[]>(this.apiUrl).pipe(
+    this.inflight$ = this.get<PagedResult<Enrollment>>(this.apiUrl).pipe(
+      map((result) => result.items || []),
       tap((enrollments) => {
-        this.enrollmentsSubject.next(enrollments || []);
+        this.enrollmentsSubject.next(enrollments);
       }),
       finalize(() => {
         this.loadingSubject.next(false);
         this.inflight$ = undefined;
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     return this.inflight$;
@@ -59,7 +60,7 @@ export class EnrollmentService extends BaseApiService {
       tap(() => {
         // must refetch (backend returns incomplete object)
         this.fetchEnrollments(true).subscribe();
-      })
+      }),
     );
   }
 
@@ -67,7 +68,7 @@ export class EnrollmentService extends BaseApiService {
     return this.putWithMessage(`${this.apiUrl}/${id}`, payload).pipe(
       tap(() => {
         this.fetchEnrollments(true).subscribe();
-      })
+      }),
     );
   }
 
@@ -75,7 +76,7 @@ export class EnrollmentService extends BaseApiService {
     return this.delete<void>(`${this.apiUrl}/${id}`).pipe(
       tap(() => {
         this.fetchEnrollments(true).subscribe();
-      })
+      }),
     );
   }
 }
