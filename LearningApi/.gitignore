@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.angular/
+
+bin/
+obj/
+
+.code-review-graph/
+
+appsettings.json
+*.user
+*.suo
