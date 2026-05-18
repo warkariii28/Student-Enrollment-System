@@ -14,19 +14,26 @@ GO
 
 CREATE OR ALTER PROCEDURE dbo.GetStudentsPaged
     @Page INT,
-    @PageSize INT
+    @PageSize INT,
+    @Search NVARCHAR(200) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
 
     SELECT StudentID, Name, Email
     FROM dbo.Students
+    WHERE @Search IS NULL
+        OR Name LIKE '%' + @Search + '%'
+        OR Email LIKE '%' + @Search + '%'
     ORDER BY StudentID
-    OFFSET (@Page-1)*@PageSize ROWS
+    OFFSET (@Page - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT COUNT(*) AS TotalCount
-    FROM dbo.Students;
+    FROM dbo.Students
+    WHERE @Search IS NULL
+        OR Name LIKE '%' + @Search + '%'
+        OR Email LIKE '%' + @Search + '%';
 END;
 GO
 
@@ -49,8 +56,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.Students (Name, Email)
-    VALUES (@Name, @Email);
+    INSERT INTO dbo.Students
+        (Name, Email)
+    VALUES
+        (@Name, @Email);
 
     SELECT CONVERT(INT, SCOPE_IDENTITY()) AS StudentID;
 END;
@@ -95,19 +104,24 @@ GO
 
 CREATE OR ALTER PROCEDURE dbo.GetCoursesPaged
     @Page INT,
-    @PageSize INT
+    @PageSize INT,
+    @Search NVARCHAR(200) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
 
     SELECT CourseID, CourseName, Fee, DurationWeeks
     FROM dbo.Courses
+    WHERE @Search IS NULL
+        OR CourseName LIKE '%' + @Search + '%'
     ORDER BY CourseID
     OFFSET (@Page - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT COUNT(*) AS TotalCount
-    FROM dbo.Courses;
+    FROM dbo.Courses
+    WHERE @Search IS NULL
+        OR CourseName LIKE '%' + @Search + '%';
 END;
 GO
 
@@ -131,8 +145,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.Courses (CourseName, Fee, DurationWeeks)
-    VALUES (@CourseName, @Fee, @DurationWeeks);
+    INSERT INTO dbo.Courses
+        (CourseName, Fee, DurationWeeks)
+    VALUES
+        (@CourseName, @Fee, @DurationWeeks);
 
     SELECT CONVERT(INT, SCOPE_IDENTITY()) AS CourseID;
 END;
@@ -177,15 +193,16 @@ BEGIN
         c.CourseName,
         e.EnrollmentDate
     FROM dbo.Enrollments e
-    INNER JOIN dbo.Students s ON s.StudentID = e.StudentID
-    INNER JOIN dbo.Courses c ON c.CourseID = e.CourseID
+        INNER JOIN dbo.Students s ON s.StudentID = e.StudentID
+        INNER JOIN dbo.Courses c ON c.CourseID = e.CourseID
     ORDER BY e.EnrollmentID;
 END;
 GO
 
 CREATE OR ALTER PROCEDURE dbo.GetEnrollmentsPaged
     @Page INT,
-    @PageSize INT
+    @PageSize INT,
+    @Search NVARCHAR(200) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -196,14 +213,22 @@ BEGIN
         c.CourseName,
         e.EnrollmentDate
     FROM dbo.Enrollments e
-    INNER JOIN dbo.Students s ON s.StudentID = e.StudentID
-    INNER JOIN dbo.Courses c ON c.CourseID = e.CourseID
+        INNER JOIN dbo.Students s ON s.StudentID = e.StudentID
+        INNER JOIN dbo.Courses c ON c.CourseID = e.CourseID
+    WHERE @Search IS NULL
+        OR s.Name LIKE '%' + @Search + '%'
+        OR c.CourseName LIKE '%' + @Search + '%'
     ORDER BY e.EnrollmentID
     OFFSET (@Page - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT COUNT(*) AS TotalCount
-    FROM dbo.Enrollments;
+    FROM dbo.Enrollments e
+        INNER JOIN dbo.Students s ON s.StudentID = e.StudentID
+        INNER JOIN dbo.Courses c ON c.CourseID = e.CourseID
+    WHERE @Search IS NULL
+        OR s.Name LIKE '%' + @Search + '%'
+        OR c.CourseName LIKE '%' + @Search + '%';
 END;
 GO
 
@@ -214,17 +239,25 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF NOT EXISTS (SELECT 1 FROM dbo.Students WHERE StudentID = @StudentID)
+    IF NOT EXISTS (SELECT 1
+    FROM dbo.Students
+    WHERE StudentID = @StudentID)
         THROW 50001, 'Student not found', 1;
 
-    IF NOT EXISTS (SELECT 1 FROM dbo.Courses WHERE CourseID = @CourseID)
+    IF NOT EXISTS (SELECT 1
+    FROM dbo.Courses
+    WHERE CourseID = @CourseID)
         THROW 50002, 'Course not found', 1;
 
-    IF EXISTS (SELECT 1 FROM dbo.Enrollments WHERE StudentID = @StudentID AND CourseID = @CourseID)
+    IF EXISTS (SELECT 1
+    FROM dbo.Enrollments
+    WHERE StudentID = @StudentID AND CourseID = @CourseID)
         THROW 50003, 'Student is already enrolled in this course', 1;
 
-    INSERT INTO dbo.Enrollments (StudentID, CourseID)
-    VALUES (@StudentID, @CourseID);
+    INSERT INTO dbo.Enrollments
+        (StudentID, CourseID)
+    VALUES
+        (@StudentID, @CourseID);
 END;
 GO
 
@@ -248,8 +281,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.Users (Username, Email, PasswordHash, Role)
-    VALUES (@Username, @Email, @PasswordHash, @Role);
+    INSERT INTO dbo.Users
+        (Username, Email, PasswordHash, Role)
+    VALUES
+        (@Username, @Email, @PasswordHash, @Role);
 END;
 GO
 
@@ -303,22 +338,139 @@ BEGIN
     SET NOCOUNT ON;
 
     INSERT INTO dbo.AdminAuditLogs
-    (
+        (
         AdminUserID,
         Action,
         EntityName,
         EntityID,
         Details,
         IpAddress
-    )
+        )
     VALUES
-    (
-        @AdminUserID,
-        @Action,
-        @EntityName,
-        @EntityID,
-        @Details,
-        @IpAddress
+        (
+            @AdminUserID,
+            @Action,
+            @EntityName,
+            @EntityID,
+            @Details,
+            @IpAddress
     );
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.GetAdminAuditLogs
+    @Page INT,
+    @PageSize INT,
+    @Search NVARCHAR(200) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        l.AuditLogID,
+        l.AdminUserID,
+        u.Username AS AdminName,
+        u.Email AS AdminEmail,
+        l.Action,
+        l.EntityName,
+        l.EntityID,
+        l.Details,
+        l.IpAddress,
+        l.CreatedAt
+    FROM dbo.AdminAuditLogs l
+        INNER JOIN dbo.Users u ON u.UserID = l.AdminUserID
+    WHERE @Search IS NULL
+        OR u.Username LIKE '%' + @Search + '%'
+        OR u.Email LIKE '%' + @Search + '%'
+        OR l.Action LIKE '%' + @Search + '%'
+        OR l.EntityName LIKE '%' + @Search + '%'
+        OR l.Details LIKE '%' + @Search + '%'
+    ORDER BY l.CreatedAt DESC
+    OFFSET (@Page - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+
+    SELECT COUNT(*) AS TotalCount
+    FROM dbo.AdminAuditLogs l
+        INNER JOIN dbo.Users u ON u.UserID = l.AdminUserID
+    WHERE @Search IS NULL
+        OR u.Username LIKE '%' + @Search + '%'
+        OR u.Email LIKE '%' + @Search + '%'
+        OR l.Action LIKE '%' + @Search + '%'
+        OR l.EntityName LIKE '%' + @Search + '%'
+        OR l.Details LIKE '%' + @Search + '%';
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.SaveRefreshToken
+    @UserId INT,
+    @TokenHash NVARCHAR(88),
+    @ExpiresAt DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.RefreshTokens
+        (UserId, TokenHash, ExpiresAt)
+    VALUES
+        (@UserId, @TokenHash, @ExpiresAt);
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.RevokeRefreshToken
+    @TokenHash NVARCHAR(88)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE dbo.RefreshTokens
+    SET IsRevoked = 1
+    WHERE TokenHash = @TokenHash;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.GetRefreshToken
+    @TokenHash NVARCHAR(88)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT UserId, TokenHash, ExpiresAt
+    FROM dbo.RefreshTokens
+    WHERE TokenHash = @TokenHash
+        AND IsRevoked = 0;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.GetUserByID
+    @UserID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT UserID, Username, Email, PasswordHash, Role
+    FROM dbo.Users
+    WHERE UserID = @UserID;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.CleanupExpiredRefreshTokens
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.RefreshTokens
+    WHERE ExpiresAt < SYSUTCDATETIME();
+END;
+GO
+CREATE OR ALTER PROCEDURE dbo.RevokeActiveRefreshTokensForUser
+    @UserId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE dbo.RefreshTokens
+    SET IsRevoked = 1
+    WHERE UserId = @UserId
+        AND IsRevoked = 0;
 END;
 GO

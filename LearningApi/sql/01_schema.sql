@@ -13,6 +13,10 @@ BEGIN
 END;
 GO
 
+ALTER TABLE dbo.Students
+ADD CONSTRAINT UQ_Students_Email UNIQUE (Email);
+GO
+
 /* IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UX_Students_Email' AND object_id = OBJECT_ID(N'dbo.Students'))
 BEGIN
     CREATE UNIQUE INDEX UX_Students_Email ON dbo.Students(Email);
@@ -32,6 +36,10 @@ BEGIN
         CONSTRAINT CK_Courses_DurationWeeks CHECK (DurationWeeks BETWEEN 1 AND 52)
     );
 END;
+GO
+
+ALTER TABLE dbo.Courses
+ADD CONSTRAINT UQ_Courses_CourseName UNIQUE (CourseName);
 GO
 
 IF OBJECT_ID(N'dbo.Users', N'U') IS NULL
