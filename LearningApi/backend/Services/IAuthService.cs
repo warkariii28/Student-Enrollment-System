@@ -17,4 +17,5 @@ public interface IAuthService
     User GetUserById(int userId);
     string GenerateToken(User user);
     string RotateRefreshToken(string oldToken);
+    void RevokeRefreshToken(string refreshToken);
 }

@@ -148,6 +148,11 @@ public class AuthService : IAuthService
 
         return newToken;
     }
+    public void RevokeRefreshToken(string refreshToken)
+{
+    var tokenHash = HashRefreshToken(refreshToken);
+    _repo.RevokeRefreshToken(tokenHash);
+}
 
 
 }

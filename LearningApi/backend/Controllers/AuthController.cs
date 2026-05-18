@@ -161,6 +161,20 @@ public class AuthController : ControllerBase
             refreshToken = newRefresh
         }, "Token refreshed"));
     }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public IActionResult Logout([FromBody] RefreshRequest request)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.RefreshToken))
+        {
+            return BadRequest(ResponseHelper.Fail<object>("Refresh token is required"));
+        }
+
+        _service.RevokeRefreshToken(request.RefreshToken);
+
+        return Ok(ResponseHelper.Success<object>(null, "Logged out successfully"));
+    }    
 }
 
 // ✅ MUST be here (after controller)

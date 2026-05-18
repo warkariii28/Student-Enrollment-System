@@ -6,7 +6,7 @@ namespace LearningApi.Repositories;
 public interface IEnrollmentRepository
 {
     List<EnrollmentResponseDto> GetAll();
-    PagedResultDto<EnrollmentResponseDto> GetPaged(int page, int pageSize);
+    PagedResultDto<EnrollmentResponseDto> GetPaged(int page, int pageSize,string? search);
     void Add(Enrollment enrollment);
     bool Delete(int id);
 }

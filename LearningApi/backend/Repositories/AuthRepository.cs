@@ -101,13 +101,14 @@ public class AuthRepository : IAuthRepository
 
     public void SaveRefreshToken(int userId, string token)
     {
-        using var conn = new SqlConnection(_conn);
-        using var cmd = new SqlCommand(
-            "INSERT INTO RefreshTokens (UserId, TokenHash, ExpiresAt) VALUES (@u, @t, @e)", conn);
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("SaveRefreshToken", conn);
 
-        cmd.Parameters.Add("@u", SqlDbType.Int).Value = userId;
-        cmd.Parameters.Add("@t", SqlDbType.NVarChar, 88).Value = token;
-        cmd.Parameters.Add("@e", SqlDbType.DateTime).Value = DateTime.UtcNow.AddDays(7);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+        cmd.Parameters.Add("@TokenHash", SqlDbType.NVarChar, 88).Value = token;
+        cmd.Parameters.Add("@ExpiresAt", SqlDbType.DateTime).Value = DateTime.UtcNow.AddDays(7);
 
         conn.Open();
         cmd.ExecuteNonQuery();
@@ -116,11 +117,11 @@ public class AuthRepository : IAuthRepository
     public void RevokeRefreshToken(string token)
     {
         using SqlConnection conn = new SqlConnection(_conn);
-        using SqlCommand cmd = new SqlCommand(
-            "UPDATE RefreshTokens SET IsRevoked = 1 WHERE TokenHash = @t", conn);
+        using SqlCommand cmd = new SqlCommand("RevokeRefreshToken", conn);
 
-        cmd.Parameters.Add("@t", SqlDbType.NVarChar, 88).Value = token;
+        cmd.CommandType = CommandType.StoredProcedure;
 
+        cmd.Parameters.Add("@TokenHash", SqlDbType.NVarChar, 88).Value = token;
 
         conn.Open();
         cmd.ExecuteNonQuery();
@@ -128,15 +129,19 @@ public class AuthRepository : IAuthRepository
 
     public RefreshToken? GetRefreshToken(string token)
     {
-        using var conn = new SqlConnection(_conn);
-        using var cmd = new SqlCommand(
-            "SELECT * FROM RefreshTokens WHERE TokenHash=@t AND IsRevoked=0", conn);
+        using SqlConnection conn = new SqlConnection(_conn);
+        using SqlCommand cmd = new SqlCommand("GetRefreshToken", conn);
 
-        cmd.Parameters.Add("@t", SqlDbType.NVarChar, 88).Value = token;
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.Add("@TokenHash", SqlDbType.NVarChar, 88).Value = token;
+
         conn.Open();
 
-        using var r = cmd.ExecuteReader();
-        if (!r.Read()) return null;
+        using SqlDataReader r = cmd.ExecuteReader();
+
+        if (!r.Read())
+            return null;
 
         return new RefreshToken
         {
@@ -149,16 +154,18 @@ public class AuthRepository : IAuthRepository
     public User? GetById(int userId)
     {
         using SqlConnection conn = new SqlConnection(_conn);
-        using SqlCommand cmd = new SqlCommand(
-            "SELECT UserID, Username, Email, PasswordHash, Role FROM Users WHERE UserID = @id", conn);
+        using SqlCommand cmd = new SqlCommand("GetUserByID", conn);
 
-        cmd.Parameters.Add("@id", SqlDbType.Int).Value = userId;
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = userId;
 
         conn.Open();
 
         using SqlDataReader reader = cmd.ExecuteReader();
 
-        if (!reader.Read()) return null;
+        if (!reader.Read())
+            return null;
 
         return new User
         {

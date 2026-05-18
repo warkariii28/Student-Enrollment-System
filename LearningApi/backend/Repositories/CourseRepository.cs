@@ -41,7 +41,7 @@ public class CourseRepository : ICourseRepository
         return courses;
     }
 
-    public PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize)
+    public PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize, string? search)
     {
         var courses = new List<CourseResponseDto>();
         var totalCount = 0;
@@ -53,6 +53,8 @@ public class CourseRepository : ICourseRepository
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.Add("@Page", SqlDbType.Int).Value = page;
         cmd.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize;
+        cmd.Parameters.Add("@Search", SqlDbType.NVarChar, 200).Value =
+         string.IsNullOrWhiteSpace(search) ? DBNull.Value : search.Trim();
 
         conn.Open();
 

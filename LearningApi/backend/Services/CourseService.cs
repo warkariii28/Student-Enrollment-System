@@ -19,9 +19,9 @@ public class CourseService : ICourseService
         return _repo.GetAll();
     }
 
-    public PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize)
+    public PagedResultDto<CourseResponseDto> GetPaged(int page, int pageSize, string? search)
     {
-        return _repo.GetPaged(page, pageSize);
+        return _repo.GetPaged(page, pageSize,search);
     }
 
     public Course GetById(int id)

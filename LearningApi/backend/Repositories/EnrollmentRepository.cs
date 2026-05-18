@@ -42,7 +42,7 @@ public class EnrollmentRepository : IEnrollmentRepository
         return list;
     }
 
-    public PagedResultDto<EnrollmentResponseDto> GetPaged(int page, int pageSize)
+    public PagedResultDto<EnrollmentResponseDto> GetPaged(int page, int pageSize, string? search)
     {
         var enrollments = new List<EnrollmentResponseDto>();
         var totalCount = 0;
@@ -54,6 +54,8 @@ public class EnrollmentRepository : IEnrollmentRepository
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.Add("@Page", SqlDbType.Int).Value = page;
         cmd.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize;
+        cmd.Parameters.Add("@Search", SqlDbType.NVarChar, 200).Value =
+        string.IsNullOrWhiteSpace(search) ? DBNull.Value : search.Trim();
 
         conn.Open();
 
@@ -83,7 +85,7 @@ public class EnrollmentRepository : IEnrollmentRepository
             PageSize = pageSize
         };
     }
-    
+
     public void Add(Enrollment enrollment)
     {
         using SqlConnection conn = new SqlConnection(_conn);

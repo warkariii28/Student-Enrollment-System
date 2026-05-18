@@ -23,14 +23,14 @@ public class StudentsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20,[FromQuery] string? search = null)
     {
         if (page <= 0 || pageSize <= 0 || pageSize > 100)
         {
             return BadRequest(ResponseHelper.Fail<object>("Invalid pagination values"));
         }
 
-        var data = _service.GetPaged(page, pageSize);
+        var data = _service.GetPaged(page, pageSize,search);
         return Ok(ResponseHelper.Success(data, "Students fetched successfully"));
     }
 
