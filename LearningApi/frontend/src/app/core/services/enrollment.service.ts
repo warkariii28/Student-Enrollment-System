@@ -17,16 +17,35 @@ export class EnrollmentService extends BaseApiService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
 
+  private totalCountSubject = new BehaviorSubject<number>(0);
+  public totalCount$ = this.totalCountSubject.asObservable();
+
+  private currentPageSubject = new BehaviorSubject<number>(1);
+  public currentPage$ = this.currentPageSubject.asObservable();
+
+  private pageSizeSubject = new BehaviorSubject<number>(20);
+  public pageSize$ = this.pageSizeSubject.asObservable();
+
   private inflight$?: Observable<Enrollment[]>;
 
   constructor(http: HttpClient) {
     super(http);
   }
 
-  fetchEnrollments(forceRefresh: boolean = false): Observable<Enrollment[]> {
+  fetchEnrollments(
+    page: number = 1,
+    pageSize: number = 20,
+    search: string = '',
+    forceRefresh: boolean = false,
+  ): Observable<Enrollment[]> {
     const current = this.enrollmentsSubject.value;
 
-    if (!forceRefresh && current.length > 0) {
+    if (
+      !forceRefresh &&
+      current.length > 0 &&
+      this.currentPageSubject.value === page &&
+      this.pageSizeSubject.value === pageSize
+    ) {
       return of(current);
     }
 
@@ -36,11 +55,17 @@ export class EnrollmentService extends BaseApiService {
 
     this.loadingSubject.next(true);
 
-    this.inflight$ = this.get<PagedResult<Enrollment>>(this.apiUrl).pipe(
-      map((result) => result.items || []),
-      tap((enrollments) => {
-        this.enrollmentsSubject.next(enrollments);
+    const params = `page=${page}&pageSize=${pageSize}&search=${encodeURIComponent(search.trim())}`;
+
+    this.inflight$ = this.get<PagedResult<Enrollment>>(
+      `${this.apiUrl}?${params}`).pipe(
+      tap((result) => {
+        this.enrollmentsSubject.next(result.items || []);
+        this.totalCountSubject.next(result.totalCount);
+        this.currentPageSubject.next(result.page);
+        this.pageSizeSubject.next(result.pageSize);
       }),
+      map((result) => result.items || []),
       finalize(() => {
         this.loadingSubject.next(false);
         this.inflight$ = undefined;
@@ -59,7 +84,7 @@ export class EnrollmentService extends BaseApiService {
     return this.post<number>(this.apiUrl, payload).pipe(
       tap(() => {
         // must refetch (backend returns incomplete object)
-        this.fetchEnrollments(true).subscribe();
+        this.fetchEnrollments(1,20,'',true).subscribe();
       }),
     );
   }
@@ -67,7 +92,7 @@ export class EnrollmentService extends BaseApiService {
   updateEnrollment(id: number, payload: EnrollmentPayload): Observable<string> {
     return this.putWithMessage(`${this.apiUrl}/${id}`, payload).pipe(
       tap(() => {
-        this.fetchEnrollments(true).subscribe();
+        this.fetchEnrollments(1,20,'',true).subscribe();
       }),
     );
   }
@@ -75,7 +100,7 @@ export class EnrollmentService extends BaseApiService {
   deleteEnrollment(id: number): Observable<void> {
     return this.delete<void>(`${this.apiUrl}/${id}`).pipe(
       tap(() => {
-        this.fetchEnrollments(true).subscribe();
+        this.fetchEnrollments(1,20,'',true).subscribe();
       }),
     );
   }

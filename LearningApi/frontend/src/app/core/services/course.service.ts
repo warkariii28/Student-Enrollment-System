@@ -16,6 +16,14 @@ export class CourseService extends BaseApiService {
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
+  private totalCountSubject = new BehaviorSubject<number>(0);
+  public totalCount$ = this.totalCountSubject.asObservable();
+
+  private currentPageSubject = new BehaviorSubject<number>(1);
+  public currentPage$ = this.currentPageSubject.asObservable();
+
+  private pageSizeSubject = new BehaviorSubject<number>(20);
+  public pageSize$ = this.pageSizeSubject.asObservable();
 
   private inflight$?: Observable<Course[]>;
 
@@ -23,10 +31,20 @@ export class CourseService extends BaseApiService {
     super(http);
   }
 
-  fetchCourses(forceRefresh: boolean = false): Observable<Course[]> {
+  fetchCourses(
+    page: number = 1,
+    pageSize: number = 20,
+    search: string = '',
+    forceRefresh: boolean = false,
+  ): Observable<Course[]> {
     const current = this.coursesSubject.value;
 
-    if (!forceRefresh && current.length > 0) {
+    if (
+      !forceRefresh &&
+      current.length > 0 &&
+      this.currentPageSubject.value === page &&
+      this.pageSizeSubject.value === pageSize
+    ) {
       return of(current);
     }
 
@@ -36,11 +54,17 @@ export class CourseService extends BaseApiService {
 
     this.loadingSubject.next(true);
 
-    this.inflight$ = this.get<PagedResult<Course>>(this.apiUrl).pipe(
-      map((result) => result.items || []),
-      tap((courses) => {
-        this.coursesSubject.next(courses);
+    const params = `page=${page}&pageSize=${pageSize}&search=${encodeURIComponent(search.trim())}`;
+
+    this.inflight$ = this.get<PagedResult<Course>>(
+      `${this.apiUrl}?${params}`).pipe(
+      tap((result) => {
+        this.coursesSubject.next(result.items || []);
+        this.totalCountSubject.next(result.totalCount);
+        this.currentPageSubject.next(result.page);
+        this.pageSizeSubject.next(result.pageSize);
       }),
+      map((result) => result.items || []),
       finalize(() => {
         this.loadingSubject.next(false);
         this.inflight$ = undefined;

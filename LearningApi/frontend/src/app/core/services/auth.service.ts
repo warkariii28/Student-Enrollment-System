@@ -2,7 +2,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable, tap, of, catchError } from 'rxjs';
 
 import { LoginRequest, LoginResponse, RegisterRequest } from '../models/user';
 import { ApiResponse } from '../models/api-response';
@@ -93,5 +93,18 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
     localStorage.removeItem(this.refreshKey);
+  }
+
+  logoutFromServer(): Observable<void> {
+    const refreshToken = this.getRefreshToken();
+
+    if (!refreshToken) {
+      return of(void 0);
+    }
+
+    return this.http.post<ApiResponse<null>>(`${this.apiUrl}/logout`, { refreshToken }).pipe(
+      map(() => void 0),
+      catchError(() => of(void 0)),
+    );
   }
 }
