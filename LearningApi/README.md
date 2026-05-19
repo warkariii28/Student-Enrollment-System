@@ -64,6 +64,11 @@ Update `backend/appsettings.json` before running:
 
 ```json
 {
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:4200"
+    ]
+  },
   "ConnectionStrings": {
     "DefaultConnection": "Server=YOUR_SERVER;Database=LearningDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
@@ -87,6 +92,29 @@ Swagger is available in development at:
 ```txt
 http://localhost:5140/swagger
 ```
+
+## Production Configuration
+
+Use environment-specific configuration for production. Do not commit real secrets in `appsettings.json`.
+
+Recommended environment variables:
+
+```bash
+ConnectionStrings__DefaultConnection="Server=YOUR_SERVER;Database=LearningDB;User Id=YOUR_USER;Password=YOUR_PASSWORD;TrustServerCertificate=False;"
+Jwt__Key="replace-with-a-strong-random-secret-at-least-32-characters"
+Jwt__Issuer="LearningApi"
+Jwt__Audience="LearningApiUsers"
+Cors__AllowedOrigins__0="https://your-frontend-domain.com"
+ASPNETCORE_ENVIRONMENT="Production"
+```
+
+Production checklist:
+
+- Set `Jwt:Key` to a strong secret with at least 32 characters.
+- Restrict `Cors:AllowedOrigins` to the real frontend domain.
+- Use HTTPS for the API and frontend.
+- Use a production SQL Server connection string instead of trusted local development auth.
+- Keep Swagger enabled only for environments where API exploration is intended.
 
 ## Frontend Setup
 
