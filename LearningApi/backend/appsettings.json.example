@@ -9,6 +9,9 @@
   "ConnectionStrings": {
     "DefaultConnection": "Server=YOUR_SERVER;Database=LearningDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
+  "Cors": {
+    "AllowedOrigins": ["http://localhost:4200"]
+  },
   "Jwt": {
     "Key": "REPLACE_WITH_A_STRONG_SECRET_KEY",
     "Issuer": "LearningApi",

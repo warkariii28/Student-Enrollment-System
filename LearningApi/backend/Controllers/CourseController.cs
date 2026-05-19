@@ -24,6 +24,9 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PagedResultDto<CourseResponseDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20,[FromQuery] string? search = null)
     {
         if (page <= 0 || pageSize <= 0 || pageSize > 100)
@@ -37,6 +40,10 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<Course>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult GetById(int id)
     {
         if (id <= 0)
@@ -50,6 +57,10 @@ public class CoursesController : ControllerBase
 
     [Authorize(Roles = AppRoles.Admin)]
     [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult Add(CourseCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -71,6 +82,11 @@ public class CoursesController : ControllerBase
 
     [Authorize(Roles = AppRoles.Admin)]
     [HttpPut("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult Update(int id, CourseUpdateDto dto)
     {
         if (id <= 0)
@@ -98,6 +114,11 @@ public class CoursesController : ControllerBase
 
     [Authorize(Roles = AppRoles.Admin)]
     [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult Delete(int id)
     {
         if (id <= 0)

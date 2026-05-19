@@ -1,6 +1,7 @@
 using LearningApi.Helpers;
 using LearningApi.Repositories;
 using LearningApi.Constants;
+using LearningApi.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,10 @@ public class AdminAuditLogsController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PagedResultDto<AdminAuditLogResponseDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult GetAll(
     [FromQuery] int page = 1,
     [FromQuery] int pageSize = 20,

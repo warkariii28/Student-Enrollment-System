@@ -24,6 +24,9 @@ public class EnrollmentsController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PagedResultDto<EnrollmentResponseDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20,[FromQuery] string? search = null)
     {
         if (page <= 0 || pageSize <= 0 || pageSize > 100)
@@ -38,6 +41,10 @@ public class EnrollmentsController : ControllerBase
 
     [Authorize(Roles = AppRoles.Admin)]
     [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult Add(EnrollmentCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -61,6 +68,11 @@ public class EnrollmentsController : ControllerBase
 
     [Authorize(Roles = AppRoles.Admin)]
     [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult Delete(int id)
     {
         if (id <= 0)

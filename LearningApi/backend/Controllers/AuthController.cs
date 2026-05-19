@@ -36,6 +36,9 @@ public class AuthController : ControllerBase
 
     [EnableRateLimiting("AuthPolicy")]
     [HttpPost("register")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public IActionResult Register([FromBody] RegisterDto dto)
     {
         if (!ModelState.IsValid)
@@ -56,6 +59,9 @@ public class AuthController : ControllerBase
 
     [EnableRateLimiting("AuthPolicy")]
     [HttpPost("login")]
+    [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public IActionResult Login([FromBody] LoginDto dto)
     {
         if (!ModelState.IsValid)
@@ -140,6 +146,10 @@ public class AuthController : ControllerBase
     [Authorize]
     [EnableRateLimiting("AuthPolicy")]
     [HttpPost("refresh")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public IActionResult Refresh([FromBody] RefreshRequest request)
     {
 
@@ -167,6 +177,9 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpPost("logout")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
     public IActionResult Logout([FromBody] RefreshRequest request)
     {
         if (request == null || string.IsNullOrWhiteSpace(request.RefreshToken))

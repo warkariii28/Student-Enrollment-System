@@ -125,15 +125,22 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Learning API",
-        Version = "v1"
+        Version = "v1",
+        Description = "ASP.NET Core Web API for managing students, courses, enrollments, JWT authentication, refresh tokens, and role-based admin workflows.",
+        Contact = new OpenApiContact
+        {
+            Name = "Learning API Maintainer"
+        }
     });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "Enter: Bearer {your token}",
+        Description = "JWT Authorization header using the Bearer scheme. Example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -147,7 +154,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });

@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel;
 namespace LearningApi.DTOs;
 
 public class StudentUpdateDto
 {
     [Required]
     [StringLength(100)]
+    [DefaultValue("User Name")]
     [RegularExpression(@"^[A-Za-z][A-Za-z\s.'-]*$", ErrorMessage = "Name must contain letters and valid name characters only.")]
     public string Name { get; set; } = "";
 
