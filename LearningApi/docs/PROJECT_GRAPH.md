@@ -1,4 +1,4 @@
-# LearningApi Project Graph
+# BrightPath Project Graph
 
 Generated: 2026-04-24
 
@@ -35,7 +35,7 @@ flowchart LR
 
 | Area | Path | Purpose |
 | --- | --- | --- |
-| Backend | `backend/LearningApi.csproj` | ASP.NET Core Web API targeting `net10.0` |
+| Backend | `backend/BrightPath.csproj` | ASP.NET Core Web API targeting `net10.0` |
 | Backend entry | `backend/Program.cs` | DI, CORS, JWT auth, controller mapping |
 | Frontend | `frontend/package.json` | Angular 21 app |
 | Frontend entry | `frontend/src/main.ts` | Bootstraps Angular |
