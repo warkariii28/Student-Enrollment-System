@@ -43,7 +43,7 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-LearningApi.sln
+BrightPath.sln
 angular.json
 package-lock.json
 package.json

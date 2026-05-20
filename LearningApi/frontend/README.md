@@ -1,6 +1,6 @@
-# LearningApi Frontend
+# BrightPath Frontend
 
-This is the Angular frontend for the LearningApi project. It provides the login/register screens, protected dashboard layout, student management, course catalog, and enrollment views.
+This is the Angular frontend for the BrightPath project. It provides the login/register screens, protected dashboard layout, student management, course catalog, and enrollment views.
 
 ## Tech Stack
 
