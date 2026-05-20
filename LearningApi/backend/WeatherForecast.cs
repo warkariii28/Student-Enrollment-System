@@ -1,4 +1,4 @@
-namespace LearningApi;
+namespace BrightPath;
 
 public class WeatherForecast
 {

@@ -1,8 +1,8 @@
-using LearningApi.Repositories;
-using LearningApi.Services;
-using LearningApi.Helpers;
-using LearningApi.Middleware;
-using LearningApi.Models;
+using BrightPath.Repositories;
+using BrightPath.Services;
+using BrightPath.Helpers;
+using BrightPath.Middleware;
+using BrightPath.Models;
 using System.Threading.RateLimiting;
 
 

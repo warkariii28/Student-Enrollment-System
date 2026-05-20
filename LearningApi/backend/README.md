@@ -1,6 +1,6 @@
-# LearningApi Backend
+# BrightPath Backend
 
-This is the ASP.NET Core Web API backend for the LearningApi project. It exposes authenticated APIs for users, students, courses, and enrollments, backed by SQL Server stored procedures.
+This is the ASP.NET Core Web API backend for the BrightPath project. It exposes authenticated APIs for users, students, courses, and enrollments, backed by SQL Server stored procedures.
 
 ## Tech Stack
 
@@ -72,8 +72,8 @@ Update:
   },
   "Jwt": {
     "Key": "replace-with-a-strong-secret-key-at-least-32-characters",
-    "Issuer": "LearningApi",
-    "Audience": "LearningApiUsers"
+    "Issuer": "BrightPath",
+    "Audience": "BrightPathUsers"
   },
   "Cors": {
     "AllowedOrigins": [
@@ -90,7 +90,7 @@ Important: `Jwt:Key` must be at least 32 characters because the API validates th
 From the repository root:
 
 ```bash
-dotnet run --project backend/LearningApi.csproj
+dotnet run --project backend/BrightPath.csproj
 ```
 
 Or from the backend folder:
@@ -115,7 +115,7 @@ http://localhost:5140/swagger
 ## Build
 
 ```bash
-dotnet build backend/LearningApi.csproj
+dotnet build backend/BrightPath.csproj
 ```
 
 ## Main API Endpoints
