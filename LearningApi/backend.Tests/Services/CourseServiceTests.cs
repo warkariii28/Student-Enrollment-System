@@ -1,6 +1,6 @@
-using LearningApi.Exceptions;
-using LearningApi.Models;
-using LearningApi.Services;
+using BrightPath.Exceptions;
+using BrightPath.Models;
+using BrightPath.Services;
 using backend.Tests.Fakes;
 
 namespace backend.Tests.Services;

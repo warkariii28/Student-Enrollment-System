@@ -1,8 +1,8 @@
-using LearningApi.Constants;
-using LearningApi.DTOs;
-using LearningApi.Exceptions;
-using LearningApi.Models;
-using LearningApi.Services;
+using BrightPath.Constants;
+using BrightPath.DTOs;
+using BrightPath.Exceptions;
+using BrightPath.Models;
+using BrightPath.Services;
 using Microsoft.Extensions.Configuration;
 using backend.Tests.Fakes;
 
@@ -16,8 +16,8 @@ public class AuthServiceTests
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Jwt:Key"] = "this-is-a-test-secret-key-with-32-chars-min",
-                ["Jwt:Issuer"] = "LearningApi.Tests",
-                ["Jwt:Audience"] = "LearningApi.Tests.Users"
+                ["Jwt:Issuer"] = "BrightPath.Tests",
+                ["Jwt:Audience"] = "BrightPath.Tests.Users"
             })
             .Build();
     }

@@ -1,6 +1,6 @@
-using LearningApi.DTOs;
-using LearningApi.Models;
-using LearningApi.Repositories;
+using BrightPath.DTOs;
+using BrightPath.Models;
+using BrightPath.Repositories;
 
 namespace backend.Tests.Fakes;
 
