@@ -1,6 +1,6 @@
-namespace LearningApi.Helpers;
+namespace BrightPath.Helpers;
 
-using LearningApi.DTOs;
+using BrightPath.DTOs;
 
 public static class ResponseHelper
 {

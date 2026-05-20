@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using LearningApi.Helpers;
+using BrightPath.Helpers;
 using Microsoft.AspNetCore.Authorization;
-namespace LearningApi.Controllers;
+namespace BrightPath.Controllers;
 
 [ApiController]
 [Route("api/dbtest")]

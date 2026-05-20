@@ -1,10 +1,10 @@
-using LearningApi.Models;
-using LearningApi.DTOs;
+using BrightPath.Models;
+using BrightPath.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using LearningApi.Helpers;
+using BrightPath.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
-namespace LearningApi.Controllers;
+namespace BrightPath.Controllers;
 
 [ApiController]
 [Route("api/test")]

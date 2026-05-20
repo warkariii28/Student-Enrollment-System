@@ -1,9 +1,9 @@
-using LearningApi.Models;
-using LearningApi.DTOs;
+using BrightPath.Models;
+using BrightPath.DTOs;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
 public class AdminAuditLogRepository : IAdminAuditLogRepository
 {

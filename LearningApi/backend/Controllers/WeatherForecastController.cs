@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace LearningApi.Controllers;
+namespace BrightPath.Controllers;
 
 [ApiController]
 [Route("[controller]")]

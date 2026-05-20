@@ -1,10 +1,10 @@
-using LearningApi.Models;
-using LearningApi.DTOs;
+using BrightPath.Models;
+using BrightPath.DTOs;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using LearningApi.Exceptions;
+using BrightPath.Exceptions;
 
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
 public class AuthRepository : IAuthRepository
 {

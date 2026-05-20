@@ -1,4 +1,4 @@
-namespace LearningApi.Exceptions;
+namespace BrightPath.Exceptions;
 
 public class UnauthorizedException : Exception
 {

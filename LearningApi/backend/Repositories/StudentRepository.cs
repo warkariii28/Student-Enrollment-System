@@ -1,8 +1,8 @@
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
-using LearningApi.Exceptions;
-using LearningApi.DTOs;
-using LearningApi.Models;
+using BrightPath.Exceptions;
+using BrightPath.DTOs;
+using BrightPath.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
 

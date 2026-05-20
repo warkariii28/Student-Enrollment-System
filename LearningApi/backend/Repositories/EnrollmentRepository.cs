@@ -1,10 +1,10 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
-using LearningApi.Models;
-using LearningApi.DTOs;
-using LearningApi.Exceptions;
+using BrightPath.Models;
+using BrightPath.DTOs;
+using BrightPath.Exceptions;
 
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
 public class EnrollmentRepository : IEnrollmentRepository
 {

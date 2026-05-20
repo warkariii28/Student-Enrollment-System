@@ -1,10 +1,10 @@
-using LearningApi.DTOs;
-using LearningApi.Models;
-using LearningApi.Exceptions;
+using BrightPath.DTOs;
+using BrightPath.Models;
+using BrightPath.Exceptions;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
 public class CourseRepository : ICourseRepository
 {

@@ -1,8 +1,8 @@
-using LearningApi.DTOs;
-using LearningApi.Models;
-using LearningApi.Repositories;
-using LearningApi.Exceptions;
-using LearningApi.Constants;
+using BrightPath.DTOs;
+using BrightPath.Models;
+using BrightPath.Repositories;
+using BrightPath.Exceptions;
+using BrightPath.Constants;
 
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace LearningApi.Services;
+namespace BrightPath.Services;
 
 public class AuthService : IAuthService
 {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Net.Http.Headers;
 
-namespace LearningApi.DTOs;
+namespace BrightPath.DTOs;
 
 public class PagedResultDto<T>
 {

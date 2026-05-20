@@ -1,7 +1,7 @@
-using LearningApi.DTOs;
-using LearningApi.Models;
+using BrightPath.DTOs;
+using BrightPath.Models;
 
-namespace LearningApi.Services;
+namespace BrightPath.Services;
 
 public interface ICourseService
 {

@@ -1,7 +1,7 @@
-using LearningApi.DTOs;
-using LearningApi.Models;
+using BrightPath.DTOs;
+using BrightPath.Models;
 
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
 public interface IEnrollmentRepository
 {

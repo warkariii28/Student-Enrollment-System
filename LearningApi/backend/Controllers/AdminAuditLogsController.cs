@@ -1,7 +1,7 @@
-using LearningApi.Helpers;
-using LearningApi.Repositories;
-using LearningApi.Constants;
-using LearningApi.DTOs;
+using BrightPath.Helpers;
+using BrightPath.Repositories;
+using BrightPath.Constants;
+using BrightPath.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

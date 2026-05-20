@@ -1,9 +1,9 @@
-using LearningApi.DTOs;
-using LearningApi.Models;
-using LearningApi.Repositories;
-using LearningApi.Exceptions;
+using BrightPath.DTOs;
+using BrightPath.Models;
+using BrightPath.Repositories;
+using BrightPath.Exceptions;
 
-namespace LearningApi.Services;
+namespace BrightPath.Services;
 
 public class CourseService : ICourseService
 {

@@ -1,4 +1,4 @@
-namespace LearningApi.Constants;
+namespace BrightPath.Constants;
 
 public static class AppRoles
 {

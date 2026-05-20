@@ -1,8 +1,8 @@
-using LearningApi.DTOs;
-using LearningApi.Models;
+using BrightPath.DTOs;
+using BrightPath.Models;
 
-namespace LearningApi.Repositories;
-using LearningApi.DTOs;
+namespace BrightPath.Repositories;
+using BrightPath.DTOs;
 
 public interface IAuthRepository
 {

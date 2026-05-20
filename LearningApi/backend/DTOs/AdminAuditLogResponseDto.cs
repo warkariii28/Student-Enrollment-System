@@ -1,4 +1,4 @@
-namespace LearningApi.DTOs;
+namespace BrightPath.DTOs;
 
 public class AdminAuditLogResponseDto
 {

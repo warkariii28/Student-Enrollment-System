@@ -1,4 +1,4 @@
-using LearningApi.DTOs;
+using BrightPath.DTOs;
 
 public class AuthResponseDto
 {

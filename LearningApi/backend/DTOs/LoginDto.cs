@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace LearningApi.DTOs;
+namespace BrightPath.DTOs;
 
 public class LoginDto
 {

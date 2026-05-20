@@ -1,7 +1,7 @@
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
-using LearningApi.DTOs;
-using LearningApi.Models;
+using BrightPath.DTOs;
+using BrightPath.Models;
 
 public interface IStudentRepository
 {

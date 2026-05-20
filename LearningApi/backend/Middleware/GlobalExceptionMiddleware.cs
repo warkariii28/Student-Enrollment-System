@@ -1,11 +1,11 @@
 // For every HTTP request, pass the request through this middleware.
 // If any unhandled exception occurs, catch it and return a standardized error response.
 
-using LearningApi.Exceptions;
-using LearningApi.Helpers;
+using BrightPath.Exceptions;
+using BrightPath.Helpers;
 using System.Net;
 
-namespace LearningApi.Middleware;
+namespace BrightPath.Middleware;
 
 public class GlobalExceptionMiddleware
 {

@@ -1,7 +1,7 @@
-using LearningApi.Models;
-using LearningApi.DTOs;
+using BrightPath.Models;
+using BrightPath.DTOs;
 
-namespace LearningApi.Repositories;
+namespace BrightPath.Repositories;
 
 public interface IAdminAuditLogRepository
 {

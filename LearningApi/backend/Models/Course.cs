@@ -1,4 +1,4 @@
-namespace LearningApi.Models;
+namespace BrightPath.Models;
 
 public class Course
 {
