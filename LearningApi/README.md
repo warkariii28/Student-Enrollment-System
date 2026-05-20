@@ -1,6 +1,6 @@
-# LearningApi
+# BrightPath
 
-LearningApi is a beginner-friendly full-stack student learning management project. It combines an Angular frontend, an ASP.NET Core Web API backend, and SQL Server stored procedures to demonstrate a realistic Controller -> Service -> Repository -> Database workflow.
+BrightPath is a beginner-friendly full-stack student learning management project. It combines an Angular frontend, an ASP.NET Core Web API backend, and SQL Server stored procedures to demonstrate a realistic Controller -> Service -> Repository -> Database workflow.
 
 ## What The Project Covers
 
@@ -22,7 +22,7 @@ LearningApi is a beginner-friendly full-stack student learning management projec
 ## Project Structure
 
 ```txt
-LearningApi/
+BrightPath/
   backend/          ASP.NET Core Web API
   frontend/         Angular application
   sql/              SQL Server database scripts
@@ -74,8 +74,8 @@ Update `backend/appsettings.json` before running:
   },
   "Jwt": {
     "Key": "replace-with-a-strong-secret-key-at-least-32-characters",
-    "Issuer": "LearningApi",
-    "Audience": "LearningApiUsers"
+    "Issuer": "BrightPath",
+    "Audience": "BrightPathUsers"
   }
 }
 ```
@@ -102,8 +102,8 @@ Recommended environment variables:
 ```bash
 ConnectionStrings__DefaultConnection="Server=YOUR_SERVER;Database=LearningDB;User Id=YOUR_USER;Password=YOUR_PASSWORD;TrustServerCertificate=False;"
 Jwt__Key="replace-with-a-strong-random-secret-at-least-32-characters"
-Jwt__Issuer="LearningApi"
-Jwt__Audience="LearningApiUsers"
+Jwt__Issuer="BrightPath"
+Jwt__Audience="BrightPathUsers"
 Cors__AllowedOrigins__0="https://your-frontend-domain.com"
 ASPNETCORE_ENVIRONMENT="Production"
 ```
@@ -162,8 +162,8 @@ apiBaseUrl: 'http://localhost:5140'
 Backend:
 
 ```bash
-dotnet build backend/LearningApi.csproj
-dotnet run --project backend/LearningApi.csproj
+dotnet build backend/BrightPath.csproj
+dotnet run --project backend/BrightPath.csproj
 ```
 
 Frontend:
