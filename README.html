@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrightPath — Project Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0f;
+    --surface: #141418;
+    --surface2: #1c1c22;
+    --border: #2a2a35;
+    --accent: #e8c547;
+    --accent2: #5b9cf6;
+    --accent3: #7cf59a;
+    --accent4: #f5875b;
+    --text: #e8e6df;
+    --text-muted: #7a7870;
+    --text-dim: #4a4842;
+    --csharp: #9b7cf5;
+    --ts: #5b9cf6;
+    --sql: #f5875b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── SIDEBAR NAV ─── */
+  .sidenav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 230px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 32px 0;
+    overflow-y: auto;
+    z-index: 100;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidenav-brand {
+    padding: 0 20px 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .sidenav-brand .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .sidenav-brand .sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 3px;
+  }
+
+  .nav-section {
+    padding: 8px 20px 4px;
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+  }
+
+  .sidenav a {
+    display: block;
+    padding: 7px 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .sidenav a:hover {
+    color: var(--text);
+    background: var(--surface2);
+    border-left-color: var(--accent);
+    padding-left: 24px;
+  }
+
+  .sidenav a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-left: 230px;
+    padding: 60px 64px;
+    max-width: 1100px;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 80px 0 64px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: 'BRIGHTPATH';
+    position: absolute;
+    top: -20px; right: -20px;
+    font-family: 'Fraunces', serif;
+    font-size: 180px;
+    font-weight: 900;
+    color: #ffffff04;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #e8c54712;
+    border: 1px solid #e8c54730;
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -3px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  .tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 32px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .pill-cs { background: #9b7cf520; color: var(--csharp); border: 1px solid #9b7cf530; }
+  .pill-ts { background: #5b9cf620; color: var(--ts); border: 1px solid #5b9cf630; }
+  .pill-sql { background: #f5875b20; color: var(--sql); border: 1px solid #f5875b30; }
+  .pill-green { background: #7cf59a20; color: var(--accent3); border: 1px solid #7cf59a30; }
+  .pill-yellow { background: #e8c54720; color: var(--accent); border: 1px solid #e8c54730; }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    margin-bottom: 80px;
+    scroll-margin-top: 32px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    color: var(--text);
+    margin-bottom: 32px;
+    line-height: 1.1;
+  }
+
+  .section-title span {
+    color: var(--accent);
+  }
+
+  /* ─── PIPELINE DIAGRAM ─── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 24px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .pipeline-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 6px;
+    color: var(--text);
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .pipeline-step.accent { border-color: var(--accent); color: var(--accent); }
+  .pipeline-step.blue { border-color: var(--accent2); color: var(--accent2); }
+  .pipeline-step.green { border-color: var(--accent3); color: var(--accent3); }
+  .pipeline-step.orange { border-color: var(--accent4); color: var(--accent4); }
+
+  .pipeline-arrow {
+    color: var(--text-dim);
+    padding: 0 6px;
+    font-size: 16px;
+  }
+
+  /* ─── CARDS ─── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .card-icon {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ─── CODE BLOCKS ─── */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .lang-cs { color: var(--csharp); }
+  .lang-ts { color: var(--ts); }
+  .lang-sql { color: var(--sql); }
+  .lang-json { color: var(--accent3); }
+
+  .code-file {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .code-body {
+    padding: 20px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .kw { color: #c792ea; }
+  .type { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .cm { color: var(--text-dim); font-style: italic; }
+  .attr { color: var(--accent); }
+  .fn { color: #82aaff; }
+  .ns { color: #89ddff; }
+
+  /* ─── TABLES ─── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #1e1e26;
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tr:hover td { background: var(--surface2); }
+
+  td code, th code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  td .method {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .get { background: #5b9cf620; color: var(--accent2); border: 1px solid #5b9cf630; }
+  .post { background: #7cf59a20; color: var(--accent3); border: 1px solid #7cf59a30; }
+  .put { background: #e8c54720; color: var(--accent); border: 1px solid #e8c54730; }
+  .delete { background: #f5875b20; color: var(--accent4); border: 1px solid #f5875b30; }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .badge-admin { background: #9b7cf520; color: var(--csharp); border: 1px solid #9b7cf530; }
+  .badge-user { background: #5b9cf620; color: var(--accent2); border: 1px solid #5b9cf630; }
+  .badge-public { background: #7cf59a20; color: var(--accent3); border: 1px solid #7cf59a30; }
+
+  /* ─── LAYER DIAGRAM ─── */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 420px;
+    margin: 24px 0;
+  }
+
+  .layer {
+    padding: 14px 20px;
+    border: 1px solid var(--border);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+  }
+
+  .layer:first-child { border-radius: 10px 10px 0 0; }
+  .layer:last-child { border-radius: 0 0 10px 10px; }
+  .layer + .layer { border-top: none; }
+
+  .layer:hover {
+    background: var(--surface2);
+    border-color: var(--accent);
+    z-index: 1;
+  }
+
+  .layer-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    min-width: 20px;
+  }
+
+  .layer-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .layer-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto;
+    text-align: right;
+    max-width: 200px;
+  }
+
+  .layer-c { border-left: 3px solid var(--accent); }
+  .layer-s { border-left: 3px solid var(--accent2); }
+  .layer-r { border-left: 3px solid var(--accent3); }
+  .layer-d { border-left: 3px solid var(--accent4); }
+  .layer-m { border-left: 3px solid var(--csharp); }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 48px 0;
+  }
+
+  /* ─── INLINE NOTICE ─── */
+  .notice {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin: 16px 0;
+  }
+
+  .notice strong { color: var(--text); }
+
+  .notice.warn { border-left-color: var(--accent); }
+  .notice.success { border-left-color: var(--accent3); }
+
+  /* ─── FILE TREE ─── */
+  .file-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 2;
+    margin: 16px 0;
+  }
+
+  .tree-dir { color: var(--accent2); font-weight: 500; }
+  .tree-file { color: var(--text-muted); }
+  .tree-file.hl { color: var(--accent); font-weight: 500; }
+  .tree-indent { padding-left: 20px; display: block; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .sidenav { display: none; }
+    .main { margin-left: 0; padding: 32px 24px; }
+    .hero h1 { font-size: 48px; }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  .section { animation: fadeUp 0.4s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── FLOW DIAGRAM ─── */
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    max-width: 500px;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .flow::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 24px;
+    bottom: 24px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .flow-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 0;
+    position: relative;
+  }
+
+  .flow-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    margin-left: 19px;
+    background: var(--border);
+    border: 2px solid var(--bg);
+  }
+
+  .flow-dot.active { background: var(--accent); }
+  .flow-dot.blue { background: var(--accent2); }
+  .flow-dot.green { background: var(--accent3); }
+  .flow-dot.orange { background: var(--accent4); }
+  .flow-dot.purple { background: var(--csharp); }
+
+  .flow-content {}
+  .flow-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .flow-detail {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
+  /* ─── TWO COL ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  .col-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .col-block-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .col-block-title.cs { color: var(--csharp); }
+  .col-block-title.ts { color: var(--accent2); }
+
+  ul.list {
+    list-style: none;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  ul.list li::before {
+    content: '→ ';
+    color: var(--accent);
+  }
+
+  ul.list li { line-height: 1.5; }
+  ul.list li strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidenav">
+  <div class="sidenav-brand">
+    <div class="logo">BrightPath</div>
+    <div class="sub">Project Docs</div>
+  </div>
+  <div class="nav-section">Overview</div>
+  <a href="#overview">Architecture</a>
+  <a href="#stack">Tech Stack</a>
+  <a href="#structure">File Structure</a>
+  <div class="nav-section">Backend</div>
+  <a href="#pipeline">Request Pipeline</a>
+  <a href="#models">Data Models</a>
+  <a href="#dtos">DTOs & Validation</a>
+  <a href="#services">Services</a>
+  <a href="#repos">Repositories</a>
+  <a href="#controllers">Controllers</a>
+  <a href="#auth">Auth System</a>
+  <a href="#middleware">Middleware</a>
+  <div class="nav-section">Database</div>
+  <a href="#schema">Schema</a>
+  <a href="#procs">Stored Procedures</a>
+  <div class="nav-section">Frontend</div>
+  <a href="#angular">Angular App</a>
+  <a href="#routing">Routing & Guards</a>
+  <a href="#interceptors">Interceptors</a>
+  <a href="#fe-services">Services</a>
+  <a href="#pages">Pages</a>
+  <a href="#shared">Shared Components</a>
+  <div class="nav-section">API</div>
+  <a href="#api-routes">API Routes</a>
+  <div class="nav-section">Tests</div>
+  <a href="#tests">Test Coverage</a>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Full-Stack · ASP.NET Core + Angular</div>
+    <h1>Bright<em>Path</em><br>Docs</h1>
+    <p class="hero-desc">
+      A production-grade Learning Management System — JWT-authenticated REST API backed by SQL Server stored procedures, fronted by an Angular 21 SPA with role-based access control.
+    </p>
+    <div class="tech-pills">
+      <span class="pill pill-cs">C# / .NET 10</span>
+      <span class="pill pill-ts">Angular 21 (TypeScript)</span>
+      <span class="pill pill-sql">SQL Server</span>
+      <span class="pill pill-green">JWT + Refresh Tokens</span>
+      <span class="pill pill-yellow">Role-Based Access</span>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="section" id="overview">
+    <div class="section-label">01 — Overview</div>
+    <div class="section-title">Architecture <span>Overview</span></div>
+    <p style="color:var(--text-muted); font-size:14.5px; max-width:660px; margin-bottom:28px; line-height:1.75">
+      BrightPath is a two-tier application: an ASP.NET Core Web API backend and an Angular 21 SPA frontend. Both live under <code>LearningApi/</code>. The backend uses a strict four-layer architecture (Controller → Service → Repository → Database). All SQL access goes through stored procedures — no inline SQL in C#. The frontend uses Angular's functional-style interceptors, route guards, and Angular Signals for reactive state.
+    </p>
+
+    <div class="two-col">
+      <div class="col-block">
+        <div class="col-block-title cs">Backend (ASP.NET Core)</div>
+        <ul class="list">
+          <li><strong>Target framework:</strong> net10.0</li>
+          <li><strong>Auth:</strong> JWT Bearer + Refresh Tokens (SHA-256 hashed, stored in DB)</li>
+          <li><strong>Password hashing:</strong> BCrypt.Net-Next</li>
+          <li><strong>Data access:</strong> Raw ADO.NET via SqlCommand + SqlDataReader</li>
+          <li><strong>All SQL:</strong> 100% stored procedures, zero inline SQL</li>
+          <li><strong>Rate limiting:</strong> ASP.NET Core built-in, 5 req/min on auth endpoints</li>
+          <li><strong>Error handling:</strong> GlobalExceptionMiddleware catches all unhandled exceptions</li>
+          <li><strong>Response envelope:</strong> All responses wrapped in <code>ApiResponse&lt;T&gt;</code></li>
+          <li><strong>Docs:</strong> Swagger / OpenAPI with JWT Bearer security scheme</li>
+        </ul>
+      </div>
+      <div class="col-block">
+        <div class="col-block-title ts">Frontend (Angular 21)</div>
+        <ul class="list">
+          <li><strong>Framework:</strong> Angular 21 standalone components</li>
+          <li><strong>State:</strong> Angular Signals + <code>toSignal()</code> from RxJS interop</li>
+          <li><strong>HTTP:</strong> <code>HttpClient</code> with functional interceptors</li>
+          <li><strong>Auth flow:</strong> JWT stored in <code>localStorage</code>, expiry decoded client-side</li>
+          <li><strong>Token refresh:</strong> Silent refresh with request queuing via <code>BehaviorSubject</code></li>
+          <li><strong>Routing guards:</strong> <code>authGuard</code> (login check) + <code>roleGuard</code> (Admin-only pages)</li>
+          <li><strong>Icons:</strong> lucide-angular v1</li>
+          <li><strong>Testing:</strong> Vitest (unit tests in <code>*.spec.ts</code>)</li>
+          <li><strong>Build:</strong> Angular CLI 21 / esbuild</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section class="section" id="stack">
+    <div class="section-label">02 — Stack</div>
+    <div class="section-title">Tech <span>Stack</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Layer</th><th>Technology</th><th>Version / Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Backend runtime</td><td>ASP.NET Core Web API</td><td><code>net10.0</code></td></tr>
+          <tr><td>Language</td><td>C#</td><td>Latest with .NET 10</td></tr>
+          <tr><td>Auth library</td><td>Microsoft.AspNetCore.Authentication.JwtBearer</td><td>JWT Bearer</td></tr>
+          <tr><td>Password hashing</td><td>BCrypt.Net-Next</td><td>Standard BCrypt work factor</td></tr>
+          <tr><td>Database driver</td><td>Microsoft.Data.SqlClient</td><td>ADO.NET — no ORM</td></tr>
+          <tr><td>Database</td><td>SQL Server</td><td>All logic in stored procedures</td></tr>
+          <tr><td>API docs</td><td>Swashbuckle (Swagger)</td><td>Dev environment only</td></tr>
+          <tr><td>Frontend framework</td><td>Angular</td><td>v21 — standalone components</td></tr>
+          <tr><td>Language (FE)</td><td>TypeScript</td><td>~5.9.2</td></tr>
+          <tr><td>HTTP client</td><td>@angular/common/http</td><td>Functional interceptors</td></tr>
+          <tr><td>Reactive state</td><td>Angular Signals + RxJS</td><td>7.8.x</td></tr>
+          <tr><td>Icons</td><td>lucide-angular</td><td>v1.0.0</td></tr>
+          <tr><td>Testing (FE)</td><td>Vitest</td><td>v4.0.8</td></tr>
+          <tr><td>Package manager</td><td>npm</td><td>11.2.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FILE STRUCTURE -->
+  <section class="section" id="structure">
+    <div class="section-label">03 — Structure</div>
+    <div class="section-title">File <span>Structure</span></div>
+    <div class="two-col">
+      <div class="file-tree">
+<span class="tree-dir">LearningApi/backend/</span>
+<span class="tree-indent"><span class="tree-dir">Constants/</span>
+<span class="tree-indent tree-file hl">AppRoles.cs</span></span>
+<span class="tree-indent"><span class="tree-dir">Controllers/</span>
+<span class="tree-indent tree-file hl">AuthController.cs</span>
+<span class="tree-indent tree-file hl">CourseController.cs</span>
+<span class="tree-indent tree-file hl">StudentsController.cs</span>
+<span class="tree-indent tree-file hl">EnrollmentsController.cs</span>
+<span class="tree-indent tree-file hl">AdminAuditLogsController.cs</span></span>
+<span class="tree-indent"><span class="tree-dir">DTOs/</span>
+<span class="tree-indent tree-file">LoginDto, RegisterDto</span>
+<span class="tree-indent tree-file">Course/Student/Enrollment DTOs</span>
+<span class="tree-indent tree-file">AuthResponseDto, UserDto</span>
+<span class="tree-indent tree-file">PagedResultDto, ApiResponse</span></span>
+<span class="tree-indent"><span class="tree-dir">Exceptions/</span>
+<span class="tree-indent tree-file">BadRequestException.cs</span>
+<span class="tree-indent tree-file">NotFoundException.cs</span>
+<span class="tree-indent tree-file">UnauthorizedException.cs</span></span>
+<span class="tree-indent"><span class="tree-dir">Helpers/</span>
+<span class="tree-indent tree-file hl">ResponseHelper.cs</span></span>
+<span class="tree-indent"><span class="tree-dir">Middleware/</span>
+<span class="tree-indent tree-file hl">GlobalExceptionMiddleware.cs</span></span>
+<span class="tree-indent"><span class="tree-dir">Models/</span>
+<span class="tree-indent tree-file">User, Course, Student</span>
+<span class="tree-indent tree-file">Enrollment, RefreshToken</span>
+<span class="tree-indent tree-file">AdminAuditLog</span></span>
+<span class="tree-indent"><span class="tree-dir">Repositories/</span>
+<span class="tree-indent tree-file hl">AuthRepository.cs</span>
+<span class="tree-indent tree-file hl">CourseRepository.cs</span>
+<span class="tree-indent tree-file hl">StudentRepository.cs</span>
+<span class="tree-indent tree-file hl">EnrollmentRepository.cs</span>
+<span class="tree-indent tree-file hl">AdminAuditLogRepository.cs</span>
+<span class="tree-indent tree-file">I*.cs interfaces</span></span>
+<span class="tree-indent"><span class="tree-dir">Services/</span>
+<span class="tree-indent tree-file hl">AuthService.cs</span>
+<span class="tree-indent tree-file">CourseService.cs</span>
+<span class="tree-indent tree-file">StudentService.cs</span>
+<span class="tree-indent tree-file">EnrollmentService.cs</span>
+<span class="tree-indent tree-file">I*.cs interfaces</span></span>
+<span class="tree-file hl">Program.cs</span>
+<span class="tree-file">appsettings.json.example</span>
+      </div>
+      <div class="file-tree">
+<span class="tree-dir">LearningApi/frontend/src/app/</span>
+<span class="tree-indent"><span class="tree-dir">core/</span>
+<span class="tree-indent tree-file hl">api.config.ts</span>
+<span class="tree-indent"><span class="tree-dir">components/</span>
+<span class="tree-indent tree-file">global-loader/</span>
+<span class="tree-indent tree-file">skeleton-table/</span></span>
+<span class="tree-indent"><span class="tree-dir">constants/</span>
+<span class="tree-indent tree-file hl">app-roles.ts</span></span>
+<span class="tree-indent"><span class="tree-dir">guards/</span>
+<span class="tree-indent tree-file hl">auth.guard.ts</span>
+<span class="tree-indent tree-file hl">role.guard.ts</span></span>
+<span class="tree-indent"><span class="tree-dir">interceptors/</span>
+<span class="tree-indent tree-file hl">auth.interceptor.ts</span>
+<span class="tree-indent tree-file hl">loader.interceptor.ts</span></span>
+<span class="tree-indent"><span class="tree-dir">models/</span>
+<span class="tree-indent tree-file">user, course, student…</span></span>
+<span class="tree-indent"><span class="tree-dir">services/</span>
+<span class="tree-indent tree-file hl">auth.service.ts</span>
+<span class="tree-indent tree-file">course/student/enrollment.service.ts</span>
+<span class="tree-indent tree-file">toast/confirm/loader.service.ts</span>
+<span class="tree-indent tree-file hl">base-api.service.ts</span></span>
+<span class="tree-indent tree-file">utils/ (paginate, validation-errors)</span></span>
+<span class="tree-indent"><span class="tree-dir">layouts/</span>
+<span class="tree-indent tree-file">app-layout/ (authenticated shell)</span>
+<span class="tree-indent tree-file">auth-layout/ (login/register shell)</span></span>
+<span class="tree-indent"><span class="tree-dir">pages/</span>
+<span class="tree-indent tree-file">login, register</span>
+<span class="tree-indent tree-file">dashboard, courses, enrollments</span>
+<span class="tree-indent tree-file">course-form, student-form, enrollment-form</span>
+<span class="tree-indent tree-file">admin-audit-logs, users</span></span>
+<span class="tree-indent"><span class="tree-dir">shared/</span>
+<span class="tree-indent tree-file">navbar, sidebar, footer</span>
+<span class="tree-indent tree-file">toast, confirm, loader</span>
+<span class="tree-indent tree-file">page-header</span></span>
+<span class="tree-file hl">app.routes.ts</span>
+<span class="tree-file hl">app.config.ts</span>
+      </div>
+    </div>
+    <div class="file-tree" style="margin-top:16px;">
+<span class="tree-dir">LearningApi/sql/</span>
+<span class="tree-indent tree-file hl">00_create_database.sql</span>  — creates LearningDB
+<span class="tree-indent tree-file hl">01_schema.sql</span>  — all tables, constraints, indexes (idempotent)
+<span class="tree-indent tree-file hl">02_stored_procedures.sql</span>  — CREATE OR ALTER for all procs
+<span class="tree-indent tree-file hl">03_seed_optional.sql</span>  — 56 students, 27 courses, 60 enrollments
+<span class="tree-indent tree-file">Run_All.sql</span>  — utility queries &amp; admin promotion snippet
+    </div>
+  </section>
+
+  <!-- REQUEST PIPELINE -->
+  <section class="section" id="pipeline">
+    <div class="section-label">04 — Backend</div>
+    <div class="section-title">Request <span>Pipeline</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      Order of middleware registered in <code>Program.cs</code>. Every HTTP request flows through each layer top-to-bottom.
+    </p>
+    <div class="layer-stack">
+      <div class="layer layer-c">
+        <div class="flow-dot active"></div>
+        <div>
+          <div class="flow-title">Client Request</div>
+        </div>
+      </div>
+      <div class="layer layer-c">
+        <div class="layer-num">1</div>
+        <div>
+          <div class="flow-title">HTTPS Redirection + HSTS</div>
+          <div class="flow-detail">Enforced in non-development. HSTS header added.</div>
+        </div>
+      </div>
+      <div class="layer layer-m">
+        <div class="layer-num">2</div>
+        <div>
+          <div class="flow-title">GlobalExceptionMiddleware</div>
+          <div class="flow-detail">Catches unhandled exceptions, maps to 400/401/404/500.</div>
+        </div>
+      </div>
+      <div class="layer layer-s">
+        <div class="layer-num">3</div>
+        <div>
+          <div class="flow-title">CORS — AngularApp policy</div>
+          <div class="flow-detail">Origins read from <code>Cors:AllowedOrigins</code> config.</div>
+        </div>
+      </div>
+      <div class="layer layer-r">
+        <div class="layer-num">4</div>
+        <div>
+          <div class="flow-title">Rate Limiter</div>
+          <div class="flow-detail">AuthPolicy: 5 requests/min per IP. 429 on violation.</div>
+        </div>
+      </div>
+      <div class="layer layer-c">
+        <div class="layer-num">5</div>
+        <div>
+          <div class="flow-title">Authentication (JWT Bearer)</div>
+          <div class="flow-detail">Validates issuer, audience, lifetime, signing key.</div>
+        </div>
+      </div>
+      <div class="layer layer-s">
+        <div class="layer-num">6</div>
+        <div>
+          <div class="flow-title">Authorization</div>
+          <div class="flow-detail"><code>[Authorize]</code> and <code>[Authorize(Roles="Admin")]</code> checked.</div>
+        </div>
+      </div>
+      <div class="layer layer-d">
+        <div class="layer-num">7</div>
+        <div>
+          <div class="flow-title">Controller</div>
+          <div class="flow-detail">Handles DTO validation, calls service, wraps response.</div>
+        </div>
+      </div>
+      <div class="layer layer-d">
+        <div class="layer-num">8</div>
+        <div>
+          <div class="flow-title">Service</div>
+          <div class="flow-detail">Business logic, throws custom exceptions on failure.</div>
+        </div>
+      </div>
+      <div class="layer layer-d">
+        <div class="layer-num">9</div>
+        <div>
+          <div class="flow-title">Repository → SQL Server</div>
+          <div class="flow-detail">ADO.NET + stored procedures only. Parameterized always.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA MODELS -->
+  <section class="section" id="models">
+    <div class="section-label">05 — Backend</div>
+    <div class="section-title">Data <span>Models</span></div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">👤</div>
+        <div class="card-title">User</div>
+        <div class="card-desc">
+          <code>UserID</code>, <code>Username</code>, <code>Email</code>, <code>PasswordHash</code> (BCrypt), <code>Role</code> — defaults to <em>"User"</em>, constrained to "User"|"Admin" in DB.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎓</div>
+        <div class="card-title">Student</div>
+        <div class="card-desc">
+          <code>StudentID</code>, <code>Name</code>, <code>Email</code>. Email unique in DB (<code>UQ_Students_Email</code>). Created at timestamp in schema, not exposed on model.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <div class="card-title">Course</div>
+        <div class="card-desc">
+          <code>CourseID</code>, <code>CourseName</code> (unique), <code>Fee</code> <code>DECIMAL(18,2)</code>, <code>DurationWeeks</code>. DB constraints: Fee 1–1,000,000; DurationWeeks 1–52.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Enrollment</div>
+        <div class="card-desc">
+          <code>EnrollmentID</code>, <code>StudentID</code> (FK → Students CASCADE), <code>CourseID</code> (FK → Courses CASCADE). Duplicate enrollment prevented in <code>EnrollStudent</code> proc.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔑</div>
+        <div class="card-title">RefreshToken</div>
+        <div class="card-desc">
+          <code>UserId</code>, <code>Token</code> (SHA-256 hash stored as NVARCHAR(88)), <code>ExpiresAt</code>. Not a full domain model — used only inside <code>AuthService</code> / <code>AuthRepository</code>.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">AdminAuditLog</div>
+        <div class="card-desc">
+          <code>AdminUserID</code>, <code>Action</code>, <code>EntityName</code>, <code>EntityID?</code>, <code>Details?</code>, <code>IpAddress?</code>. Written on every Admin mutation (create/update/delete/role-assign).
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DTOs -->
+  <section class="section" id="dtos">
+    <div class="section-label">06 — Backend</div>
+    <div class="section-title">DTOs &amp; <span>Validation</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      All input validation lives on DTOs via Data Annotations. <code>Program.cs</code> overrides <code>ApiBehaviorOptions.InvalidModelStateResponseFactory</code> so ModelState failures return the standard <code>ApiResponse</code> envelope instead of default ASP.NET validation problem format.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>DTO</th><th>Key Constraints</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>RegisterDto</code></td>
+            <td>Username: <code>[StringLength(100, min=2)]</code>; Email: <code>[EmailAddress]</code>; Password: <code>[StringLength(100, min=8)]</code> + regex requiring uppercase, lowercase, digit</td>
+          </tr>
+          <tr>
+            <td><code>LoginDto</code></td>
+            <td>Email: <code>[Required][EmailAddress]</code>; Password: <code>[Required]</code></td>
+          </tr>
+          <tr>
+            <td><code>CourseCreateDto</code> / <code>CourseUpdateDto</code></td>
+            <td>CourseName: <code>[StringLength(200, min=2)]</code> + regex (must contain letters, allows digits/spaces/special chars); Fee: <code>[Range(1, 1000000)]</code>; DurationWeeks: <code>[Range(1, 52)]</code></td>
+          </tr>
+          <tr>
+            <td><code>StudentCreateDto</code> / <code>StudentUpdateDto</code></td>
+            <td>Name: <code>[StringLength(100)]</code> + regex (letters, spaces, hyphens, apostrophes, dots); Email: <code>[EmailAddress]</code></td>
+          </tr>
+          <tr>
+            <td><code>EnrollmentCreateDto</code></td>
+            <td>StudentID + CourseID: both <code>[Required][Range(1, int.MaxValue)]</code></td>
+          </tr>
+          <tr>
+            <td><code>PagedResultDto&lt;T&gt;</code></td>
+            <td>Output-only wrapper: <code>Items</code>, <code>TotalCount</code>, <code>Page</code>, <code>PageSize</code></td>
+          </tr>
+          <tr>
+            <td><code>ApiResponse&lt;T&gt;</code></td>
+            <td>Universal envelope: <code>Success</code> (bool), <code>Message</code> (string), <code>Data</code> (T?)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang lang-cs">C#</span>
+        <span class="code-file">ResponseHelper.cs — wraps every response</span>
+      </div>
+      <div class="code-body"><span class="kw">public static</span> <span class="type">ApiResponse</span>&lt;<span class="type">T?</span>&gt; <span class="fn">Success</span>&lt;<span class="type">T</span>&gt;(<span class="type">T?</span> data, <span class="type">string</span> message = <span class="str">""</span>)
+    =&gt; <span class="kw">new</span> { Success = <span class="kw">true</span>, Message = message, Data = data };
+
+<span class="kw">public static</span> <span class="type">ApiResponse</span>&lt;<span class="type">T?</span>&gt; <span class="fn">Fail</span>&lt;<span class="type">T</span>&gt;(<span class="type">string</span> message)
+    =&gt; <span class="kw">new</span> { Success = <span class="kw">false</span>, Message = message, Data = <span class="kw">default</span> };
+
+<span class="cm">// Overloads exist for data+message Fail (used by ModelState errors)</span></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="section-label">07 — Backend</div>
+    <div class="section-title">Service <span>Layer</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      Services contain business logic and throw custom exceptions that the GlobalExceptionMiddleware converts to HTTP responses. Each service is registered via <code>AddScoped</code> against its interface.
+    </p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">AuthService</div>
+        <div class="card-desc">
+          <ul class="list" style="margin-top:8px">
+            <li><strong>Register:</strong> BCrypt.HashPassword → calls repo</li>
+            <li><strong>Login:</strong> CleanupExpiredTokens → GetByEmail → BCrypt.Verify → GenerateToken (HMAC-SHA256, 2hr expiry) → GenerateRefreshToken (64 random bytes → base64) → SHA-256 hash → RevokeExisting → Save new</li>
+            <li><strong>Refresh:</strong> ValidateRefreshToken → GetUserById → GenerateToken → RotateRefreshToken (revoke old, save new hash)</li>
+            <li><strong>Logout:</strong> RevokeRefreshToken by hash</li>
+            <li><strong>AssignRoleSafely:</strong> Guards against removing last admin</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">CourseService / StudentService</div>
+        <div class="card-desc">
+          <ul class="list" style="margin-top:8px">
+            <li><strong>GetAll:</strong> Returns list of ResponseDtos</li>
+            <li><strong>GetPaged:</strong> Delegates to repo with page/pageSize/search</li>
+            <li><strong>GetById:</strong> Throws <code>NotFoundException</code> if null</li>
+            <li><strong>Add:</strong> Returns new ID from repo</li>
+            <li><strong>Update:</strong> Throws <code>NotFoundException</code> if 0 rows affected</li>
+            <li><strong>Delete:</strong> Validates ID &gt; 0, throws <code>BadRequestException</code> / <code>NotFoundException</code></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">EnrollmentService</div>
+        <div class="card-desc">
+          <ul class="list" style="margin-top:8px">
+            <li><strong>GetAll:</strong> Returns joined list (StudentName, CourseName, Date)</li>
+            <li><strong>GetPaged:</strong> Search across student name + course name</li>
+            <li><strong>Add:</strong> Forwards to repo — duplicate prevention is in SQL proc</li>
+            <li><strong>Delete:</strong> Same pattern as other services</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPOSITORIES -->
+  <section class="section" id="repos">
+    <div class="section-label">08 — Backend</div>
+    <div class="section-title">Repository <span>Layer</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      Every repository reads the connection string from <code>IConfiguration</code>. All calls use <code>SqlCommand</code> with <code>CommandType.StoredProcedure</code> and typed <code>SqlParameter</code> — no string interpolation, no inline SQL.
+    </p>
+    <div class="notice">
+      <strong>Duplicate key handling:</strong> Repos catch <code>SqlException</code> where <code>ex.Number == 2601 || ex.Number == 2627</code> (unique constraint violations) and re-throw as <code>BadRequestException</code>. This covers email/CourseName uniqueness.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Repository</th><th>Interface Methods</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>AuthRepository</code></td>
+            <td><code>Register</code>, <code>GetByEmail</code>, <code>GetById</code>, <code>UpdateEmail</code>, <code>UpdateRole</code>, <code>SaveRefreshToken</code>, <code>GetRefreshToken</code>, <code>RevokeRefreshToken</code>, <code>CleanupExpiredRefreshTokens</code>, <code>RevokeActiveRefreshTokensForUser</code>, <code>GetAllUsers</code>, <code>CountAdmins</code></td>
+          </tr>
+          <tr>
+            <td><code>CourseRepository</code></td>
+            <td><code>GetAll</code>, <code>GetPaged</code>, <code>GetById</code>, <code>Add</code> (returns new ID via <code>SCOPE_IDENTITY()</code>), <code>Update</code>, <code>Delete</code></td>
+          </tr>
+          <tr>
+            <td><code>StudentRepository</code></td>
+            <td><code>GetAll</code>, <code>GetPaged</code>, <code>GetById</code>, <code>Add</code>, <code>Update</code>, <code>Delete</code></td>
+          </tr>
+          <tr>
+            <td><code>EnrollmentRepository</code></td>
+            <td><code>GetAll</code>, <code>GetPaged</code>, <code>Add</code>, <code>Delete</code></td>
+          </tr>
+          <tr>
+            <td><code>AdminAuditLogRepository</code></td>
+            <td><code>Add</code>, <code>GetPaged</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notice">
+      <strong>Paged queries pattern:</strong> All paged stored procedures return two result sets — first is the data rows, second is <code>SELECT COUNT(*) AS TotalCount</code>. The repository reads both using <code>reader.NextResult()</code> and packs them into <code>PagedResultDto&lt;T&gt;</code>.
+    </div>
+  </section>
+
+  <!-- CONTROLLERS -->
+  <section class="section" id="controllers">
+    <div class="section-label">09 — Backend</div>
+    <div class="section-title">Controller <span>Layer</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Controller</th><th>Route Prefix</th><th>Auth</th></tr></thead>
+        <tbody>
+          <tr><td><code>AuthController</code></td><td><code>api/auth</code></td><td>Mixed (login/register public; others require auth)</td></tr>
+          <tr><td><code>CoursesController</code></td><td><code>api/courses</code></td><td><code>[Authorize]</code> — GET open to any auth user; POST/PUT/DELETE Admin only</td></tr>
+          <tr><td><code>StudentsController</code></td><td><code>api/students</code></td><td><code>[Authorize]</code> — GET open to any auth user; POST/PUT/DELETE Admin only</td></tr>
+          <tr><td><code>EnrollmentsController</code></td><td><code>api/enrollments</code></td><td><code>[Authorize]</code> — GET open; POST/DELETE Admin only</td></tr>
+          <tr><td><code>AdminAuditLogsController</code></td><td><code>api/admin-audit-logs</code></td><td><code>[Authorize(Roles="Admin")]</code> — entire controller</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notice">
+      <strong>Admin audit trail:</strong> <code>CoursesController</code>, <code>StudentsController</code>, and <code>EnrollmentsController</code> each contain a private <code>WriteAdminAudit()</code> helper that extracts the admin's <code>UserID</code> claim and writes to <code>AdminAuditLogs</code> via <code>IAdminAuditLogRepository</code> on every mutation. The audit includes the action name, entity, entity ID, details string, and the requester's IP address.
+    </div>
+    <div class="notice">
+      <strong>Pagination validation:</strong> All list endpoints validate <code>page &gt; 0 &amp;&amp; pageSize &gt; 0 &amp;&amp; pageSize &lt;= 100</code> and return 400 if violated.
+    </div>
+    <p style="color:var(--text-muted);font-size:14px;margin-top:20px">
+      <code>StudentsController</code> also exposes <code>GET api/students/me</code> — returns the authenticated user's username and email extracted from JWT claims (does not hit the database).
+    </p>
+  </section>
+
+  <!-- AUTH SYSTEM -->
+  <section class="section" id="auth">
+    <div class="section-label">10 — Backend</div>
+    <div class="section-title">Auth <span>System</span></div>
+    <div class="two-col">
+      <div>
+        <p style="color:var(--text-muted);font-size:14px;line-height:1.75;margin-bottom:20px">
+          Full JWT + Refresh Token implementation. Access tokens expire in <strong>2 hours</strong>. Refresh tokens expire in <strong>7 days</strong>, stored as SHA-256 hashes in <code>dbo.RefreshTokens</code>. On login, all previous refresh tokens for the user are revoked first (<em>single active session per user</em> policy).
+        </p>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-dot active"></div>
+            <div class="flow-content">
+              <div class="flow-title">POST /api/auth/register</div>
+              <div class="flow-detail">BCrypt hash password → <code>RegisterUsers</code> proc → role forced to "User"</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-dot blue"></div>
+            <div class="flow-content">
+              <div class="flow-title">POST /api/auth/login</div>
+              <div class="flow-detail">Cleanup expired tokens → fetch user → BCrypt.Verify → generate JWT (HMAC-SHA256) + refresh token (64 random bytes) → SHA-256 hash refresh token → revoke old → save new</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-dot green"></div>
+            <div class="flow-content">
+              <div class="flow-title">POST /api/auth/refresh</div>
+              <div class="flow-detail">Validate hash match + expiry + IsRevoked=0 → fetch user → generate new access + refresh tokens → rotate (revoke old, save new hash)</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-dot orange"></div>
+            <div class="flow-content">
+              <div class="flow-title">POST /api/auth/logout</div>
+              <div class="flow-detail">SHA-256 hash incoming token → <code>RevokeRefreshToken</code> proc (sets IsRevoked=1)</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-dot purple"></div>
+            <div class="flow-content">
+              <div class="flow-title">PUT /api/auth/assign-role (Admin)</div>
+              <div class="flow-detail">Validates role ∈ AppRoles.All (case-insensitive) → <code>AssignRoleSafely</code> guards last-admin removal → writes audit log</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="code-block" style="margin-top:0">
+          <div class="code-header">
+            <span class="code-lang lang-cs">C#</span>
+            <span class="code-file">JWT Token Claims</span>
+          </div>
+          <div class="code-body"><span class="kw">var</span> claims = <span class="kw">new</span>[]
+{
+  <span class="kw">new</span> <span class="type">Claim</span>(<span class="type">ClaimTypes</span>.Name, user.Username),
+  <span class="kw">new</span> <span class="type">Claim</span>(<span class="type">ClaimTypes</span>.Email, user.Email),
+  <span class="kw">new</span> <span class="type">Claim</span>(<span class="str">"UserID"</span>, user.UserID.ToString()),
+  <span class="kw">new</span> <span class="type">Claim</span>(<span class="type">ClaimTypes</span>.Role, user.Role)
+};
+<span class="cm">// Expires: DateTime.UtcNow.AddHours(2)
+// Algorithm: HmacSha256
+// Issuer/Audience read from appsettings.json</span></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang lang-cs">C#</span>
+            <span class="code-file">AppRoles.cs</span>
+          </div>
+          <div class="code-body"><span class="kw">public static class</span> <span class="type">AppRoles</span>
+{
+  <span class="kw">public const string</span> Admin = <span class="str">"Admin"</span>;
+  <span class="kw">public const string</span> User  = <span class="str">"User"</span>;
+
+  <span class="kw">public static readonly</span> <span class="type">HashSet</span>&lt;<span class="type">string</span>&gt; All =
+    <span class="kw">new</span>(<span class="type">StringComparer</span>.OrdinalIgnoreCase)
+    { Admin, User };
+}</div>
+        </div>
+        <div class="notice warn" style="margin-top:12px">
+          <strong>Rate limiting on auth endpoints:</strong> <code>[EnableRateLimiting("AuthPolicy")]</code> on register, login, and refresh — 5 requests/minute per remote IP. HTTP 429 on breach.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MIDDLEWARE -->
+  <section class="section" id="middleware">
+    <div class="section-label">11 — Backend</div>
+    <div class="section-title">Global Exception <span>Middleware</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">
+      <code>GlobalExceptionMiddleware</code> wraps the entire pipeline. It catches any unhandled exception, logs it with the HTTP method, path, and trace ID, then maps exception type to HTTP status code via a C# switch expression:
+    </p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang lang-cs">C#</span>
+        <span class="code-file">GlobalExceptionMiddleware.cs</span>
+      </div>
+      <div class="code-body"><span class="kw">int</span> statusCode = ex <span class="kw">switch</span>
+{
+  <span class="type">BadRequestException</span>    =&gt; <span class="num">400</span>,
+  <span class="type">NotFoundException</span>      =&gt; <span class="num">404</span>,
+  <span class="type">UnauthorizedException</span>  =&gt; <span class="num">401</span>,
+  _                      =&gt; <span class="num">500</span>
+};
+<span class="cm">// 500 responses use a generic message ("An unexpected error occurred")
+// to avoid leaking internal details.
+// context.Response.HasStarted guard prevents replacing in-flight responses.</span></div>
+    </div>
+  </section>
+
+  <!-- SQL SCHEMA -->
+  <section class="section" id="schema">
+    <div class="section-label">12 — Database</div>
+    <div class="section-title">SQL <span>Schema</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      All table creation scripts are idempotent (<code>IF OBJECT_ID(...) IS NULL</code>). The schema uses <code>DATETIME2(0)</code> for timestamps and <code>SYSUTCDATETIME()</code> for defaults.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Table</th><th>PK</th><th>Notable Constraints</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>dbo.Students</code></td>
+            <td><code>StudentID IDENTITY(1,1)</code></td>
+            <td><code>UQ_Students_Email</code> unique constraint on Email</td>
+          </tr>
+          <tr>
+            <td><code>dbo.Courses</code></td>
+            <td><code>CourseID IDENTITY(1,1)</code></td>
+            <td><code>UQ_Courses_CourseName</code>; <code>CK_Courses_Fee CHECK(1–1,000,000)</code>; <code>CK_Courses_DurationWeeks CHECK(1–52)</code></td>
+          </tr>
+          <tr>
+            <td><code>dbo.Users</code></td>
+            <td><code>UserID IDENTITY(1,1)</code></td>
+            <td><code>CK_Users_Role CHECK(Role IN ('User','Admin'))</code>; default Role='User'; PasswordHash NVARCHAR(500)</td>
+          </tr>
+          <tr>
+            <td><code>dbo.Enrollments</code></td>
+            <td><code>EnrollmentID IDENTITY(1,1)</code></td>
+            <td>FK → Students ON DELETE CASCADE; FK → Courses ON DELETE CASCADE</td>
+          </tr>
+          <tr>
+            <td><code>dbo.RefreshTokens</code></td>
+            <td><code>RefreshTokenID IDENTITY(1,1)</code></td>
+            <td><code>UX_RefreshTokens_TokenHash</code> unique index; <code>IX_RefreshTokens_UserId</code> non-unique index; FK → Users ON DELETE CASCADE; <code>IsRevoked BIT DEFAULT 0</code></td>
+          </tr>
+          <tr>
+            <td><code>dbo.AdminAuditLogs</code></td>
+            <td><code>AuditLogID IDENTITY(1,1)</code></td>
+            <td><code>IX_AdminAuditLogs_AdminUserID</code>; <code>IX_AdminAuditLogs_CreatedAt</code>; FK → Users (no cascade)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- STORED PROCEDURES -->
+  <section class="section" id="procs">
+    <div class="section-label">13 — Database</div>
+    <div class="section-title">Stored <span>Procedures</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      All procedures use <code>CREATE OR ALTER PROCEDURE</code> (idempotent). Paged procedures return two result sets (data + TotalCount). <code>SET NOCOUNT ON/OFF</code> is used to control rows-affected counting.
+    </p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">Student Procedures</div>
+        <div class="card-desc">
+          <code>GetAllStudents</code> — plain list ordered by StudentID.<br><br>
+          <code>GetStudentsPaged</code> — OFFSET/FETCH paging + LIKE search on Name OR Email. Returns data + TotalCount.<br><br>
+          <code>GetStudentByID</code>, <code>AddStudent</code> (returns SCOPE_IDENTITY), <code>UpdateStudent</code>, <code>RemoveStudent</code>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Course Procedures</div>
+        <div class="card-desc">
+          <code>GetAllCourses</code>, <code>GetCoursesPaged</code> — search on CourseName only.<br><br>
+          <code>GetCourseByID</code>, <code>AddCourse</code> (returns SCOPE_IDENTITY), <code>UpdateCourse</code>, <code>RemoveCourse</code>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Enrollment Procedures</div>
+        <div class="card-desc">
+          <code>GetEnrollmentDetails</code> — INNER JOINs Students + Courses.<br><br>
+          <code>GetEnrollmentsPaged</code> — search on student Name OR course CourseName.<br><br>
+          <code>EnrollStudent</code> — validates student/course exist, blocks duplicates with <code>THROW</code>. <code>RemoveEnrollment</code>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Auth Procedures</div>
+        <div class="card-desc">
+          <code>RegisterUsers</code>, <code>GetUserByEmail</code>, <code>GetUserByID</code>, <code>GetAllUsers</code>, <code>UpdateUserEmail</code>, <code>UpdateUserRole</code>, <code>CountAdmins</code>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">RefreshToken Procedures</div>
+        <div class="card-desc">
+          <code>SaveRefreshToken</code>, <code>GetRefreshToken</code> (checks IsRevoked=0), <code>RevokeRefreshToken</code> (sets IsRevoked=1), <code>RevokeActiveRefreshTokensForUser</code>, <code>CleanupExpiredRefreshTokens</code>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Audit Log Procedures</div>
+        <div class="card-desc">
+          <code>AddAdminAuditLog</code> — nullable EntityID, Details, IpAddress.<br><br>
+          <code>GetAdminAuditLogs</code> — JOINs Users for AdminName/AdminEmail, full-text search across 5 fields, ordered DESC by CreatedAt.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANGULAR APP -->
+  <section class="section" id="angular">
+    <div class="section-label">14 — Frontend</div>
+    <div class="section-title">Angular <span>App Setup</span></div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang lang-ts">TS</span>
+        <span class="code-file">app.config.ts — root providers</span>
+      </div>
+      <div class="code-body"><span class="kw">export const</span> appConfig: <span class="type">ApplicationConfig</span> = {
+  providers: [
+    <span class="fn">provideBrowserGlobalErrorListeners</span>(),
+    <span class="fn">provideHttpClient</span>(<span class="fn">withInterceptors</span>([
+      authInterceptor,   <span class="cm">// attaches JWT, handles 401+refresh</span>
+      loaderInterceptor  <span class="cm">// toggles LoaderService.loading signal</span>
+    ])),
+    <span class="fn">provideRouter</span>(routes)
+  ]
+};</div>
+    </div>
+    <div class="notice">
+      <strong>Standalone components only.</strong> No NgModules. Every component declares its own <code>imports</code> array. Angular 21's new default build uses esbuild under the hood.
+    </div>
+    <div class="notice warn">
+      <strong>API base URL:</strong> <code>api.config.ts</code> exports <code>API_BASE_URL = environment.apiBaseUrl</code>. <code>environment.ts</code> points to <code>http://localhost:5140</code> for development. <code>environment.prod.ts</code> is the production override.
+    </div>
+  </section>
+
+  <!-- ROUTING & GUARDS -->
+  <section class="section" id="routing">
+    <div class="section-label">15 — Frontend</div>
+    <div class="section-title">Routing &amp; <span>Guards</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Route</th><th>Guard</th><th>Layout</th><th>Access</th></tr></thead>
+        <tbody>
+          <tr><td><code>/login</code></td><td>—</td><td>AuthLayout</td><td><span class="badge badge-public">Public</span></td></tr>
+          <tr><td><code>/register</code></td><td>—</td><td>AuthLayout</td><td><span class="badge badge-public">Public</span></td></tr>
+          <tr><td><code>/dashboard</code></td><td>authGuard</td><td>AppLayout</td><td><span class="badge badge-user">Any Auth</span></td></tr>
+          <tr><td><code>/dashboard/courses</code></td><td>authGuard</td><td>AppLayout</td><td><span class="badge badge-user">Any Auth</span></td></tr>
+          <tr><td><code>/dashboard/enrollments</code></td><td>authGuard</td><td>AppLayout</td><td><span class="badge badge-user">Any Auth</span></td></tr>
+          <tr><td><code>/dashboard/add</code> (student)</td><td>authGuard + roleGuard</td><td>AppLayout</td><td><span class="badge badge-admin">Admin</span></td></tr>
+          <tr><td><code>/dashboard/edit/:id</code></td><td>authGuard + roleGuard</td><td>AppLayout</td><td><span class="badge badge-admin">Admin</span></td></tr>
+          <tr><td><code>/dashboard/courses/add</code></td><td>authGuard + roleGuard</td><td>AppLayout</td><td><span class="badge badge-admin">Admin</span></td></tr>
+          <tr><td><code>/dashboard/courses/edit/:id</code></td><td>authGuard + roleGuard</td><td>AppLayout</td><td><span class="badge badge-admin">Admin</span></td></tr>
+          <tr><td><code>/dashboard/enrollments/add</code></td><td>authGuard + roleGuard</td><td>AppLayout</td><td><span class="badge badge-admin">Admin</span></td></tr>
+          <tr><td><code>/dashboard/audit-logs</code></td><td>authGuard + roleGuard</td><td>AppLayout</td><td><span class="badge badge-admin">Admin</span></td></tr>
+          <tr><td><code>/dashboard/users</code></td><td>authGuard + roleGuard</td><td>AppLayout</td><td><span class="badge badge-admin">Admin</span></td></tr>
+          <tr><td><code>/**</code></td><td>—</td><td>—</td><td>Redirects to /login</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two-col" style="margin-top:20px">
+      <div class="code-block" style="margin:0">
+        <div class="code-header">
+          <span class="code-lang lang-ts">TS</span>
+          <span class="code-file">auth.guard.ts</span>
+        </div>
+        <div class="code-body"><span class="kw">export const</span> authGuard: <span class="type">CanActivateFn</span> = () =&gt; {
+  <span class="kw">const</span> auth = <span class="fn">inject</span>(AuthService);
+  <span class="kw">if</span> (auth.<span class="fn">isLoggedIn</span>()) <span class="kw">return true</span>;
+  auth.<span class="fn">logout</span>(); <span class="cm">// clear stale storage</span>
+  <span class="kw">return</span> router.<span class="fn">createUrlTree</span>([<span class="str">'/login'</span>]);
+};
+<span class="cm">// isLoggedIn() decodes JWT exp claim
+// using atob(token.split('.')[1]) — no library</span></div>
+      </div>
+      <div class="code-block" style="margin:0">
+        <div class="code-header">
+          <span class="code-lang lang-ts">TS</span>
+          <span class="code-file">role.guard.ts</span>
+        </div>
+        <div class="code-body"><span class="kw">export const</span> roleGuard: <span class="type">CanActivateFn</span> =
+  (route) =&gt; {
+  <span class="kw">const</span> allowed = route.data?.[<span class="str">'roles'</span>] <span class="kw">as</span> <span class="type">string</span>[];
+  <span class="kw">const</span> role = auth.<span class="fn">getRole</span>();
+  <span class="kw">if</span> (role &amp;&amp; allowed.<span class="fn">includes</span>(role))
+    <span class="kw">return true</span>;
+  router.<span class="fn">navigate</span>([<span class="str">'/dashboard'</span>]);
+  <span class="kw">return false</span>;
+};</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERCEPTORS -->
+  <section class="section" id="interceptors">
+    <div class="section-label">16 — Frontend</div>
+    <div class="section-title">HTTP <span>Interceptors</span></div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">authInterceptor</div>
+        <div class="card-desc" style="font-size:13px; line-height:1.7">
+          <ul class="list">
+            <li><strong>Bypasses</strong> login/register/refresh endpoints entirely (no token attached)</li>
+            <li><strong>Attaches</strong> <code>Authorization: Bearer {token}</code> to all other outbound requests</li>
+            <li><strong>On 401:</strong> checks for <code>x-retry</code> header (prevents infinite loop) → fetches refresh token → calls <code>/api/auth/refresh</code> using <code>HttpBackend</code> (bypasses interceptor chain)</li>
+            <li><strong>Queue logic:</strong> If a refresh is already in-flight, subsequent 401 requests queue on a <code>BehaviorSubject</code> and resume when the refresh completes</li>
+            <li><strong>On refresh failure:</strong> <code>auth.logout()</code> → navigate to <code>/login</code></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">loaderInterceptor</div>
+        <div class="card-desc">
+          Calls <code>LoaderService.show()</code> before a request goes out and <code>LoaderService.hide()</code> in the <code>finalize()</code> operator — so the spinner always hides even on error. <code>LoaderService</code> uses a reference counter (<code>signal&lt;number&gt;</code>) so overlapping requests don't hide the spinner prematurely.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRONTEND SERVICES -->
+  <section class="section" id="fe-services">
+    <div class="section-label">17 — Frontend</div>
+    <div class="section-title">Frontend <span>Services</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Service</th><th>Key Responsibilities</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>AuthService</code></td>
+            <td>login (stores JWT + user + refreshToken in localStorage), register, logout (local clear), logoutFromServer (POST logout → revoke server token), isLoggedIn (decodes JWT exp claim), getRole, isAdmin, assignRole</td>
+          </tr>
+          <tr>
+            <td><code>BaseApiService</code></td>
+            <td>Abstract base with protected <code>get&lt;T&gt;</code>, <code>post&lt;T&gt;</code>, <code>putWithMessage</code>, <code>delete&lt;T&gt;</code> — all unwrap the <code>ApiResponse&lt;T&gt;</code> envelope. Throws if <code>res.success === false</code>.</td>
+          </tr>
+          <tr>
+            <td><code>CourseService</code></td>
+            <td>Extends BaseApiService. Holds a <code>BehaviorSubject&lt;Course[]&gt;</code> (<code>courses$</code>) and <code>BehaviorSubject&lt;number&gt;</code> (<code>totalCount$</code>). <code>fetchCourses(page, pageSize, search, force?)</code> updates both subjects. hasCourses() avoids redundant fetches.</td>
+          </tr>
+          <tr>
+            <td><code>StudentService</code></td>
+            <td>Same pattern as CourseService — BehaviorSubjects for <code>students$</code> and <code>totalCount$</code>.</td>
+          </tr>
+          <tr>
+            <td><code>EnrollmentService</code></td>
+            <td>Same pattern — <code>enrollments$</code> and <code>totalCount$</code>.</td>
+          </tr>
+          <tr>
+            <td><code>ToastService</code></td>
+            <td>Uses a <code>signal&lt;Toast | null&gt;</code>. <code>show(msg, type, duration=3000)</code> sets the signal then <code>setTimeout</code> clears it. Exposes <code>success()</code>, <code>error()</code>, <code>info()</code> shortcuts.</td>
+          </tr>
+          <tr>
+            <td><code>ConfirmService</code></td>
+            <td>Uses a <code>signal&lt;ConfirmState | null&gt;</code>. <code>ask(message)</code> returns a <code>Promise&lt;boolean&gt;</code> that resolves when user clicks confirm or cancel. UI binds to <code>state</code> signal.</td>
+          </tr>
+          <tr>
+            <td><code>LoaderService</code></td>
+            <td>Reference-counted spinner state. <code>show()</code> increments counter; <code>hide()</code> decrements — only sets <code>loading</code> signal to false when counter reaches 0.</td>
+          </tr>
+          <tr>
+            <td><code>AdminAuditLogService</code></td>
+            <td>Fetches paginated audit logs via <code>GET /api/admin-audit-logs</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PAGES -->
+  <section class="section" id="pages">
+    <div class="section-label">18 — Frontend</div>
+    <div class="section-title">Page <span>Components</span></div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">Login / Register</div>
+        <div class="card-desc">
+          Both use Angular ReactiveFormsModule with <code>FormBuilder.nonNullable.group()</code>. Login uses <code>ChangeDetectionStrategy.OnPush</code> and manually calls <code>cdr.markForCheck()</code> after async operations. Server-side validation errors (<code>data</code> field of <code>ApiResponse</code>) are displayed per-field via <code>getFieldError()</code> utility.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Dashboard</div>
+        <div class="card-desc">
+          Uses <code>forkJoin</code> to parallel-load students (paged) + all courses + all enrollments. State managed via <code>toSignal()</code> subscriptions to the service BehaviorSubjects. Includes server-side search and pagination for students. Delete flow goes through <code>ConfirmService.ask()</code>.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Courses</div>
+        <div class="card-desc">
+          Server-side search + pagination (page, pageSize via signals). <code>setQuery()</code> resets page to 1 and re-fetches. <code>totalPages</code> computed from <code>totalCount$</code> and <code>pageSize</code>. Delete uses ConfirmService. Create/Edit navigates to <code>CourseForm</code> page.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Enrollments</div>
+        <div class="card-desc">
+          Same search/pagination pattern as Courses. Displays student name + course name + enrollment date. Add navigates to <code>EnrollmentForm</code>. EnrollmentForm loads all students and all courses for dropdowns, submits StudentID + CourseID.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">StudentForm / CourseForm</div>
+        <div class="card-desc">
+          Dual-mode (create/edit): checks for <code>:id</code> route param. If present, fetches existing record and patches form. Submits POST or PUT accordingly. Client-side validation mirrors backend DTO constraints.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">AdminAuditLogs / Users</div>
+        <div class="card-desc">
+          Admin-only pages. <code>AdminAuditLogs</code> shows paged, searchable table of all admin actions with admin name, email, IP, entity, and timestamp. <code>Users</code> page shows all registered users; admin can call <code>assignRole()</code> to promote/demote.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHARED COMPONENTS -->
+  <section class="section" id="shared">
+    <div class="section-label">19 — Frontend</div>
+    <div class="section-title">Shared <span>Components</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Function</th></tr></thead>
+        <tbody>
+          <tr><td><code>Sidebar</code></td><td>Collapsible sidebar with lucide-angular icons. Loads student/course/enrollment counts on init. Role-filtered menu: quickActions (Add Student/Course/Enroll) shown only to Admin. Closes on NavigationEnd event. Logout calls <code>logoutFromServer()</code> then local logout.</td></tr>
+          <tr><td><code>Navbar</code></td><td>Top navigation bar. Part of AppLayout.</td></tr>
+          <tr><td><code>Footer</code></td><td>Page footer within AppLayout.</td></tr>
+          <tr><td><code>ToastComponent</code></td><td>Reads <code>ToastService.toast</code> signal. Renders conditionally with success/error/info styling.</td></tr>
+          <tr><td><code>ConfirmComponent</code></td><td>Modal overlay. Reads <code>ConfirmService.state</code> signal. Calls <code>confirm()</code> or <code>cancel()</code> on button click.</td></tr>
+          <tr><td><code>SkeletonTableComponent</code></td><td>Animating placeholder rows shown while data is loading.</td></tr>
+          <tr><td><code>GlobalLoaderComponent</code></td><td>Reads <code>LoaderService.loading</code> signal. Full-screen overlay shown during HTTP requests.</td></tr>
+          <tr><td><code>PageHeaderComponent</code></td><td>Reusable page title block with optional action slot.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notice success">
+      <strong>AppLayout vs AuthLayout:</strong> <code>AppLayoutComponent</code> contains the sidebar, navbar, footer, toast, and confirm dialog. <code>AuthLayoutComponent</code> is a minimal shell for login/register — no navigation chrome. Route nesting determines which layout is active.
+    </div>
+  </section>
+
+  <!-- API ROUTES -->
+  <section class="section" id="api-routes">
+    <div class="section-label">20 — API</div>
+    <div class="section-title">All API <span>Routes</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>Route</th><th>Access</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method post">POST</span></td><td><code>/api/auth/register</code></td><td><span class="badge badge-public">Public</span></td><td>Rate limited. Returns 201.</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/api/auth/login</code></td><td><span class="badge badge-public">Public</span></td><td>Rate limited. Returns JWT + refresh token.</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/api/auth/refresh</code></td><td><span class="badge badge-user">Auth</span></td><td>Rate limited. Rotates refresh token.</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/api/auth/logout</code></td><td><span class="badge badge-user">Auth</span></td><td>Revokes refresh token server-side.</td></tr>
+          <tr><td><span class="method put">PUT</span></td><td><code>/api/auth/update-email</code></td><td><span class="badge badge-user">Auth</span></td><td>Updates own email via query param.</td></tr>
+          <tr><td><span class="method put">PUT</span></td><td><code>/api/auth/assign-role</code></td><td><span class="badge badge-admin">Admin</span></td><td>Guards last-admin removal. Writes audit log.</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/auth/users</code></td><td><span class="badge badge-admin">Admin</span></td><td>Returns all users list.</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/students?page&pageSize&search</code></td><td><span class="badge badge-user">Auth</span></td><td>Paged. pageSize max 100.</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/students/{id}</code></td><td><span class="badge badge-user">Auth</span></td><td></td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/students/me</code></td><td><span class="badge badge-user">Auth</span></td><td>Returns username+email from JWT claims.</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/api/students</code></td><td><span class="badge badge-admin">Admin</span></td><td>Returns 201 + new StudentID.</td></tr>
+          <tr><td><span class="method put">PUT</span></td><td><code>/api/students/{id}</code></td><td><span class="badge badge-admin">Admin</span></td><td>Writes audit log.</td></tr>
+          <tr><td><span class="method delete">DELETE</span></td><td><code>/api/students/{id}</code></td><td><span class="badge badge-admin">Admin</span></td><td>Writes audit log.</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/courses?page&pageSize&search</code></td><td><span class="badge badge-user">Auth</span></td><td>Paged.</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/courses/{id}</code></td><td><span class="badge badge-user">Auth</span></td><td></td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/api/courses</code></td><td><span class="badge badge-admin">Admin</span></td><td>Returns 201 + new CourseID.</td></tr>
+          <tr><td><span class="method put">PUT</span></td><td><code>/api/courses/{id}</code></td><td><span class="badge badge-admin">Admin</span></td><td>Writes audit log.</td></tr>
+          <tr><td><span class="method delete">DELETE</span></td><td><code>/api/courses/{id}</code></td><td><span class="badge badge-admin">Admin</span></td><td>Writes audit log.</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/enrollments?page&pageSize&search</code></td><td><span class="badge badge-user">Auth</span></td><td>Paged. Returns StudentName + CourseName + Date.</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/api/enrollments</code></td><td><span class="badge badge-admin">Admin</span></td><td>Returns 201. Duplicate blocked in SQL proc.</td></tr>
+          <tr><td><span class="method delete">DELETE</span></td><td><code>/api/enrollments/{id}</code></td><td><span class="badge badge-admin">Admin</span></td><td>Writes audit log.</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/api/admin-audit-logs?page&pageSize&search</code></td><td><span class="badge badge-admin">Admin</span></td><td>Searchable across action/entity/details/admin fields.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TESTS -->
+  <section class="section" id="tests">
+    <div class="section-label">21 — Testing</div>
+    <div class="section-title">Test <span>Coverage</span></div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      Backend unit tests live in <code>LearningApi/backend.Tests/</code>. Frontend spec files use Vitest alongside Angular's testing utilities.
+    </p>
+    <div class="two-col">
+      <div>
+        <h3 style="font-family:'DM Mono',monospace;font-size:13px;color:var(--csharp);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Backend (xUnit pattern)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Test File</th><th>Covers</th></tr></thead>
+            <tbody>
+              <tr><td><code>AuthServiceTests.cs</code></td><td>Register, Login (valid + invalid credentials), GenerateToken, AssignRoleSafely (last-admin guard), UpdateEmail/Role</td></tr>
+              <tr><td><code>CourseServiceTests.cs</code></td><td>GetById (found/not found), Add, Update (found/not found), Delete (valid/invalid ID)</td></tr>
+              <tr><td><code>StudentServiceTests.cs</code></td><td>Same patterns as CourseServiceTests</td></tr>
+              <tr><td><code>EnrollmentServiceTests.cs</code></td><td>Add, Delete</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="notice" style="margin-top:12px">
+          Fake repositories in <code>backend.Tests/Fakes/</code> implement the repository interfaces in-memory: <code>FakeAuthRepository</code>, <code>FakeCourseRepository</code>, <code>FakeStudentRepository</code>, <code>FakeEnrollmentRepository</code>. No SQL Server required for unit tests.
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent2);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Frontend (Vitest)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Spec File</th><th>Covers</th></tr></thead>
+            <tbody>
+              <tr><td><code>auth.service.spec.ts</code></td><td>login/logout token storage, isLoggedIn JWT decode</td></tr>
+              <tr><td><code>auth.guard.spec.ts</code></td><td>Redirect to /login when not authenticated</td></tr>
+              <tr><td><code>role.guard.spec.ts</code></td><td>Redirect to /dashboard when role not in allowed list</td></tr>
+              <tr><td><code>courses.spec.ts</code></td><td>Component initialization, data loading</td></tr>
+              <tr><td><code>admin-audit-logs.spec.ts</code></td><td>Page initialization</td></tr>
+              <tr><td><code>confirm.spec.ts</code></td><td>ConfirmComponent rendering</td></tr>
+              <tr><td><code>toast.spec.ts</code></td><td>ToastComponent show/hide</td></tr>
+              <tr><td><code>users.spec.ts</code></td><td>Users page basic tests</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+  <div style="text-align:center;padding:32px 0 48px;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px">
+    BrightPath — generated documentation · May 2026
+  </div>
+
+</div>
+
+<script>
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const navLinks = document.querySelectorAll('.sidenav a');
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector(`.sidenav a[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
